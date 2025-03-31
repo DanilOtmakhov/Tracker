@@ -75,7 +75,7 @@ private extension TrackersViewController {
         
         NSLayoutConstraint.activate([
             stubImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            stubImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 220),
+            stubImageView.topAnchor.constraint(equalTo: view.centerYAnchor, constant: -40),
             stubImageView.heightAnchor.constraint(equalToConstant: 80),
             stubImageView.widthAnchor.constraint(equalToConstant: 80),
             
