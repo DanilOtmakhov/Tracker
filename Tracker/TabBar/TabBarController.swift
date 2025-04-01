@@ -53,7 +53,7 @@ final class TabBarController: UITabBarController {
             tabBar.scrollEdgeAppearance = appearance
         } else {
             tabBar.layer.borderColor = UIColor.ypGray.cgColor
-            tabBar.layer.borderWidth = 1
+            tabBar.layer.borderWidth = 0.5
         }
     }
 
