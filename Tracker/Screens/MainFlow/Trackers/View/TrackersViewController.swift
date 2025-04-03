@@ -35,10 +35,11 @@ final class TrackersViewController: UIViewController {
     }(UILabel())
     
     private lazy var searchController: UISearchController = {
+        $0.searchResultsUpdater = self
+        $0.searchBar.delegate = self
         $0.searchBar.placeholder = "Поиск"
         $0.searchBar.searchBarStyle = .minimal
         $0.searchBar.tintColor = .ypGray
-        $0.searchResultsUpdater = self
         return $0
     }(UISearchController())
     
@@ -53,15 +54,27 @@ final class TrackersViewController: UIViewController {
     
     // MARK: - Private Properties
     
-    private var categories: [TrackerCategory] = TrackerCategory.mockData
-    private var completedTrackers: [TrackerRecord]?
-    private var currentDate: Date?
+    private var viewModel: TrackersViewModelProtocol
+    private var categories: [TrackerCategory] = []
+    
+    // MARK: - Initialization
+    
+    init(viewModel: TrackersViewModelProtocol) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     // MARK: - Lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViewController()
+        setupViewModel()
+        viewModel.loadTrackers()
     }
     
 }
@@ -105,7 +118,26 @@ private extension TrackersViewController {
             stubLabel.topAnchor.constraint(equalTo: stubImageView.bottomAnchor, constant: 8),
             stubLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
-
+    }
+    
+    func setupViewModel() {
+        viewModel.onStateChange = { [weak self] state in
+            guard let self else { return }
+            
+            switch state {
+            case .content(let categories):
+                self.stubImageView.isHidden = true
+                self.stubLabel.isHidden = true
+                self.collectionView.isHidden = false
+                self.categories = categories
+            case .empty:
+                self.stubImageView.isHidden = false
+                self.stubLabel.isHidden = false
+                self.collectionView.isHidden = true
+            case .searchNotFound:
+                break
+            }
+        }
     }
     
 }
@@ -132,6 +164,14 @@ extension TrackersViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         
     }
+    
+}
+
+// MARK: - UISearchBarDelegate
+
+extension TrackersViewController: UISearchBarDelegate {
+    
+    
     
 }
 

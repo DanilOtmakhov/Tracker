@@ -18,7 +18,11 @@ final class TabBarController: UITabBarController {
     private func setupViewController() {
         view.backgroundColor = .ypWhite
         
-        let trackersViewController = UINavigationController(rootViewController: TrackersViewController())
+        let trackerStore = TrackerStore()
+        let trackersViewModel = TrackersViewModel(store: trackerStore)
+        let trackersViewController = UINavigationController(
+            rootViewController: TrackersViewController(viewModel: trackersViewModel)
+        )
         trackersViewController.tabBarItem = UITabBarItem(
             title: "Трекеры",
             image: UIImage(named: "trackers"),
