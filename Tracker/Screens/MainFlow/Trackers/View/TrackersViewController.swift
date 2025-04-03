@@ -14,6 +14,7 @@ final class TrackersViewController: UIViewController {
     private lazy var datePicker: UIDatePicker = {
         $0.datePickerMode = .date
         $0.preferredDatePickerStyle = .compact
+        $0.maximumDate = Date()
         $0.addTarget(self, action: #selector(datePickerValueChanged(_:)), for: .valueChanged)
         return $0
     }(UIDatePicker())
@@ -105,6 +106,8 @@ private extension TrackersViewController {
         }
         
         NSLayoutConstraint.activate([
+            datePicker.widthAnchor.constraint(equalToConstant: 110),
+            
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
