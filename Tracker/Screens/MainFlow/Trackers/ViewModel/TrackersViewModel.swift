@@ -20,9 +20,12 @@ typealias State = TrackersViewModelState
 protocol TrackersViewModelProtocol {
     
     var onStateChange: ((State) -> Void)? { get set }
+    func isTrackerCompleted(_ tracker: Tracker) -> Bool
+    func completedDaysCount(for tracker: Tracker) -> Int
     func loadTrackers()
     func filterTrackers(by date: Date)
     func searchTrackers(with query: String)
+    func handleCompleteButtonTap(_ tracker: Tracker, isCompleted: Bool)
     
 }
 
@@ -36,7 +39,7 @@ final class TrackersViewModel {
     
     private let store: TrackerStoreProtocol
     private var categories: [TrackerCategory] = []
-    private var completedTrackers: [TrackerRecord]?
+    private var completedTrackers: Set<TrackerRecord> = []
     private var currentDate: Date = Date()
     private var state: State = .empty {
         didSet {
@@ -56,17 +59,32 @@ final class TrackersViewModel {
 
 extension TrackersViewModel: TrackersViewModelProtocol {
     
+    func isTrackerCompleted(_ tracker: Tracker) -> Bool {
+        completedTrackers.contains { $0.id == tracker.id && $0.date == currentDate }
+    }
+    
+    func completedDaysCount(for tracker: Tracker) -> Int {
+        completedTrackers.filter { $0.id == tracker.id }.count
+    }
+    
     func loadTrackers() {
         categories = store.fetchTrackerCategories()
+        completedTrackers = store.fetchCompletedTrackers()
         state = .content(categories: categories)
     }
     
     func filterTrackers(by date: Date) {
-        
+        currentDate = date
+        state = .content(categories: categories)
     }
     
     func searchTrackers(with query: String) {
         
+    }
+    
+    func handleCompleteButtonTap(_ tracker: Tracker, isCompleted: Bool) {
+        let trackerRecord = TrackerRecord(id: tracker.id, date: currentDate)
+        completedTrackers.insert(trackerRecord)
     }
     
 }

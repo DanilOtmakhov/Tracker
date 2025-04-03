@@ -48,7 +48,7 @@ final class TrackerCell: UICollectionViewCell {
         return $0
     }(UIView())
     
-    private lazy var daysCountLabel: UILabel = {
+    private lazy var completedDaysCountLabel: UILabel = {
         $0.text = "5 дней"
         $0.textColor = .ypBlack
         $0.font = UIFont.systemFont(ofSize: 12, weight: .medium)
@@ -56,14 +56,33 @@ final class TrackerCell: UICollectionViewCell {
         return $0
     }(UILabel())
     
-    private lazy var incrementDaysButton: UIButton = {
-        $0.setImage(UIImage(systemName: "plus"), for: .normal)
+    private lazy var completeButton: UIButton = {
         $0.tintColor = .ypWhite
+        $0.setImage(UIImage(named: "plus"), for: .normal)
+        $0.addTarget(self, action: #selector(didTapCompleteButton), for: .touchUpInside)
         $0.layer.cornerRadius = 17
         $0.layer.masksToBounds = true
         $0.translatesAutoresizingMaskIntoConstraints = false
         return $0
-    }(UIButton())
+    }(UIButton(type: .system))
+    
+    // MARK: - Internal Properties
+    
+    var onComplete: ((Bool) -> Void)?
+    
+    // MARK: - Private Methods
+    
+    private var completedDaysCount: Int = 0 {
+        didSet {
+            updateCompletedDaysCountLabel(completedDaysCount)
+        }
+    }
+    
+    private var isCompleted: Bool = false {
+        didSet {
+            updateCompleteButtonAppearance(isCompleted)
+        }
+    }
     
     // MARK: - Initialization
     
@@ -82,11 +101,15 @@ final class TrackerCell: UICollectionViewCell {
 
 extension TrackerCell {
     
-    func configure(with tracker: Tracker) {
+    func configure(with tracker: Tracker, completedDaysCount: Int, isCompleted: Bool) {
         emojiLabel.text = tracker.emoji
         titleLabel.text = tracker.title
+        
         containerView.backgroundColor = tracker.color
-        incrementDaysButton.backgroundColor = tracker.color
+        completeButton.backgroundColor = tracker.color
+        
+        self.completedDaysCount = completedDaysCount
+        self.isCompleted = isCompleted
     }
     
 }
@@ -98,7 +121,7 @@ private extension TrackerCell {
     func setupCell() {
         contentView.backgroundColor = .ypWhite
         
-        [containerView, daysCountLabel, incrementDaysButton].forEach {
+        [containerView, completedDaysCountLabel, completeButton].forEach {
             contentView.addSubview($0)
         }
         
@@ -125,15 +148,52 @@ private extension TrackerCell {
             titleLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -12),
             titleLabel.bottomAnchor.constraint(lessThanOrEqualTo: containerView.bottomAnchor, constant: -12),
             
-            daysCountLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
-            daysCountLabel.trailingAnchor.constraint(lessThanOrEqualTo: incrementDaysButton.leadingAnchor, constant: -8),
-            daysCountLabel.centerYAnchor.constraint(equalTo: incrementDaysButton.centerYAnchor),
+            completedDaysCountLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
+            completedDaysCountLabel.trailingAnchor.constraint(lessThanOrEqualTo: completeButton.leadingAnchor, constant: -8),
+            completedDaysCountLabel.centerYAnchor.constraint(equalTo: completeButton.centerYAnchor),
             
-            incrementDaysButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12),
-            incrementDaysButton.topAnchor.constraint(equalTo: containerView.bottomAnchor, constant: 8),
-            incrementDaysButton.widthAnchor.constraint(equalToConstant: 34),
-            incrementDaysButton.heightAnchor.constraint(equalToConstant: 34)
+            completeButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12),
+            completeButton.topAnchor.constraint(equalTo: containerView.bottomAnchor, constant: 8),
+            completeButton.widthAnchor.constraint(equalToConstant: 34),
+            completeButton.heightAnchor.constraint(equalToConstant: 34)
         ])
+    }
+    
+    func updateCompletedDaysCountLabel(_ count: Int) {
+        completedDaysCountLabel.text = "\(completedDaysCount) дней"
+    }
+    
+    func updateCompletedDaysCount(_ isCompleted: Bool) {
+        switch isCompleted {
+        case true:
+            completedDaysCount += 1
+        case false:
+            completedDaysCount -= 1
+        }
+    }
+    
+    func updateCompleteButtonAppearance(_ isCompleted: Bool) {
+        switch isCompleted {
+        case true:
+            completeButton.setImage(UIImage(named: "done"), for: .normal)
+            completeButton.alpha = 0.3
+        case false:
+            completeButton.setImage(UIImage(named: "plus"), for: .normal)
+            completeButton.alpha = 1
+        }
+    }
+    
+}
+
+// MARK: - Actions
+
+@objc
+private extension TrackerCell {
+    
+    func didTapCompleteButton() {
+        isCompleted.toggle()
+        updateCompletedDaysCount(isCompleted)
+        onComplete?(isCompleted)
     }
     
 }

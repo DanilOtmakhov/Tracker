@@ -130,6 +130,7 @@ private extension TrackersViewController {
                 self.stubLabel.isHidden = true
                 self.collectionView.isHidden = false
                 self.categories = categories
+                self.collectionView.reloadData()
             case .empty:
                 self.stubImageView.isHidden = false
                 self.stubLabel.isHidden = false
@@ -152,7 +153,7 @@ private extension TrackersViewController {
     }
     
     func datePickerValueChanged(_ sender: UIDatePicker) {
-        
+        viewModel.filterTrackers(by: sender.date)
     }
     
 }
@@ -190,17 +191,26 @@ extension TrackersViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard indexPath.section < categories.count,
               indexPath.item < categories[indexPath.section].trackers.count else {
-            fatalError("Invalid index path")
+            return UICollectionViewCell()
         }
         
         guard let cell = collectionView.dequeueReusableCell(
             withReuseIdentifier: TrackerCell.reuseIdentifier,
             for: indexPath
         ) as? TrackerCell else {
-            fatalError("Failed to dequeue TrackerCell")
+            return UICollectionViewCell()
         }
         
-        cell.configure(with: categories[indexPath.section].trackers[indexPath.item])
+        let tracker = categories[indexPath.section].trackers[indexPath.row]
+        let completedDaysCount = viewModel.completedDaysCount(for: tracker)
+        let isCompleted = viewModel.isTrackerCompleted(tracker)
+        
+        cell.configure(with: tracker, completedDaysCount: completedDaysCount, isCompleted: isCompleted)
+        cell.onComplete = { [weak self] isCompleted in
+            guard let self else { return }
+            self.viewModel.handleCompleteButtonTap(tracker, isCompleted: isCompleted)
+        }
+        
         return cell
     }
     
