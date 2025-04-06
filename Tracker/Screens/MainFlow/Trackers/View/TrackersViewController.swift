@@ -9,6 +9,21 @@ import UIKit
 
 final class TrackersViewController: UIViewController {
     
+    // MARK: - Constants
+    
+    private enum Constants {
+        static let collectionViewHorizontalInset: CGFloat = 16
+        static let collectionViewInteritemSpacing: CGFloat = 9
+        static let cellHeight: CGFloat = 148
+        static let headerHeight: CGFloat = 46
+        
+        static let stubImageSize: CGFloat = 80
+        static let stubTopOffset: CGFloat = -40
+        static let stubLabelTopOffset: CGFloat = 8
+        
+        static let datePickerWidth: CGFloat = 110
+    }
+    
     // MARK: - Subviews
     
     private lazy var datePicker: UIDatePicker = {
@@ -47,7 +62,7 @@ final class TrackersViewController: UIViewController {
     private lazy var collectionView: UICollectionView = {
         $0.dataSource = self
         $0.delegate = self
-        $0.contentInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+        $0.contentInset = UIEdgeInsets(top: 0, left: Constants.collectionViewHorizontalInset, bottom: 0, right: Constants.collectionViewHorizontalInset)
         $0.register(TrackerCell.self, forCellWithReuseIdentifier: TrackerCell.reuseIdentifier)
         $0.register(TrackersHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: TrackersHeaderView.reuseIdentifier)
         return $0
@@ -106,7 +121,7 @@ private extension TrackersViewController {
         }
         
         NSLayoutConstraint.activate([
-            datePicker.widthAnchor.constraint(equalToConstant: 110),
+            datePicker.widthAnchor.constraint(equalToConstant: Constants.datePickerWidth),
             
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -114,11 +129,11 @@ private extension TrackersViewController {
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             
             stubImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            stubImageView.topAnchor.constraint(equalTo: view.centerYAnchor, constant: -40),
-            stubImageView.heightAnchor.constraint(equalToConstant: 80),
-            stubImageView.widthAnchor.constraint(equalToConstant: 80),
+            stubImageView.topAnchor.constraint(equalTo: view.centerYAnchor, constant: Constants.stubTopOffset),
+            stubImageView.heightAnchor.constraint(equalToConstant: Constants.stubImageSize),
+            stubImageView.widthAnchor.constraint(equalToConstant: Constants.stubImageSize),
             
-            stubLabel.topAnchor.constraint(equalTo: stubImageView.bottomAnchor, constant: 8),
+            stubLabel.topAnchor.constraint(equalTo: stubImageView.bottomAnchor, constant: Constants.stubLabelTopOffset),
             stubLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }
@@ -254,9 +269,9 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         sizeForItemAt indexPath: IndexPath
     ) -> CGSize {
-        let availableWidth = collectionView.bounds.width - 32 - 9
+        let availableWidth = collectionView.bounds.width - Constants.collectionViewHorizontalInset * 2 - Constants.collectionViewInteritemSpacing
         let cellWidth = availableWidth / 2
-        return CGSize(width: cellWidth, height: 148)
+        return CGSize(width: cellWidth, height: Constants.cellHeight)
     }
     
     func collectionView(
@@ -264,7 +279,7 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         referenceSizeForHeaderInSection section: Int
     ) -> CGSize {
-        return CGSize(width: collectionView.bounds.width, height: 46)
+        return CGSize(width: collectionView.bounds.width, height: Constants.headerHeight)
     }
     
     func collectionView(
@@ -272,7 +287,7 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         minimumInteritemSpacingForSectionAt section: Int
     ) -> CGFloat {
-        9
+        Constants.collectionViewInteritemSpacing
     }
     
     func collectionView(
