@@ -7,7 +7,12 @@
 
 import UIKit
 
-class TrackerTypeSelectionViewController: UIViewController {
+enum TrackerType {
+    case habit
+    case event
+}
+
+final class TrackerTypeSelectionViewController: UIViewController {
     
     // MARK: - Constants
     
@@ -49,6 +54,10 @@ class TrackerTypeSelectionViewController: UIViewController {
         return $0
     }(UIStackView(arrangedSubviews: [habitButton, eventButton]))
     
+    // MARK: - Internal Properties
+    
+    var onTrackerTypeSelected: ((TrackerType) -> Void)?
+    
     // MARK: - Lifecycle
 
     override func viewDidLoad() {
@@ -77,7 +86,7 @@ private extension TrackerTypeSelectionViewController {
             eventButton.heightAnchor.constraint(equalToConstant: Constants.buttonHeight),
             
             vStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.horizontalInset),
-            vStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: Constants.horizontalInset),
+            vStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.horizontalInset),
             vStack.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor)
         ])
     }
@@ -90,11 +99,11 @@ private extension TrackerTypeSelectionViewController {
 private extension TrackerTypeSelectionViewController {
     
     func didTapHabitButton() {
-        
+        onTrackerTypeSelected?(.habit)
     }
     
     func didTapEventButton() {
-        
+        onTrackerTypeSelected?(.event)
     }
     
 }

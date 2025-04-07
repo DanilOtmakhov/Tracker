@@ -68,6 +68,10 @@ final class TrackersViewController: UIViewController {
         return $0
     }(UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout()))
     
+    // MARK: - Internal Properties
+    
+    var onAddTrackerTapped: (() -> Void)?
+    
     // MARK: - Private Properties
     
     private var viewModel: TrackersViewModelProtocol
@@ -167,7 +171,7 @@ private extension TrackersViewController {
 private extension TrackersViewController {
     
     func addButtonTapped() {
-        
+        onAddTrackerTapped?()
     }
     
     func datePickerValueChanged(_ sender: UIDatePicker) {

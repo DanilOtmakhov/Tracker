@@ -8,7 +8,20 @@
 import UIKit
 
 final class TabBarController: UITabBarController {
-
+    
+    private let trackersViewController: UINavigationController
+    private let statisticsViewController: UINavigationController
+    
+    init(trackersViewController: UINavigationController, statisticsViewController: UINavigationController) {
+        self.trackersViewController = trackersViewController
+        self.statisticsViewController = statisticsViewController
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViewController()
@@ -17,19 +30,13 @@ final class TabBarController: UITabBarController {
     
     private func setupViewController() {
         view.backgroundColor = .ypWhite
-        
-        let trackerStore = TrackerStore()
-        let trackersViewModel = TrackersViewModel(store: trackerStore)
-        let trackersViewController = UINavigationController(
-            rootViewController: TrackersViewController(viewModel: trackersViewModel)
-        )
+
         trackersViewController.tabBarItem = UITabBarItem(
             title: "Трекеры",
             image: UIImage(named: "trackers"),
             selectedImage: nil
         )
         
-        let statisticsViewController = UINavigationController(rootViewController: StatisticsViewController())
         statisticsViewController.tabBarItem = UITabBarItem(
             title: "Статистика",
             image: UIImage(named: "stats"),
