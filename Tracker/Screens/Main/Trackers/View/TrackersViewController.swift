@@ -14,6 +14,7 @@ final class TrackersViewController: UIViewController {
     private enum Constants {
         static let collectionViewHorizontalInset: CGFloat = 16
         static let collectionViewInteritemSpacing: CGFloat = 9
+        static let collectionViewMinimumLineSpacing: CGFloat = 0
         static let cellHeight: CGFloat = 148
         static let headerHeight: CGFloat = 46
         
@@ -299,7 +300,7 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         minimumLineSpacingForSectionAt section: Int
     ) -> CGFloat {
-        0
+        Constants.collectionViewMinimumLineSpacing
     }
     
 }

@@ -76,7 +76,7 @@ private extension TrackerTypeSelectionViewController {
     func setupViewController() {
         view.backgroundColor = .ypWhite
         
-        navigationItem.title = "Создание трекера" // TODO: цвет заголовков
+        title = "Создание трекера" // TODO: цвет заголовков
         
         view.addSubview(vStack)
         

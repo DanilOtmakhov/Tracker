@@ -17,36 +17,30 @@ protocol Coordinator {
 final class TrackersCoordinator: Coordinator {
     
     let navigationController = UINavigationController()
-    
     private let trackerStore = TrackerStore()
+    private var creationCoordinator: TrackerCreationCoordinator?
     
     func start() {
         let viewModel = TrackersViewModel(store: trackerStore)
         let viewController = TrackersViewController(viewModel: viewModel)
         
         viewController.onAddTrackerTapped = { [weak self] in
-            self?.showTrackerTypeSelection()
+            self?.startTrackerCreation()
         }
         
-        navigationController.viewControllers = [viewController]
+        navigationController.setViewControllers([viewController], animated: false)
     }
     
-    private func showTrackerTypeSelection() {
-        let viewController = TrackerTypeSelectionViewController()
+    private func startTrackerCreation() {
+        let creationCoordinator = TrackerCreationCoordinator()
+        self.creationCoordinator = creationCoordinator
         
-        viewController.onTrackerTypeSelected = { [weak self] type in
-            switch type {
-            case .habit:
-                print("habit")
-            case .event:
-                print("event")
-            }
-        }
-        
-        let navController = UINavigationController(rootViewController: viewController)
-        navController.modalPresentationStyle = .pageSheet
-        
-        navigationController.present(navController, animated: true)
+        creationCoordinator.start()
+        navigationController.present(
+            creationCoordinator.navigationController,
+            animated: true
+        )
     }
-    
 }
+
+
