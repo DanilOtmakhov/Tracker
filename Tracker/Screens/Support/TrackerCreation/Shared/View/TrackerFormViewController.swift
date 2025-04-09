@@ -29,6 +29,7 @@ class TrackerFormViewController: UITableViewController {
     
     // MARK: - Internal Properties
     
+    var formTitle: String { "Новая привычка" }
     var showsSchedule: Bool { true }
     var onScheduleCellTapped: (() -> Void)?
     
@@ -61,7 +62,7 @@ class TrackerFormViewController: UITableViewController {
 private extension TrackerFormViewController {
     
     func setupViewController() {
-        title = "Новая привычка"
+        title = formTitle
         view.backgroundColor = .ypWhite
         setupTableView()
     }

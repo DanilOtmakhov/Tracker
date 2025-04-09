@@ -1,20 +1,20 @@
 //
-//  TrackerFormViewModel.swift
+//  HabitFormViewModel.swift
 //  Tracker
 //
-//  Created by Danil Otmakhov on 08.04.2025.
+//  Created by Danil Otmakhov on 10.04.2025.
 //
 
 import Foundation
 
-protocol TrackerFormViewModelProtocol {
+protocol HabitFormViewModelProtocol: TrackerFormViewModelProtocol {
     
     var selectedDays: [Day] { get set }
     func updateSelectedDays(_ days: [Day])
     
 }
 
-class TrackerFormViewModel: TrackerFormViewModelProtocol {
+final class HabitFormViewModel: TrackerFormViewModel, HabitFormViewModelProtocol {
     
     var selectedDays: [Day] = [] {
         didSet {

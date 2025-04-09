@@ -79,9 +79,11 @@ import UIKit
 
 final class TrackerCreationCoordinator: Coordinator {
     
+    private let trackerStore: TrackerStoreProtocol
     private unowned let presentingViewController: UIViewController
 
-    init(presentingViewController: UIViewController) {
+    init(_ trackerStore: TrackerStoreProtocol, presentingViewController: UIViewController) {
+        self.trackerStore = trackerStore
         self.presentingViewController = presentingViewController
     }
 
@@ -97,7 +99,7 @@ final class TrackerCreationCoordinator: Coordinator {
             case .habit:
                 self?.showNewHabitViewController(from: viewController)
             case .event:
-                self?.showNewEventViewController()
+                self?.showNewEventViewController(from: viewController)
             }
         }
 
@@ -105,8 +107,8 @@ final class TrackerCreationCoordinator: Coordinator {
     }
 
     private func showNewHabitViewController(from presentingViewController: UIViewController?) {
-        let viewModel = TrackerFormViewModel()
-        let viewController = TrackerFormViewController(viewModel: viewModel)
+        let viewModel = HabitFormViewModel(trackerStore: trackerStore)
+        let viewController = HabitFormViewController(viewModel: viewModel)
 
         viewController.onScheduleCellTapped = { [weak self, weak viewController] in
             self?.showScheduleViewController(from: viewController, with: viewModel)
@@ -115,11 +117,14 @@ final class TrackerCreationCoordinator: Coordinator {
         presentInPageSheet(viewController, from: presentingViewController)
     }
 
-    private func showNewEventViewController() {
-        
+    private func showNewEventViewController(from presentingViewController: UIViewController?) {
+        let viewModel = EventFormViewModel(trackerStore: trackerStore)
+        let viewController = EventFormViewController(viewModel: viewModel)
+
+        presentInPageSheet(viewController, from: presentingViewController)
     }
 
-    private func showScheduleViewController(from presentingViewController: UIViewController?, with viewModel: TrackerFormViewModelProtocol) {
+    private func showScheduleViewController(from presentingViewController: UIViewController?, with viewModel: HabitFormViewModelProtocol) {
         let viewController = ScheduleViewController()
         viewController.selectedDays = Set(viewModel.selectedDays)
 

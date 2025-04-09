@@ -37,7 +37,7 @@ final class TrackersViewModel {
     
     // MARK: - Private Properties
     
-    private let store: TrackerStoreProtocol
+    private let trackerStore: TrackerStoreProtocol
     private var categories: [TrackerCategory] = []
     private var completedTrackers: Set<TrackerRecord> = []
     private var currentDate: Date = Date()
@@ -49,8 +49,8 @@ final class TrackersViewModel {
     
     // MARK: - Initialization
     
-    init(store: TrackerStoreProtocol) {
-        self.store = store
+    init(trackerStore: TrackerStoreProtocol) {
+        self.trackerStore = trackerStore
     }
     
 }
@@ -68,8 +68,8 @@ extension TrackersViewModel: TrackersViewModelProtocol {
     }
     
     func loadTrackers() {
-        categories = store.fetchTrackerCategories()
-        completedTrackers = store.fetchCompletedTrackers()
+        categories = trackerStore.fetchTrackerCategories()
+        completedTrackers = trackerStore.fetchCompletedTrackers()
         state = .content(categories: categories)
     }
     

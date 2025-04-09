@@ -25,7 +25,7 @@ final class TrackersCoordinator: NavigationCoordinator {
     private var creationCoordinator: TrackerCreationCoordinator?
     
     func start() {
-        let viewModel = TrackersViewModel(store: trackerStore)
+        let viewModel = TrackersViewModel(trackerStore: trackerStore)
         let viewController = TrackersViewController(viewModel: viewModel)
         
         viewController.onAddTrackerTapped = { [weak self] in
@@ -36,14 +36,10 @@ final class TrackersCoordinator: NavigationCoordinator {
     }
     
     private func startTrackerCreation() {
-        let creationCoordinator = TrackerCreationCoordinator(presentingViewController: navigationController)
+        let creationCoordinator = TrackerCreationCoordinator(trackerStore, presentingViewController: navigationController)
         self.creationCoordinator = creationCoordinator
         
         creationCoordinator.start()
-//        navigationController.present(
-//            creationCoordinator.navigationController,
-//            animated: true
-//        )
     }
 }
 
