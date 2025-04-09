@@ -20,19 +20,22 @@ struct TrackerCategory {
                 id: UUID(),
                 title: "Пить воду",
                 emoji: "💧",
-                color: .color1
+                color: .color1,
+                schedule: []
                 ),
                 Tracker(
                     id: UUID(),
                     title: "Чтение 30 мин",
                     emoji: "📖",
-                    color: .color11
+                    color: .color11,
+                    schedule: []
                 ),
                 Tracker(
                     id: UUID(),
                     title: "Ранний подъем",
                     emoji: "⏰",
-                    color: .color15
+                    color: .color15,
+                    schedule: []
                 )
             ]
         ),
@@ -43,13 +46,15 @@ struct TrackerCategory {
                     id: UUID(),
                     title: "10 000 шагов",
                     emoji: "🚶‍♂️",
-                    color: .color9
+                    color: .color9,
+                    schedule: []
                 ),
                 Tracker(
                     id: UUID(),
                     title: "Тренировка",
                     emoji: "🏋️‍♂️",
-                    color: .color3
+                    color: .color3,
+                    schedule: []
                 )
             ]
         )

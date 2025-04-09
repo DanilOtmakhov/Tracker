@@ -9,12 +9,16 @@ import UIKit
 
 protocol Coordinator {
     
-    var navigationController: UINavigationController { get }
+//    var navigationController: UINavigationController { get }
     func start()
     
 }
 
-final class TrackersCoordinator: Coordinator {
+protocol NavigationCoordinator: Coordinator {
+    var navigationController: UINavigationController { get }
+}
+
+final class TrackersCoordinator: NavigationCoordinator {
     
     let navigationController = UINavigationController()
     private let trackerStore = TrackerStore()
@@ -32,14 +36,14 @@ final class TrackersCoordinator: Coordinator {
     }
     
     private func startTrackerCreation() {
-        let creationCoordinator = TrackerCreationCoordinator()
+        let creationCoordinator = TrackerCreationCoordinator(presentingViewController: navigationController)
         self.creationCoordinator = creationCoordinator
         
         creationCoordinator.start()
-        navigationController.present(
-            creationCoordinator.navigationController,
-            animated: true
-        )
+//        navigationController.present(
+//            creationCoordinator.navigationController,
+//            animated: true
+//        )
     }
 }
 

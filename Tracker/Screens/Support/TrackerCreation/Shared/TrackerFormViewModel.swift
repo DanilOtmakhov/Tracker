@@ -9,12 +9,21 @@ import Foundation
 
 protocol TrackerFormViewModelProtocol {
     
-    
+    var selectedDays: [Day] { get set }
+    func updateSelectedDays(_ days: [Day])
     
 }
 
 class TrackerFormViewModel: TrackerFormViewModelProtocol {
     
+    var selectedDays: [Day] = [] {
+        didSet {
+            // UI
+        }
+    }
     
+    func updateSelectedDays(_ days: [Day]) {
+        selectedDays = days
+    }
     
 }

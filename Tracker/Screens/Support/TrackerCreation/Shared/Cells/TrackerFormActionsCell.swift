@@ -41,7 +41,7 @@ final class TrackerFormActionsCell: UITableViewCell {
         $0.setTitleColor(.ypWhite, for: .normal)
         $0.backgroundColor = .ypGray
         $0.isEnabled = false
-        $0.addTarget(self, action: #selector(didTapCancelButton), for: .touchUpInside)
+        $0.addTarget(self, action: #selector(didTapCreateButton), for: .touchUpInside)
         $0.layer.cornerRadius = Constants.cornerRadius
         $0.layer.masksToBounds = true
         $0.translatesAutoresizingMaskIntoConstraints = false
@@ -55,6 +55,11 @@ final class TrackerFormActionsCell: UITableViewCell {
         $0.translatesAutoresizingMaskIntoConstraints = false
         return $0
     }(UIStackView(arrangedSubviews: [cancelButton, createButton]))
+    
+    // MARK: - Internal Properties
+    
+    var onCancelButtonTapped: (() -> Void)?
+    var onCreateButtonTapped: (() -> Void)?
     
     // MARK: - Initialization
     
@@ -102,11 +107,11 @@ private extension TrackerFormActionsCell {
 private extension TrackerFormActionsCell {
     
     func didTapCancelButton() {
-        
+        onCancelButtonTapped?()
     }
     
     func didTapCreateButton() {
-        
+        onCreateButtonTapped?()
     }
     
 }

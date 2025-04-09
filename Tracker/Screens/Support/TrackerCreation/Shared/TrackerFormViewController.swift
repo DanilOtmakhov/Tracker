@@ -30,6 +30,7 @@ class TrackerFormViewController: UITableViewController {
     // MARK: - Internal Properties
     
     var showsSchedule: Bool { true }
+    var onScheduleCellTapped: (() -> Void)?
     
     // MARK: - Private Properties
     
@@ -60,15 +61,17 @@ class TrackerFormViewController: UITableViewController {
 private extension TrackerFormViewController {
     
     func setupViewController() {
+        title = "Новая привычка"
         view.backgroundColor = .ypWhite
         setupTableView()
-        title = "Новая привычка"
     }
     
     func setupTableView() {
         tableView = UITableView(frame: .zero, style: .insetGrouped)
         tableView.separatorStyle = .singleLine
+        tableView.separatorColor = .ypGray
         tableView.backgroundColor = .ypWhite
+        tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         
         
         tableView.register(TrackerFormTitleCell.self,
@@ -130,6 +133,15 @@ extension TrackerFormViewController {
         case .actions:
             let cell = TrackerFormActionsCell()
             cell.configure(isEnabled: false/*viewModel.isFormValid*/)
+            
+            cell.onCancelButtonTapped = { [weak self] in
+                self?.dismiss(animated: true)
+            }
+            
+            cell.onCreateButtonTapped = { [weak self] in
+                
+            }
+            
             return cell
         }
     }
@@ -155,19 +167,11 @@ extension TrackerFormViewController {
         }
     }
     
-}
-
-// MARK: - UITextFieldDelegate
-
-extension TrackerFormViewController: UITextFieldDelegate {
-    
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        if let currentText = textField.text,
-           let textRange = Range(range, in: currentText) {
-            let updatedText = currentText.replacingCharacters(in: textRange, with: string)
-            return updatedText.count <= 38
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        if indexPath.section == Section.options.rawValue && indexPath.row == 1 {
+            onScheduleCellTapped?()
         }
-        return true
     }
     
 }
