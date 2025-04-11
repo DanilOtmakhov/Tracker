@@ -28,6 +28,7 @@ final class ScheduleViewController: UIViewController {
         $0.backgroundColor = .ypWhite
         $0.separatorStyle = .singleLine
         $0.separatorColor = .ypGray
+        $0.allowsSelection = false 
         $0.register(DayCell.self,
                     forCellReuseIdentifier: DayCell.reuseIdentifier)
         $0.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
@@ -111,11 +112,23 @@ extension ScheduleViewController: UITableViewDataSource {
             withIdentifier: DayCell.reuseIdentifier,
             for: indexPath
         ) as? DayCell,
-              let day = Day(rawValue: indexPath.row)  else {
+              let day = Day(rawValue: indexPath.row)
+        else {
             return UITableViewCell()
         }
         
-        cell.configure(with: day)
+        let isSelected = selectedDays.contains(day)
+        cell.configure(with: day, isSelected: isSelected)
+        
+        cell.onSwitchToggled = { [weak self] isOn in
+            guard let self else { return }
+            if isOn {
+                self.selectedDays.insert(day)
+            } else {
+                self.selectedDays.remove(day)
+            }
+        }
+        
         return cell
     }
     

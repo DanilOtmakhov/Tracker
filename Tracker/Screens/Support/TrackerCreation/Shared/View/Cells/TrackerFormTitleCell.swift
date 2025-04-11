@@ -42,6 +42,10 @@ final class TrackerFormTitleCell: UITableViewCell {
         return $0
     }(UITextField())
     
+    // MARK: - Internal Properties
+    
+    var onTextChanged: ((String) -> Void)?
+    
     // MARK: - Initialization
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -53,6 +57,16 @@ final class TrackerFormTitleCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
+}
+
+// MARK: - Internal Methods
+
+extension TrackerFormTitleCell {
+    
+    func configure(with title: String?) {
+        nameTextView.text = title
+    }
+    
 }
 
 // MARK: - Private Methods
@@ -75,12 +89,21 @@ private extension TrackerFormTitleCell {
 
 extension TrackerFormTitleCell: UITextFieldDelegate {
     
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        onTextChanged?(textField.text ?? "")
+    }
+    
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         if let currentText = textField.text,
            let textRange = Range(range, in: currentText) {
             let updatedText = currentText.replacingCharacters(in: textRange, with: string)
             return updatedText.count <= 38
         }
+        return true
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
         return true
     }
     

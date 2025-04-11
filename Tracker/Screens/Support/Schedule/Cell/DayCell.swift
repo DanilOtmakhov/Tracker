@@ -29,10 +29,15 @@ final class DayCell: UITableViewCell {
         return $0
     }(UILabel())
     
-    private var switchView: UISwitch = {
+    private lazy var switchView: UISwitch = {
         $0.onTintColor = .ypBlue
+        $0.addTarget(self, action: #selector(switchValueChanged), for: .valueChanged)
         return $0
     }(UISwitch())
+    
+    // MARK: - Internal Properties
+    
+    var onSwitchToggled: ((Bool) -> Void)?
     
     // MARK: - Initialization
     
@@ -51,8 +56,9 @@ final class DayCell: UITableViewCell {
 
 extension DayCell {
     
-    func configure(with day: Day) {
+    func configure(with day: Day, isSelected: Bool) {
         dayLabel.text = day.string
+        switchView.isOn = isSelected
     }
     
 }
@@ -79,6 +85,17 @@ private extension DayCell {
             switchView.heightAnchor.constraint(equalToConstant: Constants.switchViewHeight),
             switchView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
         ])
+    }
+    
+}
+
+// MARK: - Actions
+
+@objc
+private extension DayCell {
+    
+    func switchValueChanged(_ sender: UISwitch) {
+        onSwitchToggled?(sender.isOn)
     }
     
 }

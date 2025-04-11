@@ -21,7 +21,7 @@ final class TrackerFormOptionCell: UITableViewCell {
     // MARK: - Initialization
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
         setupCell()
     }
     
@@ -35,9 +35,9 @@ final class TrackerFormOptionCell: UITableViewCell {
 
 extension TrackerFormOptionCell {
     
-    func configure(isCategory: Bool) {
+    func configure(isCategory: Bool, detailText: String?) {
         textLabel?.text = isCategory ? "Категория" : "Расписание"
-        detailTextLabel?.text = isCategory ? selectedCategory : selectedSchedule
+        detailTextLabel?.text = detailText
     }
     
 }

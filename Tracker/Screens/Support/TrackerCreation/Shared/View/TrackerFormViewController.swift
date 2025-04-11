@@ -31,7 +31,9 @@ class TrackerFormViewController: UITableViewController {
     
     var formTitle: String { "Новая привычка" }
     var showsSchedule: Bool { true }
+    
     var onScheduleCellTapped: (() -> Void)?
+    var onCreatedButtonTapped: (() -> Void)?
     
     // MARK: - Private Properties
     
@@ -42,6 +44,7 @@ class TrackerFormViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViewController()
+        setupViewModel()
     }
     
     // MARK: - Initialization
@@ -86,6 +89,13 @@ private extension TrackerFormViewController {
         tableView.register(TrackerFormColorsCell.self,
                            forCellReuseIdentifier: TrackerFormColorsCell.reuseIdentifier)
     }
+    
+    func setupViewModel() {
+        viewModel.onFormUpdated = { [weak self] in
+            guard let self else { return }
+            self.tableView.reloadData()
+        }
+    }
 
 }
 
@@ -111,36 +121,73 @@ extension TrackerFormViewController {
         
         switch section {
         case .title:
-            let cell = TrackerFormTitleCell()
+            guard let cell = tableView.dequeueReusableCell(
+                withIdentifier: TrackerFormTitleCell.reuseIdentifier,
+                for: indexPath
+            ) as? TrackerFormTitleCell else {
+                return UITableViewCell()
+            }
+            
+            cell.onTextChanged = { [weak self] title in
+                self?.viewModel.didEnterTitle(title)
+            }
+            
             return cell
             
         case .options:
-            let cell = TrackerFormOptionCell()
+            guard let cell = tableView.dequeueReusableCell(
+                withIdentifier: TrackerFormOptionCell.reuseIdentifier,
+                for: indexPath
+            ) as? TrackerFormOptionCell else {
+                return UITableViewCell()
+            }
+            
             if indexPath.row == 0 {
-                cell.configure(isCategory: true)
+                cell.configure(isCategory: true, detailText: viewModel.selectedCategory)
             } else {
-                cell.configure(isCategory: false)
+                if let habitViewModel = viewModel as? HabitFormViewModelProtocol {
+                    cell.configure(isCategory: false, detailText: habitViewModel.selectedDaysString)
+                }
             }
             return cell
             
         case .emoji:
-            let cell = TrackerFormEmojiCell()
+            guard let cell = tableView.dequeueReusableCell(
+                withIdentifier: TrackerFormEmojiCell.reuseIdentifier,
+                for: indexPath
+            ) as? TrackerFormEmojiCell else {
+                return UITableViewCell()
+            }
+            
             return cell
             
         case .color:
-            let cell = TrackerFormColorsCell()
+            guard let cell = tableView.dequeueReusableCell(
+                withIdentifier: TrackerFormColorsCell.reuseIdentifier,
+                for: indexPath
+            ) as? TrackerFormColorsCell else {
+                return UITableViewCell()
+            }
+            
             return cell
             
         case .actions:
-            let cell = TrackerFormActionsCell()
-            cell.configure(isEnabled: false/*viewModel.isFormValid*/)
+            guard let cell = tableView.dequeueReusableCell(
+                withIdentifier: TrackerFormActionsCell.reuseIdentifier,
+                for: indexPath
+            ) as? TrackerFormActionsCell else {
+                return UITableViewCell()
+            }
+            
+            cell.configure(isEnabled: viewModel.isFormValid)
             
             cell.onCancelButtonTapped = { [weak self] in
                 self?.dismiss(animated: true)
             }
             
             cell.onCreateButtonTapped = { [weak self] in
-                
+                self?.viewModel.createTracker()
+                self?.onCreatedButtonTapped?()
             }
             
             return cell

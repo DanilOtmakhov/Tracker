@@ -113,6 +113,10 @@ final class TrackerCreationCoordinator: Coordinator {
         viewController.onScheduleCellTapped = { [weak self, weak viewController] in
             self?.showScheduleViewController(from: viewController, with: viewModel)
         }
+        
+        viewController.onCreatedButtonTapped = { [weak self] in
+            self?.finishCreationFlow()
+        }
 
         presentInPageSheet(viewController, from: presentingViewController)
     }
@@ -120,6 +124,10 @@ final class TrackerCreationCoordinator: Coordinator {
     private func showNewEventViewController(from presentingViewController: UIViewController?) {
         let viewModel = EventFormViewModel(trackerStore: trackerStore)
         let viewController = EventFormViewController(viewModel: viewModel)
+        
+        viewController.onCreatedButtonTapped = { [weak self] in
+            self?.finishCreationFlow()
+        }
 
         presentInPageSheet(viewController, from: presentingViewController)
     }
@@ -129,11 +137,15 @@ final class TrackerCreationCoordinator: Coordinator {
         viewController.selectedDays = Set(viewModel.selectedDays)
 
         viewController.onDaysSelected = { days in
-            viewModel.updateSelectedDays(days)
+            viewModel.didSelectDays(days)
             presentingViewController?.dismiss(animated: true)
         }
 
         presentInPageSheet(viewController, from: presentingViewController)
+    }
+    
+    private func finishCreationFlow() {
+        presentingViewController.dismiss(animated: true)
     }
 
     private func presentInPageSheet(_ viewController: UIViewController, from: UIViewController? = nil) {

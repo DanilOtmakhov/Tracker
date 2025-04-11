@@ -90,6 +90,8 @@ extension TrackerFormActionsCell {
 private extension TrackerFormActionsCell {
     
     func setupCell() {
+        contentView.backgroundColor = .ypWhite
+        
         contentView.addSubview(buttonStack)
         NSLayoutConstraint.activate([
             buttonStack.topAnchor.constraint(equalTo: contentView.topAnchor),
