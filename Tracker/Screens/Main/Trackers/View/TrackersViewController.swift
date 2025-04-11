@@ -36,14 +36,12 @@ final class TrackersViewController: UIViewController {
     }(UIDatePicker())
     
     private lazy var stubImageView: UIImageView = {
-        $0.image = UIImage(named: "stub")
         $0.contentMode = .scaleAspectFill
         $0.isHidden = true
         return $0
     }(UIImageView())
     
     private lazy var stubLabel: UILabel = {
-        $0.text = "Что будем отслеживать?"
         $0.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         $0.textColor = .ypBlack
         $0.textAlignment = .center
@@ -147,7 +145,6 @@ private extension TrackersViewController {
     func setupViewModel() {
         viewModel.onStateChange = { [weak self] state in
             guard let self else { return }
-            
             switch state {
             case .content(let categories):
                 self.stubImageView.isHidden = true
@@ -156,13 +153,21 @@ private extension TrackersViewController {
                 self.categories = categories
                 self.collectionView.reloadData()
             case .empty:
-                self.stubImageView.isHidden = false
-                self.stubLabel.isHidden = false
-                self.collectionView.isHidden = true
+                self.updateStubView(image: UIImage(named: "stub"),
+                                    labelText: "Что будем отслеживать?")
             case .searchNotFound:
-                break
+                self.updateStubView(image: UIImage(named: "nothingFound"),
+                                    labelText: "Ничего не найдено")
             }
         }
+    }
+    
+    func updateStubView(image: UIImage?, labelText: String) {
+        stubImageView.image = image
+        stubLabel.text = labelText
+        stubImageView.isHidden = false
+        stubLabel.isHidden = false
+        collectionView.isHidden = true
     }
     
 }

@@ -42,6 +42,7 @@ final class TrackersViewModel: TrackersViewModelProtocol {
     private var visibleCategories: [TrackerCategory] = []
     private var completedTrackers: Set<TrackerRecord> = []
     private var currentDate: Date = Date()
+    private var searchQuery: String = ""
     private var state: State = .empty {
         didSet {
             onStateChange?(state)
@@ -75,32 +76,17 @@ extension TrackersViewModel {
     func loadTrackers() {
         categories = trackerStore.fetchTrackerCategories()
         completedTrackers = trackerStore.fetchCompletedTrackers()
-        filterTrackers(by: currentDate)
+        applyFilters()
     }
     
     func filterTrackers(by date: Date) {
         currentDate = date
-        
-        let calendar = Calendar.current
-        let dayOfWeek = calendar.component(.weekday, from: date)
-
-        guard let currentDay = Day(rawValue: dayOfWeek) else { return }
-
-        visibleCategories = categories.map { category /*-> TrackerCategory */in
-            let filteredTrackers = category.trackers.filter { tracker in
-                guard let schedule = tracker.schedule else { return false }
-                return schedule.contains(currentDay)
-            }
-            return TrackerCategory(title: category.title, trackers: filteredTrackers)
-        }.filter { !$0.trackers.isEmpty }
-
-        print(visibleCategories[0].trackers[0].title)
-        
-        state = visibleCategories.isEmpty ? .empty : .content(categories: visibleCategories)
+        applyFilters()
     }
     
     func searchTrackers(with query: String) {
-        
+        searchQuery = query.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        applyFilters()
     }
     
     func handleCompleteButtonTap(_ tracker: Tracker, isCompleted: Bool) {
@@ -116,7 +102,34 @@ private extension TrackersViewModel {
     
     func handleTrackerAdded() {
         categories = trackerStore.fetchTrackerCategories()
-        state = .content(categories: categories)
+        applyFilters()
+    }
+    
+    func applyFilters() {
+        let calendar = Calendar.current
+        let dayOfWeek = calendar.component(.weekday, from: currentDate)
+        
+        guard let currentDay = Day(rawValue: dayOfWeek) else { return }
+        
+        visibleCategories = categories.map { category in
+            let filteredTrackersByDate = category.trackers.filter { tracker in
+                guard let schedule = tracker.schedule else { return true }
+                return schedule.contains(currentDay)
+            }
+
+            let filteredTrackersBySearch: [Tracker]
+            if searchQuery.isEmpty {
+                filteredTrackersBySearch = filteredTrackersByDate
+            } else {
+                filteredTrackersBySearch = filteredTrackersByDate.filter {
+                    return $0.title.lowercased().contains(searchQuery) || $0.emoji.lowercased().contains(searchQuery)
+                }
+            }
+            
+            return TrackerCategory(title: category.title, trackers: filteredTrackersBySearch)
+        }.filter { !$0.trackers.isEmpty }
+ 
+        state = visibleCategories.isEmpty ? (searchQuery.isEmpty ? .empty : .searchNotFound) : .content(categories: visibleCategories)
     }
     
 }
