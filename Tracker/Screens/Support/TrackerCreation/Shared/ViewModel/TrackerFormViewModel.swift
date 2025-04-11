@@ -49,11 +49,11 @@ class TrackerFormViewModel: TrackerFormViewModelProtocol {
     
     // MARK: - Private Properties
     
-    private let trackerStore: TrackerStoreProtocol
+    let trackerStore: TrackerCreationStoreProtocol
     
     // MARK: - Initialization
     
-    init(trackerStore: TrackerStoreProtocol) {
+    init(trackerStore: TrackerCreationStoreProtocol) {
         self.trackerStore = trackerStore
     }
     
@@ -79,6 +79,10 @@ class TrackerFormViewModel: TrackerFormViewModelProtocol {
             color: .color4,
             schedule: nil
         )
+        
+        let category = TrackerCategory(title: selectedCategory, trackers: [tracker])
+        
+        trackerStore.addTracker(category)
     }
     
 }

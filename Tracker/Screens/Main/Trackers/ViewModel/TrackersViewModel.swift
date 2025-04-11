@@ -29,7 +29,7 @@ protocol TrackersViewModelProtocol {
     
 }
 
-final class TrackersViewModel {
+final class TrackersViewModel: TrackersViewModelProtocol {
     
     // MARK: - Internal Properties
     
@@ -37,7 +37,7 @@ final class TrackersViewModel {
     
     // MARK: - Private Properties
     
-    private let trackerStore: TrackerStoreProtocol
+    private var trackerStore: TrackerStoreProtocol
     private var categories: [TrackerCategory] = []
     private var completedTrackers: Set<TrackerRecord> = []
     private var currentDate: Date = Date()
@@ -51,13 +51,17 @@ final class TrackersViewModel {
     
     init(trackerStore: TrackerStoreProtocol) {
         self.trackerStore = trackerStore
+        
+        self.trackerStore.onTrackerAdded = { [weak self] in
+            self?.handleTrackerAdded()
+        }
     }
     
 }
 
-// MARK: - TrackersViewModelProtocol
+// MARK: - Internal Methods
 
-extension TrackersViewModel: TrackersViewModelProtocol {
+extension TrackersViewModel {
     
     func isTrackerCompleted(_ tracker: Tracker) -> Bool {
         completedTrackers.contains { $0.id == tracker.id && $0.date == currentDate }
@@ -70,7 +74,7 @@ extension TrackersViewModel: TrackersViewModelProtocol {
     func loadTrackers() {
         categories = trackerStore.fetchTrackerCategories()
         completedTrackers = trackerStore.fetchCompletedTrackers()
-        state = .content(categories: categories)
+        state = categories.isEmpty ? .empty : .content(categories: categories)
     }
     
     func filterTrackers(by date: Date) {
@@ -85,6 +89,17 @@ extension TrackersViewModel: TrackersViewModelProtocol {
     func handleCompleteButtonTap(_ tracker: Tracker, isCompleted: Bool) {
         let trackerRecord = TrackerRecord(id: tracker.id, date: currentDate)
         completedTrackers.insert(trackerRecord)
+    }
+    
+}
+
+// MARK: - Private Methods
+
+private extension TrackersViewModel {
+    
+    func handleTrackerAdded() {
+        categories = trackerStore.fetchTrackerCategories()
+        state = .content(categories: categories)
     }
     
 }

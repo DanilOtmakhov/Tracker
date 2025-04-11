@@ -51,10 +51,12 @@ final class HabitFormViewModel: TrackerFormViewModel, HabitFormViewModelProtocol
             title: title,
             emoji: "😊",
             color: .color4,
-            schedule: selectedDays
+            schedule: nil
         )
         
-        print("created")
+        let category = TrackerCategory(title: selectedCategory, trackers: [tracker])
+        
+        trackerStore.addTracker(category)
     }
     
 }

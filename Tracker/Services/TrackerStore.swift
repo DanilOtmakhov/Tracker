@@ -8,15 +8,20 @@
 import Foundation
 
 protocol TrackerStoreProtocol {
-    
+    var onTrackerAdded: (() -> Void)? { get set }
     func fetchTrackerCategories() -> [TrackerCategory]
     func fetchCompletedTrackers() -> Set<TrackerRecord>
-    
 }
 
-final class TrackerStore: TrackerStoreProtocol {
+protocol TrackerCreationStoreProtocol {
+    func addTracker(_ trackerCategory: TrackerCategory)
+}
+
+final class TrackerStore: TrackerStoreProtocol, TrackerCreationStoreProtocol {
     
-    private var trackerCategories: [TrackerCategory] = TrackerCategory.mockData
+    var onTrackerAdded: (() -> Void)?
+    
+    private var trackerCategories: [TrackerCategory] = []
     private var completedTrackers: Set<TrackerRecord> = []
     
     func fetchTrackerCategories() -> [TrackerCategory] {
@@ -25,6 +30,22 @@ final class TrackerStore: TrackerStoreProtocol {
     
     func fetchCompletedTrackers() -> Set<TrackerRecord> {
         completedTrackers
+    }
+    
+    func addTracker(_ trackerCategory: TrackerCategory) {
+        if let existingCategoryIndex = trackerCategories.firstIndex(where: { $0.title == trackerCategory.title }) {
+            let existingCategory = trackerCategories[existingCategoryIndex]
+            let updatedTrackers = existingCategory.trackers + trackerCategory.trackers
+            let updatedCategory = TrackerCategory(title: existingCategory.title, trackers: updatedTrackers)
+            
+            var updatedCategories = trackerCategories
+            updatedCategories[existingCategoryIndex] = updatedCategory
+            trackerCategories = updatedCategories
+        } else {
+            trackerCategories.append(trackerCategory)
+        }
+        
+        onTrackerAdded?()
     }
     
 }
