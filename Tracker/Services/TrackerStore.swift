@@ -21,7 +21,7 @@ final class TrackerStore: TrackerStoreProtocol, TrackerCreationStoreProtocol {
     
     var onTrackerAdded: (() -> Void)?
     
-    private var trackerCategories: [TrackerCategory] = []
+    private var trackerCategories: [TrackerCategory] = TrackerCategory.mockData
     private var completedTrackers: Set<TrackerRecord> = []
     
     func fetchTrackerCategories() -> [TrackerCategory] {

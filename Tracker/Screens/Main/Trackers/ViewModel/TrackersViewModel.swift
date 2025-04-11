@@ -39,6 +39,7 @@ final class TrackersViewModel: TrackersViewModelProtocol {
     
     private var trackerStore: TrackerStoreProtocol
     private var categories: [TrackerCategory] = []
+    private var visibleCategories: [TrackerCategory] = []
     private var completedTrackers: Set<TrackerRecord> = []
     private var currentDate: Date = Date()
     private var state: State = .empty {
@@ -74,12 +75,28 @@ extension TrackersViewModel {
     func loadTrackers() {
         categories = trackerStore.fetchTrackerCategories()
         completedTrackers = trackerStore.fetchCompletedTrackers()
-        state = categories.isEmpty ? .empty : .content(categories: categories)
+        filterTrackers(by: currentDate)
     }
     
     func filterTrackers(by date: Date) {
         currentDate = date
-        state = .content(categories: categories)
+        
+        let calendar = Calendar.current
+        let dayOfWeek = calendar.component(.weekday, from: date)
+
+        guard let currentDay = Day(rawValue: dayOfWeek) else { return }
+
+        visibleCategories = categories.map { category /*-> TrackerCategory */in
+            let filteredTrackers = category.trackers.filter { tracker in
+                guard let schedule = tracker.schedule else { return false }
+                return schedule.contains(currentDay)
+            }
+            return TrackerCategory(title: category.title, trackers: filteredTrackers)
+        }.filter { !$0.trackers.isEmpty }
+
+        print(visibleCategories[0].trackers[0].title)
+        
+        state = visibleCategories.isEmpty ? .empty : .content(categories: visibleCategories)
     }
     
     func searchTrackers(with query: String) {

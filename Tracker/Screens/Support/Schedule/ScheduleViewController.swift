@@ -111,12 +111,12 @@ extension ScheduleViewController: UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(
             withIdentifier: DayCell.reuseIdentifier,
             for: indexPath
-        ) as? DayCell,
-              let day = Day(rawValue: indexPath.row)
+        ) as? DayCell
         else {
             return UITableViewCell()
         }
         
+        let day = Day.allCases[indexPath.row]
         let isSelected = selectedDays.contains(day)
         cell.configure(with: day, isSelected: isSelected)
         

@@ -63,6 +63,7 @@ final class TrackersViewController: UIViewController {
     private lazy var collectionView: UICollectionView = {
         $0.dataSource = self
         $0.delegate = self
+        $0.backgroundColor = .ypWhite
         $0.contentInset = UIEdgeInsets(top: 0, left: Constants.collectionViewHorizontalInset, bottom: 0, right: Constants.collectionViewHorizontalInset)
         $0.register(TrackerCell.self, forCellWithReuseIdentifier: TrackerCell.reuseIdentifier)
         $0.register(TrackersHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: TrackersHeaderView.reuseIdentifier)
@@ -186,7 +187,8 @@ private extension TrackersViewController {
 extension TrackersViewController: UISearchResultsUpdating {
     
     func updateSearchResults(for searchController: UISearchController) {
-        
+        guard let searchText = searchController.searchBar.text else { return }
+        viewModel.searchTrackers(with: searchText)
     }
     
 }
