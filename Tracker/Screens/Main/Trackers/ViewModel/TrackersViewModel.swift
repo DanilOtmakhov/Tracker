@@ -118,8 +118,15 @@ private extension TrackersViewModel {
         
         visibleCategories = categories.map { category in
             let filteredTrackersByDate = category.trackers.filter { tracker in
-                guard let schedule = tracker.schedule else { return true }
-                return schedule.contains(currentDay)
+                if let schedule = tracker.schedule {
+                    return schedule.contains(currentDay)
+                }
+                
+                if let completedRecord = completedTrackers.first(where: { $0.id == tracker.id }) {
+                    return completedRecord.date == currentDate
+                }
+                
+                return true
             }
 
             let filteredTrackersBySearch: [Tracker]
