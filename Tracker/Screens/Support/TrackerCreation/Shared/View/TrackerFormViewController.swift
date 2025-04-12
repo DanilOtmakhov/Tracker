@@ -68,6 +68,7 @@ private extension TrackerFormViewController {
         title = formTitle
         view.backgroundColor = .ypWhite
         setupTableView()
+        setupTapGesture()
     }
     
     func setupTableView() {
@@ -90,6 +91,12 @@ private extension TrackerFormViewController {
                            forCellReuseIdentifier: TrackerFormColorsCell.reuseIdentifier)
     }
     
+    func setupTapGesture() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tapGesture.cancelsTouchesInView = false
+        tableView.addGestureRecognizer(tapGesture)
+    }
+    
     func setupViewModel() {
         viewModel.onFormUpdated = { [weak self] in
             guard let self else { return }
@@ -97,6 +104,17 @@ private extension TrackerFormViewController {
         }
     }
 
+}
+
+// MARK: - Actions
+
+@objc
+private extension TrackerFormViewController {
+    
+    func dismissKeyboard() {
+        view.endEditing(true)
+    }
+    
 }
 
 // MARK: - Data Source
