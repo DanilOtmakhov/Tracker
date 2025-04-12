@@ -55,6 +55,7 @@ final class TrackersViewController: UIViewController {
         $0.searchBar.placeholder = "Поиск"
         $0.searchBar.searchBarStyle = .minimal
         $0.searchBar.tintColor = .ypGray
+        $0.searchBar.setValue("Отменить", forKey: "cancelButtonText")
         return $0
     }(UISearchController())
     
@@ -93,6 +94,7 @@ final class TrackersViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViewController()
+        setupAppearance()
         setupViewModel()
         viewModel.loadTrackers()
     }
@@ -140,6 +142,16 @@ private extension TrackersViewController {
             stubLabel.topAnchor.constraint(equalTo: stubImageView.bottomAnchor, constant: Constants.stubLabelTopOffset),
             stubLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
+    }
+    
+    func setupAppearance() {
+        let attributes: [NSAttributedString.Key: Any] = [
+            .foregroundColor: UIColor.ypBlue,
+            .font: UIFont.systemFont(ofSize: 17)
+        ]
+        
+        UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self])
+            .setTitleTextAttributes(attributes, for: .normal)
     }
     
     func setupViewModel() {
@@ -201,8 +213,16 @@ extension TrackersViewController: UISearchResultsUpdating {
 // MARK: - UISearchBarDelegate
 
 extension TrackersViewController: UISearchBarDelegate {
-    
-    
+//    
+//    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+//        searchBar.setShowsCancelButton(true, animated: true)
+//        
+//        DispatchQueue.main.async {
+//            if let cancelButton = searchBar.value(forKey: "cancelButton") as? UIButton {
+//                cancelButton.setTitle("Отменить", for: .normal)
+//            }
+//        }
+//    }
     
 }
 
