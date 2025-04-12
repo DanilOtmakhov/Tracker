@@ -159,8 +159,20 @@ private extension TrackerCell {
         ])
     }
     
+    func correctForm(for days: Int) -> String {
+        switch days % 10 {
+        case 1 where days % 100 != 11:
+            return "день"
+        case 2...4 where !(days % 100 >= 12 && days % 100 <= 14):
+            return "дня"
+        default:
+            return "дней"
+        }
+    }
+    
     func updateCompletedDaysCountLabel(_ count: Int) {
-        completedDaysCountLabel.text = "\(completedDaysCount) дней"
+        let daysForm = correctForm(for: count)
+        completedDaysCountLabel.text = "\(count) \(daysForm)"
     }
     
     func updateCompletedDaysCount(_ isCompleted: Bool) {

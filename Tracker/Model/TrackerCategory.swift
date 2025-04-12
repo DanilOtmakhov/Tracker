@@ -40,7 +40,7 @@ struct TrackerCategory {
                     title: "Чтение 30 мин",
                     emoji: "📖",
                     color: .color11,
-                    schedule: [.tuesday, .thursday, .saturday]
+                    schedule: [.monday, .tuesday, .thursday, .saturday]
                 ),
                 Tracker(
                     id: UUID(),

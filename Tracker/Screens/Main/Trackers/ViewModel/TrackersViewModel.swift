@@ -91,7 +91,12 @@ extension TrackersViewModel {
     
     func handleCompleteButtonTap(_ tracker: Tracker, isCompleted: Bool) {
         let trackerRecord = TrackerRecord(id: tracker.id, date: currentDate)
-        completedTrackers.insert(trackerRecord)
+
+        if isCompleted {
+            completedTrackers.insert(trackerRecord)
+        } else {
+            completedTrackers.remove(trackerRecord)
+        }
     }
     
 }
