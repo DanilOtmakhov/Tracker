@@ -16,7 +16,7 @@ final class TrackersViewController: UIViewController {
         static let collectionViewInteritemSpacing: CGFloat = 9
         static let collectionViewMinimumLineSpacing: CGFloat = 0
         static let cellHeight: CGFloat = 148
-        static let headerHeight: CGFloat = 46
+        static let headerHeight: CGFloat = 50
         
         static let stubImageSize: CGFloat = 80
         static let stubTopOffset: CGFloat = -40
@@ -62,6 +62,7 @@ final class TrackersViewController: UIViewController {
         $0.dataSource = self
         $0.delegate = self
         $0.backgroundColor = .ypWhite
+        $0.alwaysBounceVertical = true
         $0.contentInset = UIEdgeInsets(top: 0, left: Constants.collectionViewHorizontalInset, bottom: 0, right: Constants.collectionViewHorizontalInset)
         $0.register(TrackerCell.self, forCellWithReuseIdentifier: TrackerCell.reuseIdentifier)
         $0.register(TrackersHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: TrackersHeaderView.reuseIdentifier)
@@ -162,20 +163,22 @@ private extension TrackersViewController {
     
     func setupViewModel() {
         viewModel.onStateChange = { [weak self] state in
-            guard let self else { return }
-            switch state {
-            case .content(let categories):
-                self.stubImageView.isHidden = true
-                self.stubLabel.isHidden = true
-                self.collectionView.isHidden = false
-                self.categories = categories
-                self.collectionView.reloadData()
-            case .empty:
-                self.updateStubView(image: UIImage(named: "stub"),
-                                    labelText: "Что будем отслеживать?")
-            case .searchNotFound:
-                self.updateStubView(image: UIImage(named: "nothingFound"),
-                                    labelText: "Ничего не найдено")
+            DispatchQueue.main.async {
+                guard let self else { return }
+                switch state {
+                case .content(let categories):
+                    self.stubImageView.isHidden = true
+                    self.stubLabel.isHidden = true
+                    self.collectionView.isHidden = false
+                    self.categories = categories
+                    self.collectionView.reloadData()
+                case .empty:
+                    self.updateStubView(image: UIImage(named: "stub"),
+                                        labelText: "Что будем отслеживать?")
+                case .searchNotFound:
+                    self.updateStubView(image: UIImage(named: "nothingFound"),
+                                        labelText: "Ничего не найдено")
+                }
             }
         }
     }
