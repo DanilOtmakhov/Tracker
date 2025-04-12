@@ -51,7 +51,6 @@ final class TrackersViewController: UIViewController {
     
     private lazy var searchController: UISearchController = {
         $0.searchResultsUpdater = self
-        $0.searchBar.delegate = self
         $0.searchBar.placeholder = "Поиск"
         $0.searchBar.searchBarStyle = .minimal
         $0.searchBar.tintColor = .ypGray
@@ -95,6 +94,7 @@ final class TrackersViewController: UIViewController {
         super.viewDidLoad()
         setupViewController()
         setupAppearance()
+        setupTapGesture()
         setupViewModel()
         viewModel.loadTrackers()
     }
@@ -108,6 +108,7 @@ private extension TrackersViewController {
     func setupViewController() {
         view.backgroundColor = .ypWhite
         
+        navigationController?.hidesBarsOnSwipe = false
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.title = "Трекеры"
         navigationItem.searchController = searchController
@@ -154,6 +155,11 @@ private extension TrackersViewController {
             .setTitleTextAttributes(attributes, for: .normal)
     }
     
+    func setupTapGesture() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTapOutsideSearchBar))
+        view.addGestureRecognizer(tapGesture)
+    }
+    
     func setupViewModel() {
         viewModel.onStateChange = { [weak self] state in
             guard let self else { return }
@@ -197,6 +203,13 @@ private extension TrackersViewController {
         viewModel.filterTrackers(by: sender.date)
     }
     
+    func handleTapOutsideSearchBar() {
+        if searchController.isActive {
+            searchController.searchBar.resignFirstResponder()
+            searchController.isActive = false
+        }
+    }
+    
 }
 
 // MARK: - UISearchResultsUpdating
@@ -207,22 +220,6 @@ extension TrackersViewController: UISearchResultsUpdating {
         guard let searchText = searchController.searchBar.text else { return }
         viewModel.searchTrackers(with: searchText)
     }
-    
-}
-
-// MARK: - UISearchBarDelegate
-
-extension TrackersViewController: UISearchBarDelegate {
-//    
-//    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-//        searchBar.setShowsCancelButton(true, animated: true)
-//        
-//        DispatchQueue.main.async {
-//            if let cancelButton = searchBar.value(forKey: "cancelButton") as? UIButton {
-//                cancelButton.setTitle("Отменить", for: .normal)
-//            }
-//        }
-//    }
     
 }
 
