@@ -165,7 +165,7 @@ private extension TrackersViewController {
             DispatchQueue.main.async {
                 guard let self else { return }
                 switch state {
-                case .content(let categories):
+                case .content:
                     self.stubImageView.isHidden = true
                     self.stubLabel.isHidden = true
                     self.collectionView.isHidden = false

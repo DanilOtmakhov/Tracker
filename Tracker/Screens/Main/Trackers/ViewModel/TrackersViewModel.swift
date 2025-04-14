@@ -9,7 +9,7 @@ import Foundation
 
 enum TrackersViewModelState {
     
-    case content(categories: [TrackerCategory])
+    case content
     case empty
     case searchNotFound
     
@@ -148,7 +148,7 @@ private extension TrackersViewModel {
             return TrackerCategory(title: category.title, trackers: filteredTrackersBySearch)
         }.filter { !$0.trackers.isEmpty }
  
-        state = visibleCategories.isEmpty ? (searchQuery.isEmpty ? .empty : .searchNotFound) : .content(categories: visibleCategories)
+        state = visibleCategories.isEmpty ? (searchQuery.isEmpty ? .empty : .searchNotFound) : .content
     }
     
 }

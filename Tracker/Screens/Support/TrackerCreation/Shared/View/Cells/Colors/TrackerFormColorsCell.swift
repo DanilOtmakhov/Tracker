@@ -22,6 +22,8 @@ final class TrackerFormColorsCell: TrackerFormCollectionCell<UIColor> {
             .color7, .color8, .color9, .color10, .color11, .color12,
             .color13, .color14, .color15, .color16, .color17, .color18
         ]
+        
+        setupCell()
     }
     
     required init?(coder: NSCoder) {

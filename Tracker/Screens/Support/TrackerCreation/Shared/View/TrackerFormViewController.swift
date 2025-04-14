@@ -167,6 +167,7 @@ extension TrackerFormViewController {
                     cell.configure(isCategory: false, detailText: habitViewModel.selectedDaysString)
                 }
             }
+            
             return cell
             
         case .emoji:
@@ -177,6 +178,10 @@ extension TrackerFormViewController {
                 return UITableViewCell()
             }
             
+            cell.onItemSelected = { [weak self] emoji in
+                self?.viewModel.didSelectEmoji(emoji)
+            }
+            
             return cell
             
         case .color:
@@ -185,6 +190,10 @@ extension TrackerFormViewController {
                 for: indexPath
             ) as? TrackerFormColorsCell else {
                 return UITableViewCell()
+            }
+            
+            cell.onItemSelected = { [weak self] color in
+                self?.viewModel.didSelectColor(color)
             }
             
             return cell
