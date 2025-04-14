@@ -44,7 +44,7 @@ final class TrackerFormEmojiCell: TrackerFormCollectionCell<String> {
             return UICollectionViewCell()
         }
         
-        cell.configure(with: items[indexPath.item])
+        cell.configure(with: items[indexPath.item], isSelected: selectedIndexPath == indexPath)
         
         return cell
     }
@@ -65,6 +65,23 @@ final class TrackerFormEmojiCell: TrackerFormCollectionCell<String> {
         }
 
         return header
+    }
+    
+    override func collectionView(
+        _ collectionView: UICollectionView,
+        didSelectItemAt indexPath: IndexPath
+    ) {
+        if let previousIndexPath = selectedIndexPath,
+           let previousCell = collectionView.cellForItem(at: previousIndexPath) as? EmojiCell {
+            previousCell.configure(with: items[previousIndexPath.item], isSelected: false)
+        }
+        
+        selectedIndexPath = indexPath
+        if let cell = collectionView.cellForItem(at: indexPath) as? EmojiCell {
+            cell.configure(with: items[indexPath.item], isSelected: true)
+        }
+        
+        onItemSelected?(items[indexPath.item])
     }
 
 }

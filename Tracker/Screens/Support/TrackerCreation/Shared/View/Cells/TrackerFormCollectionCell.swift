@@ -31,10 +31,8 @@ class TrackerFormCollectionCell<ItemType>: UITableViewCell, UICollectionViewData
     // MARK: - Internal Properties
     
     var onItemSelected: ((ItemType) -> Void)?
-    
-    // MARK: - Private Properties
-    
     var items: [ItemType] = []
+    var selectedIndexPath: IndexPath?
     
     // MARK: - Initialization
     
@@ -120,6 +118,7 @@ class TrackerFormCollectionCell<ItemType>: UITableViewCell, UICollectionViewData
     // MARK: - UICollectionViewDelegate
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        selectedIndexPath = indexPath
         onItemSelected?(items[indexPath.item])
     }
 

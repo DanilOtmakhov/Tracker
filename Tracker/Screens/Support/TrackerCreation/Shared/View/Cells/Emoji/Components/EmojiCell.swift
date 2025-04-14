@@ -27,8 +27,11 @@ final class EmojiCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with emoji: String) {
+    func configure(with emoji: String, isSelected: Bool) {
         emojiLabel.text = emoji
+        
+        contentView.backgroundColor = isSelected ? .ypLightGray : .clear
+        contentView.layer.cornerRadius = 16
     }
     
     private func setupCell() {
