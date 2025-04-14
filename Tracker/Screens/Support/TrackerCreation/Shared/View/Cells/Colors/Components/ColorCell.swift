@@ -10,14 +10,15 @@ import UIKit
 final class ColorCell: UICollectionViewCell {
     
     private enum Constants {
-        static let colorViewInsets: CGFloat = 6
-        static let colorViewCornerRadius: CGFloat = 8
+        static let colorViewSize: CGFloat = 40
+        static let colorRadius: CGFloat = 8
+        static let borderWidth: CGFloat = 3
     }
     
     static let reuseIdentifier = "ColorCell"
     
     private lazy var colorView: UIView = {
-        $0.layer.cornerRadius = Constants.colorViewCornerRadius
+        $0.layer.cornerRadius = Constants.colorRadius
         $0.layer.masksToBounds = true
         $0.translatesAutoresizingMaskIntoConstraints = false
         return $0
@@ -32,20 +33,25 @@ final class ColorCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with color: UIColor) {
+    func configure(with color: UIColor, isSelected: Bool) {
         colorView.backgroundColor = color
+        contentView.layer.borderColor = isSelected ? color.withAlphaComponent(0.3).cgColor : UIColor.clear.cgColor
     }
     
     private func setupCell() {
+        contentView.layer.cornerRadius = Constants.colorRadius
+        contentView.layer.borderWidth = Constants.borderWidth
+        
         contentView.addSubview(colorView)
-
+        
         NSLayoutConstraint.activate([
-            colorView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: Constants.colorViewInsets),
-            colorView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Constants.colorViewInsets),
-            colorView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Constants.colorViewInsets),
-            colorView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -Constants.colorViewInsets)
+            colorView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            colorView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            colorView.widthAnchor.constraint(equalToConstant: Constants.colorViewSize),
+            colorView.heightAnchor.constraint(equalToConstant: Constants.colorViewSize)
         ])
     }
+    
 }
 
 
