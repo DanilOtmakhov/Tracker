@@ -15,6 +15,15 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
+        let navigationBarAppearance = UINavigationBar.appearance()
+        navigationBarAppearance.titleTextAttributes = [
+            .foregroundColor: UIColor.ypBlack
+        ]
+        
+        navigationBarAppearance.largeTitleTextAttributes = [
+            .foregroundColor: UIColor.ypBlack
+        ]
+        
         window = UIWindow(frame: UIScreen.main.bounds)
         if let window = window {
             appCoordinator = AppCoordinator(window: window)
