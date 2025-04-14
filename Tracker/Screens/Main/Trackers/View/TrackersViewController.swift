@@ -76,7 +76,6 @@ final class TrackersViewController: UIViewController {
     // MARK: - Private Properties
     
     private var viewModel: TrackersViewModelProtocol
-    private var categories: [TrackerCategory] = []
     
     // MARK: - Initialization
     
@@ -170,7 +169,6 @@ private extension TrackersViewController {
                     self.stubImageView.isHidden = true
                     self.stubLabel.isHidden = true
                     self.collectionView.isHidden = false
-                    self.categories = categories
                     self.collectionView.reloadData()
                 case .empty:
                     self.updateStubView(image: UIImage(named: "stub"),
@@ -231,23 +229,24 @@ extension TrackersViewController: UISearchResultsUpdating {
 extension TrackersViewController: UICollectionViewDataSource {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        categories.count
+        viewModel.getVisibleCategories().count
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        categories[section].trackers.count
+        viewModel.getVisibleCategories()[section].trackers.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard indexPath.section < categories.count,
-              indexPath.item < categories[indexPath.section].trackers.count else {
-            return UICollectionViewCell()
-        }
-        
         guard let cell = collectionView.dequeueReusableCell(
             withReuseIdentifier: TrackerCell.reuseIdentifier,
             for: indexPath
         ) as? TrackerCell else {
+            return UICollectionViewCell()
+        }
+        
+        let categories = viewModel.getVisibleCategories()
+        guard indexPath.section < categories.count,
+              indexPath.item < categories[indexPath.section].trackers.count else {
             return UICollectionViewCell()
         }
         
@@ -278,6 +277,7 @@ extension TrackersViewController: UICollectionViewDataSource {
             return UICollectionReusableView()
         }
 
+        let categories = viewModel.getVisibleCategories()
         header.configure(with: categories[indexPath.section].title)
         return header
     }

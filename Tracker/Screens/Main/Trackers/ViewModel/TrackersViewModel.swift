@@ -26,6 +26,7 @@ protocol TrackersViewModelProtocol {
     func filterTrackers(by date: Date)
     func searchTrackers(with query: String)
     func handleCompleteButtonTap(_ tracker: Tracker, isCompleted: Bool)
+    func getVisibleCategories() -> [TrackerCategory]
     
 }
 
@@ -97,6 +98,12 @@ extension TrackersViewModel {
         } else {
             completedTrackers.remove(trackerRecord)
         }
+        
+        applyFilters()
+    }
+    
+    func getVisibleCategories() -> [TrackerCategory] {
+        visibleCategories
     }
     
 }
