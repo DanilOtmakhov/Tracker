@@ -38,7 +38,7 @@ final class TrackersViewModel: TrackersViewModelProtocol {
     
     // MARK: - Private Properties
     
-    private var trackerStore: TrackerStoreProtocol
+    private var trackerStore: MockTrackerStoreProtocol
     private var categories: [TrackerCategory] = []
     private var visibleCategories: [TrackerCategory] = []
     private var completedTrackers: Set<TrackerRecord> = []
@@ -52,7 +52,7 @@ final class TrackersViewModel: TrackersViewModelProtocol {
     
     // MARK: - Initialization
     
-    init(trackerStore: TrackerStoreProtocol) {
+    init(trackerStore: MockTrackerStoreProtocol) {
         self.trackerStore = trackerStore
         
         self.trackerStore.onTrackerAdded = { [weak self] in

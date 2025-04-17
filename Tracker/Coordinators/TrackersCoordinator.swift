@@ -21,7 +21,7 @@ protocol NavigationCoordinator: Coordinator {
 final class TrackersCoordinator: NavigationCoordinator {
     
     let navigationController = UINavigationController()
-    private let trackerStore = TrackerStore()
+    private let trackerStore = MockTrackerStore()
     private var creationCoordinator: TrackerCreationCoordinator?
     
     func start() {

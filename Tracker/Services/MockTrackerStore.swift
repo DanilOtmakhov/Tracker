@@ -7,17 +7,17 @@
 
 import Foundation
 
-protocol TrackerStoreProtocol {
+protocol MockTrackerStoreProtocol {
     var onTrackerAdded: (() -> Void)? { get set }
     func fetchTrackerCategories() -> [TrackerCategory]
     func fetchCompletedTrackers() -> Set<TrackerRecord>
 }
 
-protocol TrackerCreationStoreProtocol {
+protocol MockTrackerCreationStoreProtocol {
     func addTracker(_ trackerCategory: TrackerCategory)
 }
 
-final class TrackerStore: TrackerStoreProtocol, TrackerCreationStoreProtocol {
+final class MockTrackerStore: MockTrackerStoreProtocol, MockTrackerCreationStoreProtocol {
     
     var onTrackerAdded: (() -> Void)?
     

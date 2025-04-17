@@ -72,11 +72,11 @@ class TrackerFormViewModel: TrackerFormViewModelProtocol {
     
     // MARK: - Private Properties
     
-    let trackerStore: TrackerCreationStoreProtocol
+    let trackerStore: MockTrackerCreationStoreProtocol
     
     // MARK: - Initialization
     
-    init(trackerStore: TrackerCreationStoreProtocol) {
+    init(trackerStore: MockTrackerCreationStoreProtocol) {
         self.trackerStore = trackerStore
     }
     

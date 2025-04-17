@@ -9,10 +9,10 @@ import UIKit
 
 final class TrackerCreationCoordinator: Coordinator {
     
-    private let trackerStore: TrackerCreationStoreProtocol
+    private let trackerStore: MockTrackerCreationStoreProtocol
     private unowned let presentingViewController: UIViewController
 
-    init(_ trackerStore: TrackerCreationStoreProtocol, presentingViewController: UIViewController) {
+    init(_ trackerStore: MockTrackerCreationStoreProtocol, presentingViewController: UIViewController) {
         self.trackerStore = trackerStore
         self.presentingViewController = presentingViewController
     }
