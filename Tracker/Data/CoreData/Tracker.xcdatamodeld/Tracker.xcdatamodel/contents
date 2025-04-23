@@ -2,17 +2,20 @@
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23231" systemVersion="24A348" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
     <entity name="TrackerCategoryEntity" representedClassName="TrackerCategoryEntity" syncable="YES" codeGenerationType="class">
         <attribute name="title" attributeType="String"/>
-        <relationship name="trackers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="TrackerEntity"/>
+        <relationship name="trackers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="TrackerEntity" inverseName="category" inverseEntity="TrackerEntity"/>
     </entity>
     <entity name="TrackerEntity" representedClassName="TrackerEntity" syncable="YES" codeGenerationType="class">
-        <attribute name="color" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer"/>
+        <attribute name="color" attributeType="String" valueTransformerName="NSSecureUnarchiveFromDataTransformer"/>
         <attribute name="emoji" attributeType="String"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
-        <attribute name="schedule" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer"/>
+        <attribute name="schedule" optional="YES" attributeType="Transformable" valueTransformerName="ScheduleValueTransformer"/>
         <attribute name="title" attributeType="String"/>
+        <relationship name="category" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TrackerCategoryEntity" inverseName="trackers" inverseEntity="TrackerCategoryEntity"/>
+        <relationship name="records" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="TrackerRecordEntity" inverseName="tracker" inverseEntity="TrackerRecordEntity"/>
     </entity>
     <entity name="TrackerRecordEntity" representedClassName="TrackerRecordEntity" syncable="YES" codeGenerationType="class">
         <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <relationship name="tracker" maxCount="1" deletionRule="Nullify" destinationEntity="TrackerEntity" inverseName="records" inverseEntity="TrackerEntity"/>
     </entity>
 </model>

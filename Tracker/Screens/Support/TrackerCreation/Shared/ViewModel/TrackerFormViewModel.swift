@@ -72,12 +72,12 @@ class TrackerFormViewModel: TrackerFormViewModelProtocol {
     
     // MARK: - Private Properties
     
-    let trackerStore: MockTrackerCreationStoreProtocol
+    let dataManager: DataManagerProtocol
     
     // MARK: - Initialization
     
-    init(trackerStore: MockTrackerCreationStoreProtocol) {
-        self.trackerStore = trackerStore
+    init(dataManager: DataManagerProtocol) {
+        self.dataManager = dataManager
     }
     
     // MARK: - Internal Methods
@@ -115,7 +115,7 @@ class TrackerFormViewModel: TrackerFormViewModelProtocol {
         
         let category = TrackerCategory(title: selectedCategory, trackers: [tracker])
         
-        trackerStore.addTracker(category)
+        try? dataManager.trackerDataProvider.addTracker(tracker, to: category)
     }
     
 }

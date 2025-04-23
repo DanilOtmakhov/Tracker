@@ -12,6 +12,10 @@ final class CoreDataStack: ObservableObject {
     
     static let shared = CoreDataStack()
     
+    var context: NSManagedObjectContext {
+        persistentContainer.viewContext
+    }
+    
     lazy var persistentContainer: NSPersistentContainer = {
         
         let container = NSPersistentContainer(name: "Tracker")

@@ -96,7 +96,6 @@ final class TrackersViewController: UIViewController {
         setupAppearance()
         setupTapGesture()
         setupViewModel()
-        viewModel.loadTrackers()
     }
     
 }
@@ -162,20 +161,47 @@ private extension TrackersViewController {
     
     func setupViewModel() {
         viewModel.onStateChange = { [weak self] state in
+            print(state)
             DispatchQueue.main.async {
-                guard let self else { return }
-                switch state {
-                case .content:
-                    self.stubImageView.isHidden = true
-                    self.stubLabel.isHidden = true
-                    self.collectionView.isHidden = false
-                    self.collectionView.reloadData()
-                case .empty:
-                    self.updateStubView(image: UIImage(named: "stub"),
-                                        labelText: "Что будем отслеживать?")
-                case .searchNotFound:
-                    self.updateStubView(image: UIImage(named: "nothingFound"),
-                                        labelText: "Ничего не найдено")
+                self?.applyUpdate(state)
+            }
+        }
+    }
+    
+    func applyUpdate(_ state: TrackersViewModelState) {
+        let update = state.update
+
+        switch state {
+        case .content:
+            self.stubImageView.isHidden = true
+            self.stubLabel.isHidden = true
+            self.collectionView.isHidden = false
+            if update.isEmpty {
+                collectionView.reloadData()
+            }
+        case .empty:
+            self.updateStubView(image: UIImage(named: "stub"),
+                              labelText: "Что будем отслеживать?")
+        case .searchNotFound:
+            self.updateStubView(image: UIImage(named: "nothingFound"),
+                              labelText: "Ничего не найдено")
+        }
+
+        if !update.insertedSections.isEmpty || !update.deletedSections.isEmpty {
+            collectionView.reloadData()
+        } else if !update.inserted.isEmpty || !update.deleted.isEmpty || !update.updated.isEmpty || !update.moved.isEmpty {
+            collectionView.performBatchUpdates {
+                if !update.inserted.isEmpty {
+                    collectionView.insertItems(at: update.inserted)
+                }
+                if !update.deleted.isEmpty {
+                    collectionView.deleteItems(at: update.deleted)
+                }
+                if !update.updated.isEmpty {
+                    collectionView.reloadItems(at: update.updated)
+                }
+                for move in update.moved {
+                    collectionView.moveItem(at: move.from, to: move.to)
                 }
             }
         }
@@ -229,28 +255,24 @@ extension TrackersViewController: UISearchResultsUpdating {
 extension TrackersViewController: UICollectionViewDataSource {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        viewModel.getVisibleCategories().count
+        viewModel.numberOfSections
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        viewModel.getVisibleCategories()[section].trackers.count
+        viewModel.numberOfItemsInSection(section)
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(
+        guard
+            let cell = collectionView.dequeueReusableCell(
             withReuseIdentifier: TrackerCell.reuseIdentifier,
             for: indexPath
-        ) as? TrackerCell else {
+        ) as? TrackerCell,
+            let tracker = viewModel.tracker(at: indexPath)
+        else {
             return UICollectionViewCell()
         }
         
-        let categories = viewModel.getVisibleCategories()
-        guard indexPath.section < categories.count,
-              indexPath.item < categories[indexPath.section].trackers.count else {
-            return UICollectionViewCell()
-        }
-        
-        let tracker = categories[indexPath.section].trackers[indexPath.row]
         let completedDaysCount = viewModel.completedDaysCount(for: tracker)
         let isCompleted = viewModel.isTrackerCompleted(tracker)
         
@@ -269,16 +291,18 @@ extension TrackersViewController: UICollectionViewDataSource {
         at indexPath: IndexPath
     ) -> UICollectionReusableView {
         
-        guard kind == UICollectionView.elementKindSectionHeader,
-              let header = collectionView.dequeueReusableSupplementaryView(
+        guard
+            kind == UICollectionView.elementKindSectionHeader,
+            let header = collectionView.dequeueReusableSupplementaryView(
                 ofKind: kind,
                 withReuseIdentifier: TrackersHeaderView.reuseIdentifier,
-                for: indexPath) as? TrackersHeaderView else {
+                for: indexPath) as? TrackersHeaderView,
+            let title = viewModel.nameOfSection(at: indexPath)
+        else {
             return UICollectionReusableView()
         }
 
-        let categories = viewModel.getVisibleCategories()
-        header.configure(with: categories[indexPath.section].title)
+        header.configure(with: title)
         return header
     }
     

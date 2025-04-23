@@ -8,11 +8,16 @@
 import Foundation
 
 enum TrackersViewModelState {
+    case content(update: TrackersStoreUpdate)
+    case empty(update: TrackersStoreUpdate)
+    case searchNotFound(update: TrackersStoreUpdate)
     
-    case content
-    case empty
-    case searchNotFound
-    
+    var update: TrackersStoreUpdate {
+        switch self {
+        case .content(let update), .empty(let update), .searchNotFound(let update):
+            return update
+        }
+    }
 }
 
 typealias State = TrackersViewModelState
@@ -20,13 +25,15 @@ typealias State = TrackersViewModelState
 protocol TrackersViewModelProtocol {
     
     var onStateChange: ((State) -> Void)? { get set }
+    var numberOfSections: Int { get }
+    func numberOfItemsInSection(_ section: Int) -> Int
+    func nameOfSection(at: IndexPath) -> String?
+    func tracker(at: IndexPath) -> Tracker?
     func isTrackerCompleted(_ tracker: Tracker) -> Bool
     func completedDaysCount(for tracker: Tracker) -> Int
-    func loadTrackers()
     func filterTrackers(by date: Date)
     func searchTrackers(with query: String)
     func handleCompleteButtonTap(_ tracker: Tracker, isCompleted: Bool)
-    func getVisibleCategories() -> [TrackerCategory]
     
 }
 
@@ -38,26 +45,25 @@ final class TrackersViewModel: TrackersViewModelProtocol {
     
     // MARK: - Private Properties
     
-    private var trackerStore: MockTrackerStoreProtocol
-    private var categories: [TrackerCategory] = []
-    private var visibleCategories: [TrackerCategory] = []
-    private var completedTrackers: Set<TrackerRecord> = []
+    private var dataManager: DataManagerProtocol
+    
     private var currentDate: Date = Date()
     private var searchQuery: String = ""
-    private var state: State = .empty {
-        didSet {
-            onStateChange?(state)
-        }
+    
+    private var state: State = .empty(update: .init(inserted: [], deleted: [], updated: [], moved: [])) {
+        didSet { onStateChange?(state) }
     }
     
     // MARK: - Initialization
     
-    init(trackerStore: MockTrackerStoreProtocol) {
-        self.trackerStore = trackerStore
+    init(dataManager: DataManagerProtocol) {
+        self.dataManager = dataManager
         
-        self.trackerStore.onTrackerAdded = { [weak self] in
-            self?.handleTrackerAdded()
-        }
+        self.dataManager.trackerDataProvider.delegate = self
+        dataManager.trackerDataProvider.applyFilter(currentDate: currentDate, searchQuery: searchQuery)
+        
+        let initialUpdate = TrackersStoreUpdate(inserted: [], deleted: [], updated: [], moved: [])
+        self.state = determineState(initialUpdate)
     }
     
 }
@@ -66,44 +72,50 @@ final class TrackersViewModel: TrackersViewModelProtocol {
 
 extension TrackersViewModel {
     
+    var numberOfSections: Int {
+        dataManager.trackerDataProvider.numberOfSections
+    }
+    
+    func numberOfItemsInSection(_ section: Int) -> Int {
+        dataManager.trackerDataProvider.numberOfItemsInSection(section)
+    }
+    
+    func nameOfSection(at indexPath: IndexPath) -> String? {
+        dataManager.trackerDataProvider.nameOfSection(at: indexPath)
+    }
+    
+    func tracker(at indexPath: IndexPath) -> Tracker? {
+        dataManager.trackerDataProvider.tracker(at: indexPath)
+    }
+    
     func isTrackerCompleted(_ tracker: Tracker) -> Bool {
-        completedTrackers.contains { $0.id == tracker.id && $0.date == currentDate }
+        dataManager.trackerRecordDataProvider.isTrackerCompleted(tracker.id, on: currentDate)
     }
     
     func completedDaysCount(for tracker: Tracker) -> Int {
-        completedTrackers.filter { $0.id == tracker.id }.count
-    }
-    
-    func loadTrackers() {
-        categories = trackerStore.fetchTrackerCategories()
-        completedTrackers = trackerStore.fetchCompletedTrackers()
-        applyFilters()
+        dataManager.trackerRecordDataProvider.completedTrackersCount(for: tracker.id)
     }
     
     func filterTrackers(by date: Date) {
         currentDate = date
-        applyFilters()
+        dataManager.trackerDataProvider.applyFilter(currentDate: currentDate, searchQuery: searchQuery)
     }
     
     func searchTrackers(with query: String) {
         searchQuery = query.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
-        applyFilters()
+        dataManager.trackerDataProvider.applyFilter(currentDate: currentDate, searchQuery: searchQuery)
     }
     
     func handleCompleteButtonTap(_ tracker: Tracker, isCompleted: Bool) {
-        let trackerRecord = TrackerRecord(id: tracker.id, date: currentDate)
+        let record = TrackerRecord(id: tracker.id, date: currentDate)
 
         if isCompleted {
-            completedTrackers.insert(trackerRecord)
+            try? dataManager.trackerRecordDataProvider.addRecord(record)
         } else {
-            completedTrackers.remove(trackerRecord)
+            try? dataManager.trackerRecordDataProvider.deleteRecord(record)
         }
         
-        applyFilters()
-    }
-    
-    func getVisibleCategories() -> [TrackerCategory] {
-        visibleCategories
+        dataManager.trackerDataProvider.applyFilter(currentDate: currentDate, searchQuery: searchQuery)
     }
     
 }
@@ -112,43 +124,29 @@ extension TrackersViewModel {
 
 private extension TrackersViewModel {
     
-    func handleTrackerAdded() {
-        categories = trackerStore.fetchTrackerCategories()
-        applyFilters()
+    func determineState(_ update: TrackersStoreUpdate) -> TrackersViewModelState {
+        let hasData = dataManager.trackerDataProvider.numberOfSections > 0
+        
+        if hasData {
+            return .content(update: update)
+        } else {
+            return searchQuery.isEmpty ?
+                .empty(update: update) :
+                .searchNotFound(update: update)
+        }
     }
     
-    func applyFilters() {
-        let calendar = Calendar.current
-        let dayOfWeek = calendar.component(.weekday, from: currentDate)
-        
-        guard let currentDay = Day(rawValue: dayOfWeek) else { return }
-        
-        visibleCategories = categories.map { category in
-            let filteredTrackersByDate = category.trackers.filter { tracker in
-                if let schedule = tracker.schedule {
-                    return schedule.contains(currentDay)
-                }
-                
-                if let completedRecord = completedTrackers.first(where: { $0.id == tracker.id }) {
-                    return completedRecord.date == currentDate
-                }
-                
-                return true
-            }
+}
 
-            let filteredTrackersBySearch: [Tracker]
-            if searchQuery.isEmpty {
-                filteredTrackersBySearch = filteredTrackersByDate
-            } else {
-                filteredTrackersBySearch = filteredTrackersByDate.filter {
-                    return $0.title.lowercased().contains(searchQuery) || $0.emoji.lowercased().contains(searchQuery)
-                }
-            }
-            
-            return TrackerCategory(title: category.title, trackers: filteredTrackersBySearch)
-        }.filter { !$0.trackers.isEmpty }
- 
-        state = visibleCategories.isEmpty ? (searchQuery.isEmpty ? .empty : .searchNotFound) : .content
+// MARK: - TrackerDataProviderDelegate
+
+extension TrackersViewModel: TrackerProviderDelegate {
+    
+    func didUpdate(_ update: TrackersStoreUpdate) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            self.state = self.determineState(update)
+        }
     }
     
 }
