@@ -161,7 +161,6 @@ private extension TrackersViewController {
     
     func setupViewModel() {
         viewModel.onStateChange = { [weak self] state in
-            print(state)
             DispatchQueue.main.async {
                 self?.applyUpdate(state)
             }

@@ -47,6 +47,7 @@ final class TrackersViewModel: TrackersViewModelProtocol {
     
     private var dataManager: DataManagerProtocol
     
+    private var searchDebounceTimer: Timer?
     private var currentDate: Date = Date()
     private var searchQuery: String = ""
     
@@ -102,8 +103,14 @@ extension TrackersViewModel {
     }
     
     func searchTrackers(with query: String) {
-        searchQuery = query.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
-        dataManager.trackerDataProvider.applyFilter(currentDate: currentDate, searchQuery: searchQuery)
+        searchDebounceTimer?.invalidate()
+        searchDebounceTimer = Timer.scheduledTimer(
+            withTimeInterval: 0.3,
+            repeats: false
+        ) { [weak self] _ in
+            self?.searchQuery = query.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+            self?.dataManager.trackerDataProvider.applyFilter(currentDate: self?.currentDate ?? Date(), searchQuery: self?.searchQuery ?? "")
+        }
     }
     
     func handleCompleteButtonTap(_ tracker: Tracker, isCompleted: Bool) {
