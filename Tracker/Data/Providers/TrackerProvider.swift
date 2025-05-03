@@ -51,7 +51,6 @@ protocol TrackerProviderProtocol {
     func numberOfItemsInSection(_ section: Int) -> Int
     func nameOfSection(at: IndexPath) -> String?
     func tracker(at: IndexPath) -> Tracker?
-    func indexPath(for: Tracker) -> IndexPath?
     func addTracker(_ tracker: Tracker, to: TrackerCategory) throws
     func applyFilter(currentDate: Date, searchQuery: String)
 }
@@ -67,7 +66,10 @@ final class TrackerProvider: NSObject {
     private lazy var fetchedResultsController: NSFetchedResultsController<TrackerEntity> = {
 
         let fetchRequest: NSFetchRequest<TrackerEntity> = TrackerEntity.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "category.title", ascending: false)]
+        fetchRequest.sortDescriptors = [
+            NSSortDescriptor(key: "category.title", ascending: true),
+            NSSortDescriptor(key: "createdAt", ascending: false)
+        ]
         
         let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
                                                                   managedObjectContext: context,
@@ -110,23 +112,6 @@ extension TrackerProvider: TrackerProviderProtocol {
     func tracker(at indexPath: IndexPath) -> Tracker? {
         let object = fetchedResultsController.object(at: indexPath)
         return Tracker.from(object)
-    }
-    
-    func indexPath(for tracker: Tracker) -> IndexPath? {
-        let request = fetchedResultsController.fetchRequest
-        let originalPredicate = request.predicate
-        
-        request.predicate = NSPredicate(format: "id == %@", tracker.id as CVarArg)
-        defer { request.predicate = originalPredicate } 
-        
-        do {
-            let results = try fetchedResultsController.managedObjectContext.fetch(request)
-            guard let entity = results.first else { return nil }
-            return fetchedResultsController.indexPath(forObject: entity)
-        } catch {
-            print("Failed to fetch tracker index path: \(error)")
-            return nil
-        }
     }
     
     func addTracker(_ tracker: Tracker, to category: TrackerCategory) throws {

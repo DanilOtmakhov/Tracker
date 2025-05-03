@@ -29,6 +29,7 @@ final class TrackerStore: TrackerStoreProtocol {
         trackerEntity.title = tracker.title
         trackerEntity.emoji = tracker.emoji
         trackerEntity.color = tracker.color.hexString
+        trackerEntity.createdAt = Date()
         
         if let schedule = tracker.schedule {
             trackerEntity.schedule = schedule.map { String($0.rawValue) }.joined(separator: ",")
@@ -54,6 +55,7 @@ final class TrackerStore: TrackerStoreProtocol {
 
 
 extension TrackerEntity {
+    
     var scheduleDays: [Day] {
         get {
             guard let schedule = self.schedule else { return [] }
@@ -67,4 +69,5 @@ extension TrackerEntity {
             self.schedule = string
         }
     }
+    
 }
