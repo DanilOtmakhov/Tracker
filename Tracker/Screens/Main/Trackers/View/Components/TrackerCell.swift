@@ -112,6 +112,11 @@ extension TrackerCell {
         self.isCompleted = isCompleted
     }
     
+    func updateState(completedDaysCount: Int, isCompleted: Bool) {
+        self.completedDaysCount = completedDaysCount
+        self.isCompleted = isCompleted
+    }
+    
 }
 
 // MARK: - Private Methods

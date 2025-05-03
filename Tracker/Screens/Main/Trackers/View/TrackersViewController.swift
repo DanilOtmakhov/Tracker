@@ -283,6 +283,11 @@ extension TrackersViewController: UICollectionViewDataSource {
         cell.onComplete = { [weak self] isCompleted in
             guard let self else { return }
             self.viewModel.handleCompleteButtonTap(tracker, isCompleted: isCompleted)
+            
+            let newCompletedDaysCount = self.viewModel.completedDaysCount(for: tracker)
+            let newIsCompleted = self.viewModel.isTrackerCompleted(tracker)
+            
+            cell.updateState(completedDaysCount: newCompletedDaysCount, isCompleted: newIsCompleted)
         }
         
         return cell
