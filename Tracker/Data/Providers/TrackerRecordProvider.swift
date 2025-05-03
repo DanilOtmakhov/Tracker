@@ -29,7 +29,7 @@ final class TrackerRecordProvider: NSObject {
 // MARK: - TrackerRecordDataProviderProtocol
 
 extension TrackerRecordProvider: TrackerRecordProviderProtocol {
-
+    
     func isTrackerCompleted(_ id: UUID, on date: Date) -> Bool {
         do {
             return try store.fetchRecord(for: id, on: date) != nil

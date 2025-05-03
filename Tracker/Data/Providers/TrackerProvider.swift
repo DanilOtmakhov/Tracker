@@ -41,7 +41,6 @@ struct TrackersStoreUpdate {
     
 }
 
-
 protocol TrackerProviderDelegate: AnyObject {
     func didUpdate(_ update: TrackersStoreUpdate)
 }
@@ -52,6 +51,7 @@ protocol TrackerProviderProtocol {
     func numberOfItemsInSection(_ section: Int) -> Int
     func nameOfSection(at: IndexPath) -> String?
     func tracker(at: IndexPath) -> Tracker?
+    func indexPath(for: Tracker) -> IndexPath?
     func addTracker(_ tracker: Tracker, to: TrackerCategory) throws
     func applyFilter(currentDate: Date, searchQuery: String)
 }
@@ -84,13 +84,6 @@ final class TrackerProvider: NSObject {
     ) {
         self.context = context
         self.store = store
-        super.init()
-        
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-            let initialUpdate = TrackersStoreUpdate()
-            self.delegate?.didUpdate(initialUpdate)
-        }
     }
     
 }
@@ -119,18 +112,58 @@ extension TrackerProvider: TrackerProviderProtocol {
         return Tracker.from(object)
     }
     
+    func indexPath(for tracker: Tracker) -> IndexPath? {
+        let request = fetchedResultsController.fetchRequest
+        let originalPredicate = request.predicate
+        
+        request.predicate = NSPredicate(format: "id == %@", tracker.id as CVarArg)
+        defer { request.predicate = originalPredicate } 
+        
+        do {
+            let results = try fetchedResultsController.managedObjectContext.fetch(request)
+            guard let entity = results.first else { return nil }
+            return fetchedResultsController.indexPath(forObject: entity)
+        } catch {
+            print("Failed to fetch tracker index path: \(error)")
+            return nil
+        }
+    }
+    
     func addTracker(_ tracker: Tracker, to category: TrackerCategory) throws {
         try store.add(tracker, to: category)
     }
     
     func applyFilter(currentDate: Date, searchQuery: String) {
+        var predicates: [NSPredicate] = []
+        
         let calendar = Calendar.current
         let weekday = calendar.component(.weekday, from: currentDate)
         guard let currentDay = Day(rawValue: weekday) else { return }
-        let dayString = "\(currentDay.rawValue)"
         
-        var predicates: [NSPredicate] = []
+        let startOfDay = calendar.startOfDay(for: currentDate)
+        let startOfNextDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
 
+        let scheduledPredicate = NSPredicate(format: "schedule != nil AND schedule CONTAINS %@", "\(currentDay.rawValue)")
+
+        let oneTimeNeverCompleted = NSPredicate(format: "schedule == nil AND records.@count == 0")
+        let oneTimeCompletedToday = NSPredicate(
+            format: "schedule == nil AND SUBQUERY(records, $r, $r.date >= %@ AND $r.date < %@).@count > 0",
+            startOfDay as NSDate,
+            startOfNextDay as NSDate
+        )
+        
+        let oneTimePredicate = NSCompoundPredicate(orPredicateWithSubpredicates: [
+            oneTimeNeverCompleted,
+            oneTimeCompletedToday
+        ])
+        
+        let displayPredicate = NSCompoundPredicate(orPredicateWithSubpredicates: [
+            scheduledPredicate,
+            oneTimePredicate
+        ])
+        
+        predicates.append(displayPredicate)
+        
         if !searchQuery.isEmpty {
             let searchPredicate = NSPredicate(
                 format: "title CONTAINS[cd] %@ OR emoji CONTAINS[cd] %@",
@@ -138,30 +171,12 @@ extension TrackerProvider: TrackerProviderProtocol {
             )
             predicates.append(searchPredicate)
         }
-        
-        let startOfDay = calendar.startOfDay(for: currentDate)
-        let startOfNextDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
-
-        let eventDisplayPredicate = NSPredicate(
-            format: """
-            (schedule != nil AND schedule CONTAINS[c] %@) OR
-            (schedule == nil AND (
-                SUBQUERY(records, $r, $r.tracker == SELF).@count == 0 OR
-                SUBQUERY(records, $r, $r.date >= %@ AND $r.date < %@).@count > 0
-            ))
-            """,
-            dayString,
-            startOfDay as NSDate,
-            startOfNextDay as NSDate
-        )
-        predicates.append(eventDisplayPredicate)
 
         fetchedResultsController.fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
         
         do {
             try fetchedResultsController.performFetch()
-            let initialUpdate = TrackersStoreUpdate()
-            self.delegate?.didUpdate(initialUpdate)
+            delegate?.didUpdate(TrackersStoreUpdate())
         } catch {
             print("Failed to fetch data after filtering: \(error)")
         }
@@ -180,6 +195,7 @@ extension TrackerProvider: NSFetchedResultsControllerDelegate {
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         delegate?.didUpdate(pendingUpdate)
+        pendingUpdate = TrackersStoreUpdate()
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,

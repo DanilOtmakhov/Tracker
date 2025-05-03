@@ -60,11 +60,8 @@ final class TrackersViewModel: TrackersViewModelProtocol {
     init(dataManager: DataManagerProtocol) {
         self.dataManager = dataManager
         
-        self.dataManager.trackerDataProvider.delegate = self
-        dataManager.trackerDataProvider.applyFilter(currentDate: currentDate, searchQuery: searchQuery)
-        
-        let initialUpdate = TrackersStoreUpdate(inserted: [], deleted: [], updated: [], moved: [])
-        self.state = determineState(initialUpdate)
+        self.dataManager.trackerProvider.delegate = self
+        dataManager.trackerProvider.applyFilter(currentDate: currentDate, searchQuery: searchQuery)
     }
     
 }
@@ -74,32 +71,32 @@ final class TrackersViewModel: TrackersViewModelProtocol {
 extension TrackersViewModel {
     
     var numberOfSections: Int {
-        dataManager.trackerDataProvider.numberOfSections
+        dataManager.trackerProvider.numberOfSections
     }
     
     func numberOfItemsInSection(_ section: Int) -> Int {
-        dataManager.trackerDataProvider.numberOfItemsInSection(section)
+        dataManager.trackerProvider.numberOfItemsInSection(section)
     }
     
     func nameOfSection(at indexPath: IndexPath) -> String? {
-        dataManager.trackerDataProvider.nameOfSection(at: indexPath)
+        dataManager.trackerProvider.nameOfSection(at: indexPath)
     }
     
     func tracker(at indexPath: IndexPath) -> Tracker? {
-        dataManager.trackerDataProvider.tracker(at: indexPath)
+        dataManager.trackerProvider.tracker(at: indexPath)
     }
     
     func isTrackerCompleted(_ tracker: Tracker) -> Bool {
-        dataManager.trackerRecordDataProvider.isTrackerCompleted(tracker.id, on: currentDate)
+        dataManager.recordProvider.isTrackerCompleted(tracker.id, on: currentDate)
     }
     
     func completedDaysCount(for tracker: Tracker) -> Int {
-        dataManager.trackerRecordDataProvider.completedTrackersCount(for: tracker.id)
+        dataManager.recordProvider.completedTrackersCount(for: tracker.id)
     }
     
     func filterTrackers(by date: Date) {
         currentDate = date
-        dataManager.trackerDataProvider.applyFilter(currentDate: currentDate, searchQuery: searchQuery)
+        dataManager.trackerProvider.applyFilter(currentDate: currentDate, searchQuery: searchQuery)
     }
     
     func searchTrackers(with query: String) {
@@ -109,20 +106,22 @@ extension TrackersViewModel {
             repeats: false
         ) { [weak self] _ in
             self?.searchQuery = query.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
-            self?.dataManager.trackerDataProvider.applyFilter(currentDate: self?.currentDate ?? Date(), searchQuery: self?.searchQuery ?? "")
+            self?.dataManager.trackerProvider.applyFilter(currentDate: self?.currentDate ?? Date(), searchQuery: self?.searchQuery ?? "")
         }
     }
     
     func handleCompleteButtonTap(_ tracker: Tracker, isCompleted: Bool) {
         let record = TrackerRecord(id: tracker.id, date: currentDate)
 
-        if isCompleted {
-            try? dataManager.trackerRecordDataProvider.addRecord(record)
-        } else {
-            try? dataManager.trackerRecordDataProvider.deleteRecord(record)
+        do {
+            if isCompleted {
+                try dataManager.recordProvider.addRecord(record)
+            } else {
+                try dataManager.recordProvider.deleteRecord(record)
+            }
+        } catch {
+            print("Error updating record: \(error)")
         }
-        
-        dataManager.trackerDataProvider.applyFilter(currentDate: currentDate, searchQuery: searchQuery)
     }
     
 }
@@ -132,7 +131,7 @@ extension TrackersViewModel {
 private extension TrackersViewModel {
     
     func determineState(_ update: TrackersStoreUpdate) -> TrackersViewModelState {
-        let hasData = dataManager.trackerDataProvider.numberOfSections > 0
+        let hasData = dataManager.trackerProvider.numberOfSections > 0
         
         if hasData {
             return .content(update: update)

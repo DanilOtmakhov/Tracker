@@ -27,15 +27,19 @@ final class TrackerRecordStore: TrackerRecordStoreProtocol {
     func add(_ record: TrackerRecord) throws {
         let entity = TrackerRecordEntity(context: context)
         entity.id = record.id
+        
         entity.date = record.date
         
-        try trackerStore.addToRecords(entity)
+        if let trackerEntity = try trackerStore.fetchTrackerEntity(by: record.id) {
+            entity.tracker = trackerEntity
+            trackerEntity.addToRecords(entity)
+        }
+        
+        try context.save()
     }
     
     func delete(_ record: TrackerRecord) throws {
-        guard
-            let entity = try fetchRecord(for: record.id, on: record.date)
-        else { return }
+        guard let entity = try fetchRecord(for: record.id, on: record.date) else { return }
         
         context.delete(entity)
         
@@ -45,9 +49,8 @@ final class TrackerRecordStore: TrackerRecordStoreProtocol {
     func fetchRecord(for id: UUID, on date: Date) throws -> TrackerRecordEntity? {
         let fetchRequest: NSFetchRequest<TrackerRecordEntity> = TrackerRecordEntity.fetchRequest()
 
-        let calendar = Calendar.current
-        let startOfDay = calendar.startOfDay(for: date)
-        guard let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) else {
+        let startOfDay = Calendar.current.startOfDay(for: date)
+        guard let endOfDay = Calendar.endOfDay(for: date) else {
             return nil
         }
 
@@ -56,7 +59,7 @@ final class TrackerRecordStore: TrackerRecordStoreProtocol {
             NSPredicate(format: "date >= %@ AND date < %@", startOfDay as NSDate, endOfDay as NSDate)
         ])
         fetchRequest.fetchLimit = 1
-            
+        
         return try context.fetch(fetchRequest).first
     }
     

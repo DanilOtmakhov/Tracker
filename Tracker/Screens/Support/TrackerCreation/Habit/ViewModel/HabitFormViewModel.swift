@@ -65,7 +65,7 @@ final class HabitFormViewModel: TrackerFormViewModel, HabitFormViewModelProtocol
         
         let category = TrackerCategory(title: selectedCategory, trackers: [tracker])
         
-        try? dataManager.trackerDataProvider.addTracker(tracker, to: category)
+        try? dataManager.trackerProvider.addTracker(tracker, to: category)
     }
     
 }

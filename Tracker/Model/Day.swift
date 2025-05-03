@@ -45,7 +45,7 @@ enum Day: Int, CaseIterable, Codable {
 
 extension Day: Comparable {
     
-    static func < (lhs: Day, rhs: Day) -> Bool {
+    public static func < (lhs: Day, rhs: Day) -> Bool {
         return lhs.rawValue < rhs.rawValue
     }
     

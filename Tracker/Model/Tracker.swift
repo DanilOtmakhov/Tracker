@@ -24,7 +24,7 @@ struct Tracker {
             return nil
         }
         
-        let schedule = entity.schedule as? [Day]
+        let schedule = entity.scheduleDays
         
         return Tracker(
             id: id,

@@ -169,7 +169,6 @@ private extension TrackersViewController {
     
     func applyUpdate(_ state: TrackersViewModelState) {
         let update = state.update
-
         switch state {
         case .content:
             self.stubImageView.isHidden = true
@@ -188,8 +187,17 @@ private extension TrackersViewController {
 
         if !update.insertedSections.isEmpty || !update.deletedSections.isEmpty {
             collectionView.reloadData()
+            return
         } else if !update.inserted.isEmpty || !update.deleted.isEmpty || !update.updated.isEmpty || !update.moved.isEmpty {
             collectionView.performBatchUpdates {
+                if !update.insertedSections.isEmpty {
+                    collectionView.insertSections(update.insertedSections)
+                }
+                
+                if !update.deletedSections.isEmpty {
+                    collectionView.deleteSections(update.deletedSections)
+                }
+                
                 if !update.inserted.isEmpty {
                     collectionView.insertItems(at: update.inserted)
                 }
