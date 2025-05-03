@@ -5,7 +5,7 @@
 //  Created by Danil Otmakhov on 22.04.2025.
 //
 
-import Foundation
+import CoreData
 
 protocol DataManagerProtocol {
     var trackerProvider: TrackerProviderProtocol { get set }
@@ -15,26 +15,30 @@ protocol DataManagerProtocol {
 
 final class DataManager: DataManagerProtocol {
     
+    let context: NSManagedObjectContext
+    
     var trackerProvider: TrackerProviderProtocol
     let categoryProvider: TrackerCategoryProviderProtocol
     let recordProvider: TrackerRecordProviderProtocol
     
-    init() {
-        let trackerCategoryStore = TrackerCategoryStore(context: CoreDataStack.shared.context)
-        let trackerDataStore = TrackerStore(context: CoreDataStack.shared.context, categoryStore: trackerCategoryStore)
-        let trackerRecordStore = TrackerRecordStore(context: CoreDataStack.shared.context, trackerStore: trackerDataStore)
+    init(_ context: NSManagedObjectContext) {
+        self.context = context
+        
+        let trackerCategoryStore = TrackerCategoryStore(context: context)
+        let trackerDataStore = TrackerStore(context: context, categoryStore: trackerCategoryStore)
+        let trackerRecordStore = TrackerRecordStore(context: context, trackerStore: trackerDataStore)
         
         self.trackerProvider = TrackerProvider(
             store: trackerDataStore,
-            context: CoreDataStack.shared.context
+            context: context
         )
         self.categoryProvider = TrackerCategoryProvider(
             store: trackerCategoryStore,
-            context: CoreDataStack.shared.context
+            context: context
         )
         self.recordProvider = TrackerRecordProvider(
             store: trackerRecordStore,
-            context: CoreDataStack.shared.context
+            context: context
         )
     }
     

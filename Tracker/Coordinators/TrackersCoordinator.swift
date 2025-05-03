@@ -21,7 +21,7 @@ protocol NavigationCoordinator: Coordinator {
 final class TrackersCoordinator: NavigationCoordinator {
     
     let navigationController = UINavigationController()
-    private let dataManager = DataManager()
+    private let dataManager = DataManager(CoreDataStack.shared.context)
     private var creationCoordinator: TrackerCreationCoordinator?
     
     func start() {
