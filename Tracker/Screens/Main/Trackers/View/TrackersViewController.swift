@@ -174,21 +174,7 @@ private extension TrackersViewController {
             self.stubImageView.isHidden = true
             self.stubLabel.isHidden = true
             self.collectionView.isHidden = false
-            if update.isEmpty {
-                collectionView.reloadData()
-            }
-        case .empty:
-            self.updateStubView(image: UIImage(named: "stub"),
-                              labelText: "Что будем отслеживать?")
-        case .searchNotFound:
-            self.updateStubView(image: UIImage(named: "nothingFound"),
-                              labelText: "Ничего не найдено")
-        }
-
-        if !update.insertedSections.isEmpty || !update.deletedSections.isEmpty {
-            collectionView.reloadData()
-            return
-        } else if !update.inserted.isEmpty || !update.deleted.isEmpty || !update.updated.isEmpty || !update.moved.isEmpty {
+            
             collectionView.performBatchUpdates {
                 if !update.insertedSections.isEmpty {
                     collectionView.insertSections(update.insertedSections)
@@ -211,6 +197,16 @@ private extension TrackersViewController {
                     collectionView.moveItem(at: move.from, to: move.to)
                 }
             }
+            
+            if update.isEmpty {
+                collectionView.reloadData()
+            }
+        case .empty:
+            self.updateStubView(image: UIImage(named: "stub"),
+                              labelText: "Что будем отслеживать?")
+        case .searchNotFound:
+            self.updateStubView(image: UIImage(named: "nothingFound"),
+                              labelText: "Ничего не найдено")
         }
     }
     
