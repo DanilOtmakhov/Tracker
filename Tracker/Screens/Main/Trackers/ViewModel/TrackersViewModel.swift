@@ -51,7 +51,7 @@ final class TrackersViewModel: TrackersViewModelProtocol {
     private var currentDate: Date = Date()
     private var searchQuery: String = ""
     
-    private var state: State = .empty(update: .init(inserted: [], deleted: [], updated: [], moved: [])) {
+    private var state: State = .empty(update: .init()) {
         didSet { onStateChange?(state) }
     }
     

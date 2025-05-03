@@ -22,7 +22,7 @@ final class CoreDataStack: ObservableObject {
         
         container.loadPersistentStores { _, error in
             if let error {
-                fatalError("Failed to load persistent stores: \(error.localizedDescription)")
+                assertionFailure("Failed to load persistent stores: \(error.localizedDescription)")
             }
         }
         return container

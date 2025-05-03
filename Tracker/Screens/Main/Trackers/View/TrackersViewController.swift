@@ -113,7 +113,7 @@ private extension TrackersViewController {
         navigationItem.searchController = searchController
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(
-            image: UIImage(named: "plus")?.withRenderingMode(.alwaysOriginal),
+            image: UIImage(resource: .plus).withRenderingMode(.alwaysOriginal),
             style: .done,
             target: self,
             action: #selector(addButtonTapped)
@@ -184,16 +184,16 @@ private extension TrackersViewController {
                     collectionView.deleteSections(update.deletedSections)
                 }
                 
-                if !update.inserted.isEmpty {
-                    collectionView.insertItems(at: update.inserted)
+                if !update.insertedIndexPaths.isEmpty {
+                    collectionView.insertItems(at: update.insertedIndexPaths)
                 }
-                if !update.deleted.isEmpty {
-                    collectionView.deleteItems(at: update.deleted)
+                if !update.deletedIndexPaths.isEmpty {
+                    collectionView.deleteItems(at: update.deletedIndexPaths)
                 }
-                if !update.updated.isEmpty {
-                    collectionView.reloadItems(at: update.updated)
+                if !update.updatedIndexPaths.isEmpty {
+                    collectionView.reloadItems(at: update.updatedIndexPaths)
                 }
-                for move in update.moved {
+                for move in update.movedIndexPaths {
                     collectionView.moveItem(at: move.from, to: move.to)
                 }
             }
@@ -202,10 +202,10 @@ private extension TrackersViewController {
                 collectionView.reloadData()
             }
         case .empty:
-            self.updateStubView(image: UIImage(named: "stub"),
+            self.updateStubView(image: UIImage(resource: .stub),
                               labelText: "Что будем отслеживать?")
         case .searchNotFound:
-            self.updateStubView(image: UIImage(named: "nothingFound"),
+            self.updateStubView(image: UIImage(resource: .nothingFound),
                               labelText: "Ничего не найдено")
         }
     }

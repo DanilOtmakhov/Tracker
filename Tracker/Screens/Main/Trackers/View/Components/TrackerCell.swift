@@ -58,7 +58,7 @@ final class TrackerCell: UICollectionViewCell {
     
     private lazy var completeButton: UIButton = {
         $0.tintColor = .ypWhite
-        $0.setImage(UIImage(named: "plus"), for: .normal)
+        $0.setImage(UIImage(resource: .plus), for: .normal)
         $0.addTarget(self, action: #selector(didTapCompleteButton), for: .touchUpInside)
         $0.layer.cornerRadius = 17
         $0.layer.masksToBounds = true
@@ -187,10 +187,10 @@ private extension TrackerCell {
     func updateCompleteButtonAppearance(_ isCompleted: Bool) {
         switch isCompleted {
         case true:
-            completeButton.setImage(UIImage(named: "done"), for: .normal)
+            completeButton.setImage(UIImage(resource: .done), for: .normal)
             completeButton.alpha = 0.3
         case false:
-            completeButton.setImage(UIImage(named: "plus"), for: .normal)
+            completeButton.setImage(UIImage(resource: .plus), for: .normal)
             completeButton.alpha = 1
         }
     }

@@ -11,32 +11,32 @@ struct TrackersStoreUpdate {
     
     var insertedSections: IndexSet
     var deletedSections: IndexSet
-    var inserted: [IndexPath]
-    var deleted: [IndexPath]
-    var updated: [IndexPath]
-    var moved: [(from: IndexPath, to: IndexPath)]
+    var insertedIndexPaths: [IndexPath]
+    var deletedIndexPaths: [IndexPath]
+    var updatedIndexPaths: [IndexPath]
+    var movedIndexPaths: [(from: IndexPath, to: IndexPath)]
     
     init(insertedSections: IndexSet = IndexSet(),
          deletedSections: IndexSet = IndexSet(),
-         inserted: [IndexPath] = [],
-         deleted: [IndexPath] = [],
-         updated: [IndexPath] = [],
-         moved: [(from: IndexPath, to: IndexPath)] = []) {
+         insertedIndexPaths: [IndexPath] = [],
+         deletedIndexPaths: [IndexPath] = [],
+         updatedIndexPaths: [IndexPath] = [],
+         movedIndexPaths: [(from: IndexPath, to: IndexPath)] = []) {
         self.insertedSections = insertedSections
         self.deletedSections = deletedSections
-        self.inserted = inserted
-        self.deleted = deleted
-        self.updated = updated
-        self.moved = moved
+        self.insertedIndexPaths = insertedIndexPaths
+        self.deletedIndexPaths = deletedIndexPaths
+        self.updatedIndexPaths = updatedIndexPaths
+        self.movedIndexPaths = movedIndexPaths
     }
     
     var isEmpty: Bool {
-        self.insertedSections.isEmpty &&
-        self.deletedSections.isEmpty &&
-        self.inserted.isEmpty &&
-        self.deleted.isEmpty &&
-        self.updated.isEmpty &&
-        self.moved.isEmpty
+        insertedSections.isEmpty &&
+        deletedSections.isEmpty &&
+        insertedIndexPaths.isEmpty &&
+        deletedIndexPaths.isEmpty &&
+        updatedIndexPaths.isEmpty &&
+        movedIndexPaths.isEmpty
     }
     
 }
@@ -61,7 +61,7 @@ final class TrackerProvider: NSObject {
 
     private let context: NSManagedObjectContext
     private let store: TrackerStoreProtocol
-    private var pendingUpdate = TrackersStoreUpdate(inserted: [], deleted: [], updated: [], moved: [])
+    private var pendingUpdate = TrackersStoreUpdate()
 
     private lazy var fetchedResultsController: NSFetchedResultsController<TrackerEntity> = {
 
@@ -103,10 +103,7 @@ extension TrackerProvider: TrackerProviderProtocol {
     }
     
     func nameOfSection(at indexPath: IndexPath) -> String? {
-        guard let section = fetchedResultsController.sections?[indexPath.section] else {
-            return nil
-        }
-        return section.name
+        fetchedResultsController.sections?[indexPath.section].name
     }
     
     func tracker(at indexPath: IndexPath) -> Tracker? {
@@ -208,23 +205,23 @@ extension TrackerProvider: NSFetchedResultsControllerDelegate {
         switch type {
         case .insert:
             if let newIndexPath = newIndexPath {
-                pendingUpdate.inserted.append(newIndexPath)
+                pendingUpdate.insertedIndexPaths.append(newIndexPath)
             }
         case .delete:
             if let indexPath = indexPath {
-                pendingUpdate.deleted.append(indexPath)
+                pendingUpdate.deletedIndexPaths.append(indexPath)
             }
         case .update:
             if let indexPath = indexPath {
-                pendingUpdate.updated.append(indexPath)
+                pendingUpdate.updatedIndexPaths.append(indexPath)
             }
         case .move:
             if let from = indexPath, let to = newIndexPath {
                 if from.section != to.section {
-                    pendingUpdate.deleted.append(from)
-                    pendingUpdate.inserted.append(to)
+                    pendingUpdate.deletedIndexPaths.append(from)
+                    pendingUpdate.insertedIndexPaths.append(to)
                 } else {
-                    pendingUpdate.moved.append((from: from, to: to))
+                    pendingUpdate.movedIndexPaths.append((from: from, to: to))
                 }
             }
         @unknown default:
