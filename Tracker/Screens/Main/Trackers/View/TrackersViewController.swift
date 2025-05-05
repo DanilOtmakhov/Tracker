@@ -175,6 +175,11 @@ private extension TrackersViewController {
             self.stubLabel.isHidden = true
             self.collectionView.isHidden = false
             
+            if update.isEmpty {
+                collectionView.reloadData()
+                return
+            }
+            
             collectionView.performBatchUpdates {
                 if !update.insertedSections.isEmpty {
                     collectionView.insertSections(update.insertedSections)
@@ -198,9 +203,6 @@ private extension TrackersViewController {
                 }
             }
             
-            if update.isEmpty {
-                collectionView.reloadData()
-            }
         case .empty:
             self.updateStubView(image: UIImage(resource: .stub),
                               labelText: "Что будем отслеживать?")
