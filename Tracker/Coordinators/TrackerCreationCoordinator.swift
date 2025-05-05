@@ -9,11 +9,11 @@ import UIKit
 
 final class TrackerCreationCoordinator: Coordinator {
     
-    private let trackerStore: TrackerCreationStoreProtocol
+    private let dataManager: DataManagerProtocol
     private unowned let presentingViewController: UIViewController
 
-    init(_ trackerStore: TrackerCreationStoreProtocol, presentingViewController: UIViewController) {
-        self.trackerStore = trackerStore
+    init(_ dataManager: DataManagerProtocol, presentingViewController: UIViewController) {
+        self.dataManager = dataManager
         self.presentingViewController = presentingViewController
     }
 
@@ -37,7 +37,7 @@ final class TrackerCreationCoordinator: Coordinator {
     }
 
     private func showNewHabitViewController(from presentingViewController: UIViewController?) {
-        let viewModel = HabitFormViewModel(trackerStore: trackerStore)
+        let viewModel = HabitFormViewModel(dataManager: dataManager)
         let viewController = HabitFormViewController(viewModel: viewModel)
 
         viewController.onScheduleCellTapped = { [weak self, weak viewController] in
@@ -52,7 +52,7 @@ final class TrackerCreationCoordinator: Coordinator {
     }
 
     private func showNewEventViewController(from presentingViewController: UIViewController?) {
-        let viewModel = EventFormViewModel(trackerStore: trackerStore)
+        let viewModel = EventFormViewModel(dataManager: dataManager)
         let viewController = EventFormViewController(viewModel: viewModel)
         
         viewController.onCreatedButtonTapped = { [weak self] in

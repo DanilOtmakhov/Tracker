@@ -55,7 +55,7 @@ private extension TrackerFormOptionCell {
         textLabel?.numberOfLines = 1
         detailTextLabel?.numberOfLines = 1
         selectionStyle = .default
-        accessoryView = UIImageView(image: UIImage(named: "chevron"))
+        accessoryView = UIImageView(image: UIImage(resource: .chevron))
     }
     
 }

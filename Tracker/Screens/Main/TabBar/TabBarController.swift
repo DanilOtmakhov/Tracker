@@ -33,13 +33,13 @@ final class TabBarController: UITabBarController {
 
         trackersViewController.tabBarItem = UITabBarItem(
             title: "Трекеры",
-            image: UIImage(named: "trackers"),
+            image: UIImage(resource: .trackers),
             selectedImage: nil
         )
         
         statisticsViewController.tabBarItem = UITabBarItem(
             title: "Статистика",
-            image: UIImage(named: "stats"),
+            image: UIImage(resource: .stats),
             selectedImage: nil
         )
         

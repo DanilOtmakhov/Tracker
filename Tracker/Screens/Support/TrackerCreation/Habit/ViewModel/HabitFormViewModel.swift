@@ -31,9 +31,16 @@ final class HabitFormViewModel: TrackerFormViewModel, HabitFormViewModelProtocol
 
     
     override var isFormValid: Bool {
-        guard let title, !title.isEmpty else { return false }
-        guard selectedCategory != nil else { return false }
-        guard !selectedDays.isEmpty else { return false }
+        guard let title,
+                !title.isEmpty,
+              selectedCategory != nil,
+              selectedEmoji != nil,
+              selectedColor != nil,
+              !selectedDays.isEmpty
+        else {
+            return false
+        }
+        
         return true
     }
     
@@ -43,20 +50,22 @@ final class HabitFormViewModel: TrackerFormViewModel, HabitFormViewModelProtocol
     
     override func createTracker() {
         guard let title,
-              let selectedCategory
+              let selectedCategory,
+              let selectedEmoji,
+              let selectedColor
         else { return }
         
         let tracker = Tracker(
             id: UUID(),
             title: title,
-            emoji: "😊",
-            color: .color4,
+            emoji: selectedEmoji,
+            color: selectedColor,
             schedule: selectedDays
         )
         
         let category = TrackerCategory(title: selectedCategory, trackers: [tracker])
         
-        trackerStore.addTracker(category)
+        try? dataManager.trackerProvider.addTracker(tracker, to: category)
     }
     
 }

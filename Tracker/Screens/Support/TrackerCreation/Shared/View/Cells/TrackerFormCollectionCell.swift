@@ -24,18 +24,15 @@ class TrackerFormCollectionCell<ItemType>: UITableViewCell, UICollectionViewData
         $0.dataSource = self
         $0.delegate = self
         $0.backgroundColor = .ypWhite
-        $0.register(EmojiCell.self,
-                    forCellWithReuseIdentifier: EmojiCell.reuseIdentifier)
-        $0.register(EmojiHeaderView.self,
-                    forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-                    withReuseIdentifier: EmojiHeaderView.reuseIdentifier)
         $0.translatesAutoresizingMaskIntoConstraints = false
         return $0
     }(UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout()))
     
-    // MARK: - Private Properties
+    // MARK: - Internal Properties
     
+    var onItemSelected: ((ItemType) -> Void)?
     var items: [ItemType] = []
+    var selectedIndexPath: IndexPath?
     
     // MARK: - Initialization
     
@@ -48,9 +45,9 @@ class TrackerFormCollectionCell<ItemType>: UITableViewCell, UICollectionViewData
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - Private Methods
+    // MARK: - Internal Methods
     
-    private func setupCell() {
+    func setupCell() {
         contentView.addSubview(collectionView)
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(equalTo: contentView.topAnchor),
@@ -116,6 +113,13 @@ class TrackerFormCollectionCell<ItemType>: UITableViewCell, UICollectionViewData
         minimumLineSpacingForSectionAt section: Int
     ) -> CGFloat {
         Constants.minimumLineSpacing
+    }
+    
+    // MARK: - UICollectionViewDelegate
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        selectedIndexPath = indexPath
+        onItemSelected?(items[indexPath.item])
     }
 
 }

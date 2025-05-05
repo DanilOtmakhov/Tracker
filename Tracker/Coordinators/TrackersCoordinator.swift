@@ -21,11 +21,11 @@ protocol NavigationCoordinator: Coordinator {
 final class TrackersCoordinator: NavigationCoordinator {
     
     let navigationController = UINavigationController()
-    private let trackerStore = TrackerStore()
+    private let dataManager = DataManager(CoreDataStack.shared.context)
     private var creationCoordinator: TrackerCreationCoordinator?
     
     func start() {
-        let viewModel = TrackersViewModel(trackerStore: trackerStore)
+        let viewModel = TrackersViewModel(dataManager: dataManager)
         let viewController = TrackersViewController(viewModel: viewModel)
         
         viewController.onAddTrackerTapped = { [weak self] in
@@ -36,7 +36,7 @@ final class TrackersCoordinator: NavigationCoordinator {
     }
     
     private func startTrackerCreation() {
-        let creationCoordinator = TrackerCreationCoordinator(trackerStore, presentingViewController: navigationController)
+        let creationCoordinator = TrackerCreationCoordinator(dataManager, presentingViewController: navigationController)
         self.creationCoordinator = creationCoordinator
         
         creationCoordinator.start()

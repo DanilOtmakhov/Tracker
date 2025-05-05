@@ -15,4 +15,24 @@ struct Tracker {
     let color: UIColor
     let schedule: [Day]?
     
+    static func from(_ entity: TrackerEntity) -> Tracker? {
+        guard let id = entity.id,
+              let title = entity.title,
+              let emoji = entity.emoji,
+              let colorHex = entity.color,
+              let color = UIColor(from: colorHex) else {
+            return nil
+        }
+        
+        let schedule = entity.scheduleDays
+        
+        return Tracker(
+            id: id,
+            title: title,
+            emoji: emoji,
+            color: color,
+            schedule: schedule
+        )
+    }
+    
 }
