@@ -7,7 +7,18 @@
 
 import UIKit
 
-final class AppCoordinator {
+protocol Coordinator {
+    
+//    var navigationController: UINavigationController { get }
+    func start()
+    
+}
+
+final class AppCoordinator: Coordinator {
+    
+    private enum UserDefaultsKeys {
+        static let hasSeenOnboarding = "hasSeenOnboarding"
+    }
 
     let window: UIWindow
     
@@ -19,6 +30,16 @@ final class AppCoordinator {
     }
     
     func start() {
+        let hasSeenOnboarding = UserDefaults.standard.bool(forKey: UserDefaultsKeys.hasSeenOnboarding)
+        
+        if hasSeenOnboarding {
+            showMainScreen()
+        } else {
+            showOnboarding()
+        }
+    }
+    
+    private func showMainScreen() {
         let trackersCoordinator = TrackersCoordinator()
         self.trackersCoordinator = trackersCoordinator
         
@@ -31,6 +52,17 @@ final class AppCoordinator {
         window.makeKeyAndVisible()
         
         trackersCoordinator.start()
+    }
+    
+    private func showOnboarding() {
+        let onboardingViewController = OnboardingViewController()
+        onboardingViewController.onCompletion = { [weak self] in
+            UserDefaults.standard.set(true, forKey: UserDefaultsKeys.hasSeenOnboarding)
+            self?.showMainScreen()
+        }
+        
+        window.rootViewController = onboardingViewController
+        window.makeKeyAndVisible()
     }
     
 }
