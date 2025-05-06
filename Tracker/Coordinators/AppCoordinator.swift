@@ -7,7 +7,14 @@
 
 import UIKit
 
-final class AppCoordinator {
+protocol Coordinator {
+    
+//    var navigationController: UINavigationController { get }
+    func start()
+    
+}
+
+final class AppCoordinator: Coordinator {
 
     let window: UIWindow
     
