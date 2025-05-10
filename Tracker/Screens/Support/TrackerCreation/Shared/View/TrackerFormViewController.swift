@@ -32,6 +32,7 @@ class TrackerFormViewController: UITableViewController {
     var formTitle: String { "Новая привычка" }
     var showsSchedule: Bool { true }
     
+    var onCategoryCellTapped: (() -> Void)?
     var onScheduleCellTapped: (() -> Void)?
     var onCreatedButtonTapped: (() -> Void)?
     
@@ -244,8 +245,12 @@ extension TrackerFormViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        if indexPath.section == Section.options.rawValue && indexPath.row == 1 {
-            onScheduleCellTapped?()
+        if indexPath.section == Section.options.rawValue {
+            if indexPath.row == 0 {
+                onCategoryCellTapped?()
+            } else {
+                onScheduleCellTapped?()
+            }
         }
     }
     
