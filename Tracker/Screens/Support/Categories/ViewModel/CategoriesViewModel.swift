@@ -14,8 +14,11 @@ enum CategoriesViewModelState {
 
 protocol CategoriesViewModelProtocol {
     var onStateChange: ((CategoriesViewModelState) -> Void)? { get set }
+    var onCategorySelected: ((TrackerCategory) -> Void)? { get set }
     func numberOfRowsInSection(_ section: Int) -> Int
     func categoryTitle(at indexPath: IndexPath) -> String?
+    func didSelectCategory(at indexPath: IndexPath)
+    func isCategorySelected(at indexPath: IndexPath) -> Bool
 }
 
 final class CategoriesViewModel: CategoriesViewModelProtocol {
@@ -23,11 +26,20 @@ final class CategoriesViewModel: CategoriesViewModelProtocol {
     // MARK: - Internal Properties
     
     var onStateChange: ((CategoriesViewModelState) -> Void)?
+    var onCategorySelected: ((TrackerCategory) -> Void)?
+    
+    // MARK: - Internal Properties
+    
+    var selectedCategory: TrackerCategory? {
+        didSet {
+            guard let category = selectedCategory else { return }
+            onCategorySelected?(category)
+        }
+    }
     
     // MARK: - Private Properties
     
-    var categories = TrackerCategory.mockData
-    
+    private var categories = TrackerCategory.mockData
     private var state: CategoriesViewModelState = .empty {
         didSet { onStateChange?(state) }
     }
@@ -43,7 +55,18 @@ extension CategoriesViewModel {
     }
     
     func categoryTitle(at indexPath: IndexPath) -> String? {
-        categories[indexPath.row].title
+        guard indexPath.row < categories.count else { return nil }
+        return categories[indexPath.row].title
+    }
+    
+    func didSelectCategory(at indexPath: IndexPath) {
+        guard indexPath.row < categories.count else { return }
+        selectedCategory = categories[indexPath.row]
+    }
+    
+    func isCategorySelected(at indexPath: IndexPath) -> Bool {
+        guard indexPath.row < categories.count else { return false }
+        return selectedCategory == categories[indexPath.row]
     }
     
 }

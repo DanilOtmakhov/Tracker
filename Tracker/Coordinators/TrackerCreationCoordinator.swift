@@ -41,7 +41,7 @@ final class TrackerCreationCoordinator: Coordinator {
         let viewController = HabitFormViewController(viewModel: viewModel)
         
         viewController.onCategoryCellTapped = { [weak self, weak viewController] in
-            self?.showCategoriesViewController(from: viewController)
+            self?.showCategoriesViewController(from: viewController, with: viewModel)
         }
         
         viewController.onScheduleCellTapped = { [weak self, weak viewController] in
@@ -59,6 +59,10 @@ final class TrackerCreationCoordinator: Coordinator {
         let viewModel = EventFormViewModel(dataManager: dataManager)
         let viewController = EventFormViewController(viewModel: viewModel)
         
+        viewController.onCategoryCellTapped = { [weak self, weak viewController] in
+            self?.showCategoriesViewController(from: viewController, with: viewModel)
+        }
+        
         viewController.onCreatedButtonTapped = { [weak self] in
             self?.finishCreationFlow()
         }
@@ -66,21 +70,30 @@ final class TrackerCreationCoordinator: Coordinator {
         presentInPageSheet(viewController, from: presentingViewController)
     }
     
-    private func showScheduleViewController(from presentingViewController: UIViewController?, with viewModel: HabitFormViewModelProtocol) {
-        let viewController = ScheduleViewController()
-        viewController.selectedDays = Set(viewModel.selectedDays)
+    private func showCategoriesViewController(from presentingViewController: UIViewController?, with presentingViewModel: TrackerFormViewModelProtocol) {
+        let viewModel = CategoriesViewModel()
+        viewModel.selectedCategory = presentingViewModel.selectedCategory
+        let viewController = CategoriesViewController(viewModel: viewModel)
         
-        viewController.onDaysSelected = { days in
-            viewModel.didSelectDays(days)
-            presentingViewController?.dismiss(animated: true)
+        viewModel.onCategorySelected = { [weak viewController, weak presentingViewModel] category in
+            presentingViewModel?.didSelectCategory(category)
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                viewController?.dismiss(animated: true, completion: nil)
+            }
         }
         
         presentInPageSheet(viewController, from: presentingViewController)
     }
     
-    private func showCategoriesViewController(from presentingViewController: UIViewController?) {
-        let viewModel = CategoriesViewModel()
-        let viewController = CategoriesViewController(viewModel: viewModel)
+    private func showScheduleViewController(from presentingViewController: UIViewController?, with presentingViewModel: HabitFormViewModelProtocol) {
+        let viewController = ScheduleViewController()
+        viewController.selectedDays = Set(presentingViewModel.selectedDays)
+        
+        viewController.onDaysSelected = { [weak viewController, weak presentingViewModel] days in
+            presentingViewModel?.didSelectDays(days)
+            viewController?.dismiss(animated: true)
+        }
         
         presentInPageSheet(viewController, from: presentingViewController)
     }

@@ -63,9 +63,8 @@ final class HabitFormViewModel: TrackerFormViewModel, HabitFormViewModelProtocol
             schedule: selectedDays
         )
         
-        let category = TrackerCategory(title: selectedCategory, trackers: [tracker])
         
-        try? dataManager.trackerProvider.addTracker(tracker, to: category)
+        try? dataManager.trackerProvider.addTracker(tracker, to: selectedCategory)
     }
     
 }

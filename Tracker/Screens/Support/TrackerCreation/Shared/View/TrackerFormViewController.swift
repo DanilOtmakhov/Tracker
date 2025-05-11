@@ -162,7 +162,7 @@ extension TrackerFormViewController {
             }
             
             if indexPath.row == 0 {
-                cell.configure(isCategory: true, detailText: viewModel.selectedCategory)
+                cell.configure(isCategory: true, detailText: viewModel.selectedCategory?.title)
             } else {
                 if let habitViewModel = viewModel as? HabitFormViewModelProtocol {
                     cell.configure(isCategory: false, detailText: habitViewModel.selectedDaysString)

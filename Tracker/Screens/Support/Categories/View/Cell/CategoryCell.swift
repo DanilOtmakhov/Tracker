@@ -29,9 +29,10 @@ final class CategoryCell: UITableViewCell {
         return $0
     }(UILabel())
     
-    private lazy var doneImageView: UIImageView = {
+    private lazy var selectedImageView: UIImageView = {
         $0.image = UIImage(resource: .blueDone)
         $0.contentMode = .scaleAspectFit
+        $0.isHidden = true
         return $0
     }(UIImageView())
     
@@ -56,6 +57,11 @@ extension CategoryCell {
         categoryLabel.text = title
     }
     
+    override func setSelected(_ selected: Bool, animated: Bool) {
+        super.setSelected(selected, animated: animated)
+        selectedImageView.isHidden = !selected
+    }
+    
 }
 
 // MARK: - Private Methods
@@ -64,8 +70,9 @@ private extension CategoryCell {
     
     func setupCell() {
         backgroundColor = .background
+        selectionStyle = .none
             
-        [categoryLabel, doneImageView].forEach {
+        [categoryLabel, selectedImageView].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
             contentView.addSubview($0)
         }
@@ -74,11 +81,11 @@ private extension CategoryCell {
             categoryLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Constants.horizontalInset),
             categoryLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             
-            doneImageView.leadingAnchor.constraint(greaterThanOrEqualTo: categoryLabel.trailingAnchor),
-            doneImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Constants.horizontalInset),
-            doneImageView.widthAnchor.constraint(equalToConstant: Constants.imageViewWidth),
-            doneImageView.heightAnchor.constraint(equalToConstant: Constants.imageViewHeight),
-            doneImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
+            selectedImageView.leadingAnchor.constraint(greaterThanOrEqualTo: categoryLabel.trailingAnchor),
+            selectedImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Constants.horizontalInset),
+            selectedImageView.widthAnchor.constraint(equalToConstant: Constants.imageViewWidth),
+            selectedImageView.heightAnchor.constraint(equalToConstant: Constants.imageViewHeight),
+            selectedImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
         ])
     }
     

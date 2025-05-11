@@ -95,7 +95,6 @@ private extension ScheduleViewController {
     
     func didTapReadyButton() {
         onDaysSelected?(Array(selectedDays.sorted()))
-        dismiss(animated: true)
     }
     
 }

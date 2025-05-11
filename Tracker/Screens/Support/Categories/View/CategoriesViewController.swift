@@ -29,7 +29,7 @@ final class CategoriesViewController: UIViewController {
         $0.backgroundColor = .ypWhite
         $0.separatorStyle = .singleLine
         $0.separatorColor = .ypGray
-        $0.allowsSelection = false
+        $0.allowsSelection = true
         $0.register(CategoryCell.self,
                     forCellReuseIdentifier: CategoryCell.reuseIdentifier)
         $0.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
@@ -58,8 +58,6 @@ final class CategoriesViewController: UIViewController {
         $0.addTarget(self, action: #selector(didTapAddButton), for: .touchUpInside)
         return $0
     }(UIButton())
-    
-    // MARK: - Internal Properties
     
     // MARK: - Private Properties
     
@@ -113,11 +111,23 @@ private extension CategoriesViewController {
     }
     
     func setupViewModel() {
-        
+        viewModel.onStateChange = { [weak self] state in
+            self?.applyUpdate(state)
+        }
     }
     
     func applyUpdate(_ state: CategoriesViewModelState) {
-        
+        switch state {
+        case .content:
+            stubImageView.isHidden = true
+            stubLabel.isHidden = true
+            tableView.isHidden = false
+            tableView.reloadData()
+        case .empty:
+            stubImageView.isHidden = false
+            stubLabel.isHidden = false
+            tableView.isHidden = true
+        }
     }
     
 }
@@ -154,6 +164,10 @@ extension CategoriesViewController: UITableViewDataSource {
         
         cell.configure(with: title)
         
+        if viewModel.isCategorySelected(at: indexPath) {
+            tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+        }
+        
         return cell
     }
     
@@ -162,6 +176,14 @@ extension CategoriesViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate
 
 extension CategoriesViewController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        viewModel.didSelectCategory(at: indexPath)
+    
+        if viewModel.isCategorySelected(at: indexPath) {
+            tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+        }
+    }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         Constants.rowHeight
