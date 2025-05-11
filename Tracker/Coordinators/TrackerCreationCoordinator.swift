@@ -40,11 +40,11 @@ final class TrackerCreationCoordinator: Coordinator {
         let viewModel = HabitFormViewModel(dataManager: dataManager)
         let viewController = HabitFormViewController(viewModel: viewModel)
         
-        viewController.onCategoryCellTapped = { [weak self, weak viewController] in
+        viewController.onCategoryCellTapped = { [weak self] in
             self?.showCategoriesViewController(from: viewController, with: viewModel)
         }
         
-        viewController.onScheduleCellTapped = { [weak self, weak viewController] in
+        viewController.onScheduleCellTapped = { [weak self] in
             self?.showScheduleViewController(from: viewController, with: viewModel)
         }
         
@@ -59,7 +59,7 @@ final class TrackerCreationCoordinator: Coordinator {
         let viewModel = EventFormViewModel(dataManager: dataManager)
         let viewController = EventFormViewController(viewModel: viewModel)
         
-        viewController.onCategoryCellTapped = { [weak self, weak viewController] in
+        viewController.onCategoryCellTapped = { [weak self] in
             self?.showCategoriesViewController(from: viewController, with: viewModel)
         }
         
@@ -77,10 +77,7 @@ final class TrackerCreationCoordinator: Coordinator {
         
         viewModel.onCategorySelected = { [weak viewController, weak presentingViewModel] category in
             presentingViewModel?.didSelectCategory(category)
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                viewController?.dismiss(animated: true, completion: nil)
-            }
+            viewController?.dismiss(animated: true, completion: nil)
         }
         
         presentInPageSheet(viewController, from: presentingViewController)
