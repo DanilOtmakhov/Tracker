@@ -48,6 +48,7 @@ final class TrackerCategoryStore: TrackerCategoryStoreProtocol {
         } else {
             let newCategory = TrackerCategoryEntity(context: context)
             newCategory.title = title
+            newCategory.createdAt = Date()
             return newCategory
         }
     }

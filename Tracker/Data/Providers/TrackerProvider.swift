@@ -16,6 +16,15 @@ struct TrackerStoreUpdate {
     var updatedIndexPaths: [IndexPath]
     var movedIndexPaths: [(from: IndexPath, to: IndexPath)]
     
+    var isEmpty: Bool {
+        insertedSections.isEmpty &&
+        deletedSections.isEmpty &&
+        insertedIndexPaths.isEmpty &&
+        deletedIndexPaths.isEmpty &&
+        updatedIndexPaths.isEmpty &&
+        movedIndexPaths.isEmpty
+    }
+    
     init(insertedSections: IndexSet = IndexSet(),
          deletedSections: IndexSet = IndexSet(),
          insertedIndexPaths: [IndexPath] = [],
@@ -29,16 +38,7 @@ struct TrackerStoreUpdate {
         self.updatedIndexPaths = updatedIndexPaths
         self.movedIndexPaths = movedIndexPaths
     }
-    
-    var isEmpty: Bool {
-        insertedSections.isEmpty &&
-        deletedSections.isEmpty &&
-        insertedIndexPaths.isEmpty &&
-        deletedIndexPaths.isEmpty &&
-        updatedIndexPaths.isEmpty &&
-        movedIndexPaths.isEmpty
-    }
-    
+
 }
 
 protocol TrackerProviderDelegate: AnyObject {
@@ -90,7 +90,7 @@ final class TrackerProvider: NSObject {
     
 }
 
-// MARK: - TrackerDataProviderProtocol
+// MARK: - TrackerProviderProtocol
 
 extension TrackerProvider: TrackerProviderProtocol {
     

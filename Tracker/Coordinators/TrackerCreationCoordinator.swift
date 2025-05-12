@@ -71,7 +71,7 @@ final class TrackerCreationCoordinator: Coordinator {
     }
     
     private func showCategoriesViewController(from presentingViewController: UIViewController?, with presentingViewModel: TrackerFormViewModelProtocol) {
-        let viewModel = CategoriesViewModel()
+        let viewModel = CategoriesViewModel(dataManager.categoryProvider)
         viewModel.selectedCategory = presentingViewModel.selectedCategory
         let viewController = CategoriesViewController(viewModel: viewModel)
         

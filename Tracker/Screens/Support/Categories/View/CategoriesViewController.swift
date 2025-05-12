@@ -19,6 +19,11 @@ final class CategoriesViewController: UIViewController {
         static let buttonBottomInset: CGFloat = -16
         static let buttonHeight: CGFloat = 60
         static let cornerRadius: CGFloat = 16
+        
+        static let stubImageSize: CGFloat = 80
+        static let stubTopOffset: CGFloat = -100
+        static let stubLabelTopOffset: CGFloat = 8
+        static let stubLabelWidth: CGFloat = 200
     }
     
     // MARK: - Subviews
@@ -47,6 +52,8 @@ final class CategoriesViewController: UIViewController {
         $0.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         $0.textColor = .ypBlack
         $0.textAlignment = .center
+        $0.lineBreakMode = .byWordWrapping
+        $0.numberOfLines = 2
         return $0
     }(UILabel())
     
@@ -92,7 +99,7 @@ private extension CategoriesViewController {
         title = "Категория"
         view.backgroundColor = .ypWhite
 
-        [tableView, addButton].forEach {
+        [tableView, addButton, stubImageView, stubLabel].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
         }
@@ -106,7 +113,16 @@ private extension CategoriesViewController {
             addButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.buttonHorizontalInset),
             addButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.buttonHorizontalInset),
             addButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: Constants.buttonBottomInset),
-            addButton.heightAnchor.constraint(equalToConstant: Constants.buttonHeight)
+            addButton.heightAnchor.constraint(equalToConstant: Constants.buttonHeight),
+            
+            stubImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            stubImageView.topAnchor.constraint(equalTo: view.centerYAnchor, constant: Constants.stubTopOffset),
+            stubImageView.heightAnchor.constraint(equalToConstant: Constants.stubImageSize),
+            stubImageView.widthAnchor.constraint(equalToConstant: Constants.stubImageSize),
+            
+            stubLabel.topAnchor.constraint(equalTo: stubImageView.bottomAnchor, constant: Constants.stubLabelTopOffset),
+            stubLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            stubLabel.widthAnchor.constraint(equalToConstant: Constants.stubLabelWidth)
         ])
     }
     
@@ -117,18 +133,30 @@ private extension CategoriesViewController {
     }
     
     func applyUpdate(_ state: CategoriesViewModelState) {
+        let update = state.update
         switch state {
         case .content:
             stubImageView.isHidden = true
             stubLabel.isHidden = true
             tableView.isHidden = false
-            tableView.reloadData()
+            
+            tableView.performBatchUpdates {
+                tableView.insertRows(at: update.insertedIndexPaths, with: .automatic)
+                tableView.deleteRows(at: update.deletedIndexPaths, with: .fade)
+                tableView.reloadRows(at: update.updatedIndexPaths, with: .automatic)
+                
+                for move in update.movedIndexPaths {
+                    tableView.moveRow(at: move.from, to: move.to)
+                }
+            }
         case .empty:
             stubImageView.isHidden = false
             stubLabel.isHidden = false
             tableView.isHidden = true
         }
     }
+    
+    
     
 }
 
@@ -148,7 +176,7 @@ private extension CategoriesViewController {
 extension CategoriesViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        viewModel.numberOfRowsInSection(section)
+        viewModel.numberOfRows(in: section)
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

@@ -8,14 +8,21 @@
 import Foundation
 
 enum CategoriesViewModelState {
-    case content
-    case empty
+    case content(update: TrackerCategoryStoreUpdate)
+    case empty(update: TrackerCategoryStoreUpdate)
+    
+    var update: TrackerCategoryStoreUpdate {
+        switch self {
+        case .content(let update), .empty(let update):
+            return update
+        }
+    }
 }
 
 protocol CategoriesViewModelProtocol {
     var onStateChange: ((CategoriesViewModelState) -> Void)? { get set }
     var onCategorySelected: ((TrackerCategory) -> Void)? { get set }
-    func numberOfRowsInSection(_ section: Int) -> Int
+    func numberOfRows(in section: Int) -> Int
     func categoryTitle(at indexPath: IndexPath) -> String?
     func didSelectCategory(at indexPath: IndexPath)
     func isCategorySelected(at indexPath: IndexPath) -> Bool
@@ -28,8 +35,6 @@ final class CategoriesViewModel: CategoriesViewModelProtocol {
     var onStateChange: ((CategoriesViewModelState) -> Void)?
     var onCategorySelected: ((TrackerCategory) -> Void)?
     
-    // MARK: - Internal Properties
-    
     var selectedCategory: TrackerCategory? {
         didSet {
             guard let category = selectedCategory else { return }
@@ -39,34 +44,68 @@ final class CategoriesViewModel: CategoriesViewModelProtocol {
     
     // MARK: - Private Properties
     
-    private var categories = TrackerCategory.mockData
-    private var state: CategoriesViewModelState = .empty {
+    private var categoryProvider: TrackerCategoryProviderProtocol
+    private var state: CategoriesViewModelState = .empty(update: .init()) {
         didSet { onStateChange?(state) }
     }
     
+    // MARK: - Initialization
+    
+    init(_ categoryProvider: TrackerCategoryProviderProtocol) {
+        self.categoryProvider = categoryProvider
+        self.categoryProvider.delegate = self
+        
+        determineState(TrackerCategoryStoreUpdate())
+    }
 }
 
 // MARK: - Internal Methods
 
 extension CategoriesViewModel {
     
-    func numberOfRowsInSection(_ section: Int) -> Int {
-        categories.count
+    func numberOfRows(in section: Int) -> Int {
+        categoryProvider.numberOfRows(in: section)
     }
     
     func categoryTitle(at indexPath: IndexPath) -> String? {
-        guard indexPath.row < categories.count else { return nil }
-        return categories[indexPath.row].title
+        categoryProvider.category(at: indexPath)?.title
     }
     
     func didSelectCategory(at indexPath: IndexPath) {
-        guard indexPath.row < categories.count else { return }
-        selectedCategory = categories[indexPath.row]
+        guard let category = categoryProvider.category(at: indexPath) else { return }
+        selectedCategory = category
     }
     
     func isCategorySelected(at indexPath: IndexPath) -> Bool {
-        guard indexPath.row < categories.count else { return false }
-        return selectedCategory == categories[indexPath.row]
+        guard let category = categoryProvider.category(at: indexPath) else { return false }
+        return selectedCategory == category
+    }
+    
+}
+
+// MARK: - Private Methods
+
+private extension CategoriesViewModel {
+    
+    func determineState(_ update: TrackerCategoryStoreUpdate) {
+        if categoryProvider.numberOfCategories() > 0 {
+            state = .content(update: update)
+        } else {
+            state = .empty(update: update)
+        }
+    }
+    
+}
+
+// MARK: - TrackerCategoryProviderDelegate
+
+extension CategoriesViewModel: TrackerCategoryProviderDelegate {
+    
+    func didUpdate(_ update: TrackerCategoryStoreUpdate) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            self.determineState(update)
+        }
     }
     
 }
