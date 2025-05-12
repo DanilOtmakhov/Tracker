@@ -10,12 +10,14 @@ import UIKit
 
 enum TrackerCategoryStoreError: Error {
     case categoryAlreadyExists(String)
+    case categoryNotFound(String)
 }
 
 protocol TrackerCategoryStoreProtocol {
     func fetchCategories() throws -> [TrackerCategory]
     func fetchOrCreateCategory(withTitle title: String) throws -> TrackerCategoryEntity
     func addCategory(withTitle title: String) throws
+    func delete(_ category: TrackerCategory) throws
 }
 
 final class TrackerCategoryStore: TrackerCategoryStoreProtocol {
@@ -70,6 +72,28 @@ final class TrackerCategoryStore: TrackerCategoryStoreProtocol {
         let newCategory = TrackerCategoryEntity(context: context)
         newCategory.title = title
         newCategory.createdAt = Date()
+        
+        try context.save()
+    }
+    
+    func delete(_ category: TrackerCategory) throws {
+        let request = TrackerCategoryEntity.fetchRequest()
+        request.predicate = NSPredicate(format: "title == %@", category.title)
+        request.fetchLimit = 1
+        
+        let results = try context.fetch(request)
+        
+        guard let categoryToDelete = results.first else {
+            throw TrackerCategoryStoreError.categoryNotFound("Category '\(category.title)' not found")
+        }
+        
+        if let trackers = categoryToDelete.trackers as? Set<TrackerEntity> {
+            for tracker in trackers {
+                context.delete(tracker)
+            }
+        }
+        
+        context.delete(categoryToDelete)
         
         try context.save()
     }

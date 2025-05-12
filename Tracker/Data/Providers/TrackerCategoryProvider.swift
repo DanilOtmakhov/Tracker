@@ -45,6 +45,7 @@ protocol TrackerCategoryProviderProtocol {
     func numberOfRows(in section: Int) -> Int
     func category(at indexPath: IndexPath) -> TrackerCategory?
     func addCategory(withTitle title: String) throws
+    func deleteCategory(at indexPath: IndexPath) throws
 }
 
 final class TrackerCategoryProvider: NSObject {
@@ -100,6 +101,11 @@ extension TrackerCategoryProvider: TrackerCategoryProviderProtocol {
     
     func addCategory(withTitle title: String) throws {
         try store.addCategory(withTitle: title)
+    }
+    
+    func deleteCategory(at indexPath: IndexPath) throws {
+        guard let category = category(at: indexPath) else { return }
+        try store.delete(category)
     }
     
 }

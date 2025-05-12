@@ -86,7 +86,7 @@ extension CategoriesViewModel {
     }
     
     func deleteCategory(at indexPath: IndexPath) {
-        print("delete")
+        try? categoryProvider.deleteCategory(at: indexPath)
     }
     
 }
