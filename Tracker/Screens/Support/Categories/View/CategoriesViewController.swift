@@ -162,7 +162,27 @@ private extension CategoriesViewController {
         }
     }
     
-    
+    func showDeleteConfirmationAlert(for indexPath: IndexPath) {
+        let alert = UIAlertController(
+            title: nil,
+            message: "Эта категория точно не нужна?",
+            preferredStyle: .actionSheet
+        )
+        
+        let deleteAction = UIAlertAction(
+            title: "Удалить",
+            style: .destructive
+        ) { [weak self] _ in
+            self?.viewModel.deleteCategory(at: indexPath)
+        }
+        
+        let cancelAction = UIAlertAction(title: "Отмена", style: .cancel)
+        
+        alert.addAction(deleteAction)
+        alert.addAction(cancelAction)
+        
+        present(alert, animated: true)
+    }
     
 }
 
@@ -221,6 +241,30 @@ extension CategoriesViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         Constants.rowHeight
+    }
+    
+    func tableView(
+        _ tableView: UITableView,
+        contextMenuConfigurationForRowAt indexPath: IndexPath,
+        point: CGPoint
+    ) -> UIContextMenuConfiguration? {
+        return UIContextMenuConfiguration(
+            actionProvider:  { _ in
+                let editAction = UIAction(
+                    title: "Редактировать"
+                ) { action in
+                
+            }
+            
+                let deleteAction = UIAction(
+                    title: "Удалить",
+                    attributes: .destructive
+                ) { [weak self] action in
+                    self?.showDeleteConfirmationAlert(for: indexPath)
+            }
+            
+            return UIMenu(title: "", children: [editAction, deleteAction])
+        })
     }
     
 }
