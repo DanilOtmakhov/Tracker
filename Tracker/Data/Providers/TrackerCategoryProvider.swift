@@ -99,7 +99,7 @@ extension TrackerCategoryProvider: TrackerCategoryProviderProtocol {
     }
     
     func addCategory(withTitle title: String) throws {
-        try store.fetchOrCreateCategory(withTitle: title)
+        try store.addCategory(withTitle: title)
     }
     
 }

@@ -69,9 +69,6 @@ class TrackerFormViewModel: TrackerFormViewModelProtocol {
     }
     
     var onFormUpdated: (() -> Void)?
-    
-    // MARK: - Private Properties
-    
     let dataManager: DataManagerProtocol
     
     // MARK: - Initialization

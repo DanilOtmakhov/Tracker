@@ -13,6 +13,7 @@ final class TrackerFormTitleCell: UITableViewCell {
     
     private enum Constants {
         static let cornerRadius: CGFloat = 16
+        static let maxTitleLength: Int = 38
     }
     
     // MARK: - Static Properties
@@ -21,7 +22,7 @@ final class TrackerFormTitleCell: UITableViewCell {
     
     // MARK: - Subviews
     
-    private lazy var nameTextView: UITextField = {
+    private lazy var titleTextField: UITextField = {
         $0.placeholder = "Введите название трекера"
         $0.attributedPlaceholder = NSAttributedString(
             string: "Введите название трекера",
@@ -64,7 +65,7 @@ final class TrackerFormTitleCell: UITableViewCell {
 extension TrackerFormTitleCell {
     
     func configure(with title: String?) {
-        nameTextView.text = title
+        titleTextField.text = title
     }
     
 }
@@ -74,12 +75,12 @@ extension TrackerFormTitleCell {
 private extension TrackerFormTitleCell {
     
     func setupCell() {
-        contentView.addSubview(nameTextView)
+        contentView.addSubview(titleTextField)
         NSLayoutConstraint.activate([
-            nameTextView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            nameTextView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            nameTextView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            nameTextView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
+            titleTextField.topAnchor.constraint(equalTo: contentView.topAnchor),
+            titleTextField.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            titleTextField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            titleTextField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
         ])
     }
     
@@ -94,12 +95,11 @@ extension TrackerFormTitleCell: UITextFieldDelegate {
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        if let currentText = textField.text,
-           let textRange = Range(range, in: currentText) {
-            let updatedText = currentText.replacingCharacters(in: textRange, with: string)
-            return updatedText.count <= 38
-        }
-        return true
+        let currentText = textField.text ?? ""
+        guard let stringRange = Range(range, in: currentText) else { return false }
+        let updatedText = currentText.replacingCharacters(in: stringRange, with: string)
+        
+        return updatedText.count <= Constants.maxTitleLength
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {

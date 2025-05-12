@@ -26,6 +26,7 @@ protocol CategoriesViewModelProtocol {
     func categoryTitle(at indexPath: IndexPath) -> String?
     func didSelectCategory(at indexPath: IndexPath)
     func isCategorySelected(at indexPath: IndexPath) -> Bool
+    func reloadState()
 }
 
 final class CategoriesViewModel: CategoriesViewModelProtocol {
@@ -54,8 +55,6 @@ final class CategoriesViewModel: CategoriesViewModelProtocol {
     init(_ categoryProvider: TrackerCategoryProviderProtocol) {
         self.categoryProvider = categoryProvider
         self.categoryProvider.delegate = self
-        
-        determineState(TrackerCategoryStoreUpdate())
     }
 }
 
@@ -79,6 +78,10 @@ extension CategoriesViewModel {
     func isCategorySelected(at indexPath: IndexPath) -> Bool {
         guard let category = categoryProvider.category(at: indexPath) else { return false }
         return selectedCategory == category
+    }
+    
+    func reloadState() {
+        determineState(TrackerCategoryStoreUpdate())
     }
     
 }

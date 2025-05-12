@@ -12,11 +12,14 @@ class TrackerFormViewController: UITableViewController {
     // MARK: - Constants
     
     private enum Constants {
-        static let nameRowHeight: CGFloat = 75
+        static let titleRowHeight: CGFloat = 75
         static let optionRowHeight: CGFloat = 75
         static let emojiRowHeight: CGFloat = 204
         static let colorRowHeight: CGFloat = 204
         static let actionsRowHeight: CGFloat = 60
+        
+        static let warningLabelTopOffset: CGFloat = 8
+        static let warningLabelHeight: CGFloat = 22
     }
     
     private enum Section: Int, CaseIterable {
@@ -231,7 +234,7 @@ extension TrackerFormViewController {
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch Section(rawValue: indexPath.section)! {
         case .title:
-            return Constants.nameRowHeight
+            return Constants.titleRowHeight
         case .options:
             return Constants.optionRowHeight
         case .emoji:

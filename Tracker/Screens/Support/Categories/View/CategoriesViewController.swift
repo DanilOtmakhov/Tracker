@@ -66,6 +66,10 @@ final class CategoriesViewController: UIViewController {
         return $0
     }(UIButton())
     
+    // MARK: - Internal Properties
+    
+    var onAddButtonTapped: (() -> Void)?
+    
     // MARK: - Private Properties
     
     private var viewModel: CategoriesViewModelProtocol
@@ -87,6 +91,7 @@ final class CategoriesViewController: UIViewController {
         super.viewDidLoad()
         setupViewController()
         setupViewModel()
+        viewModel.reloadState()
     }
     
 }
@@ -149,6 +154,7 @@ private extension CategoriesViewController {
                     tableView.moveRow(at: move.from, to: move.to)
                 }
             }
+            
         case .empty:
             stubImageView.isHidden = false
             stubLabel.isHidden = false
@@ -166,7 +172,7 @@ private extension CategoriesViewController {
 private extension CategoriesViewController {
     
     func didTapAddButton() {
-        
+        onAddButtonTapped?()
     }
     
 }

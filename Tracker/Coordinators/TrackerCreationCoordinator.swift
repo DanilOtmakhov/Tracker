@@ -80,6 +80,10 @@ final class TrackerCreationCoordinator: Coordinator {
             viewController?.dismiss(animated: true, completion: nil)
         }
         
+        viewController.onAddButtonTapped = { [weak self] in
+            self?.showNewCategoryViewController(from: viewController, with: viewModel)
+        }
+        
         presentInPageSheet(viewController, from: presentingViewController)
     }
     
@@ -89,6 +93,17 @@ final class TrackerCreationCoordinator: Coordinator {
         
         viewController.onDaysSelected = { [weak viewController, weak presentingViewModel] days in
             presentingViewModel?.didSelectDays(days)
+            viewController?.dismiss(animated: true)
+        }
+        
+        presentInPageSheet(viewController, from: presentingViewController)
+    }
+    
+    private func showNewCategoryViewController(from presentingViewController: UIViewController?, with presentingViewModel: CategoriesViewModel) {
+        let viewModel = CategoryFormViewModel(categoryProvider: dataManager.categoryProvider)
+        let viewController = CategoryFormViewController(viewModel: viewModel)
+        
+        viewModel.onFormCompleted = { [weak viewController] in
             viewController?.dismiss(animated: true)
         }
         
