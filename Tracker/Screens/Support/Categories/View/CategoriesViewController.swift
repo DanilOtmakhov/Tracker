@@ -48,7 +48,7 @@ final class CategoriesViewController: UIViewController {
     }(UIImageView())
     
     private lazy var stubLabel: UILabel = {
-        $0.text = "Привычки и события можно объединить по смыслу"
+        $0.text = .categoriesEmptyState
         $0.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         $0.textColor = .ypBlack
         $0.textAlignment = .center
@@ -58,7 +58,7 @@ final class CategoriesViewController: UIViewController {
     }(UILabel())
     
     private lazy var addButton: UIButton = {
-        $0.setTitle("Добавить категорию", for: .normal)
+        $0.setTitle(.addCategory, for: .normal)
         $0.backgroundColor = .ypBlack
         $0.layer.cornerRadius = Constants.cornerRadius
         $0.layer.masksToBounds = true
@@ -101,7 +101,7 @@ final class CategoriesViewController: UIViewController {
 private extension CategoriesViewController {
     
     func setupViewController() {
-        title = "Категория"
+        title = .category
         view.backgroundColor = .ypWhite
 
         [tableView, addButton, stubImageView, stubLabel].forEach {
@@ -165,18 +165,18 @@ private extension CategoriesViewController {
     func showDeleteConfirmationAlert(for indexPath: IndexPath) {
         let alert = UIAlertController(
             title: nil,
-            message: "Эта категория точно не нужна?",
+            message: .deleteConfirmation,
             preferredStyle: .actionSheet
         )
         
         let deleteAction = UIAlertAction(
-            title: "Удалить",
+            title: .delete,
             style: .destructive
         ) { [weak self] _ in
             self?.viewModel.deleteCategory(at: indexPath)
         }
         
-        let cancelAction = UIAlertAction(title: "Отмена", style: .cancel)
+        let cancelAction = UIAlertAction(title: .cancel, style: .cancel)
         
         alert.addAction(deleteAction)
         alert.addAction(cancelAction)
@@ -251,13 +251,13 @@ extension CategoriesViewController: UITableViewDelegate {
         return UIContextMenuConfiguration(
             actionProvider:  { _ in
                 let editAction = UIAction(
-                    title: "Редактировать"
+                    title: .edit
                 ) { [weak self] action in
                     self?.viewModel.editCategory(at: indexPath)
             }
             
                 let deleteAction = UIAction(
-                    title: "Удалить",
+                    title: .delete,
                     attributes: .destructive
                 ) { [weak self] action in
                     self?.showDeleteConfirmationAlert(for: indexPath)

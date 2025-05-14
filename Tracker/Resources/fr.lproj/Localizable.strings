@@ -1,0 +1,47 @@
+/* 
+  Localizable.strings
+  Tracker
+
+  Created by Danil Otmakhov on 15.05.2025.
+  
+*/
+
+"onboarding.blue" = "Suivez uniquement ce que vous voulez";
+"onboarding.red" = "Même si ce n’est ni de l’eau ni du yoga";
+"onboarding.button" = "Quelle technologie !";
+
+"trackers" = "Suivi";
+"statistics" = "Statistiques";
+
+"trackerCreation" = "Création de suivi";
+
+"habit" = "Habitude";
+"irregularEvent" = "Événement irrégulier";
+"category" = "Catégorie";
+
+"habit.new" = "Nouvelle habitude";
+"irregularEvent.new" = "Nouvel événement irrégulier";
+"category.new" = "Nouvelle catégorie";
+
+"category.edit" = "Modification d'une catégorie";
+
+"enteringTrackerName" = "Entrez le nom du suivi";
+"schedule" = "Programme";
+"emoji" = "Emoji";
+"color" = "Couleur";
+
+"enteringCategoryName" = "Entrez le nom de la catégorie";
+"addCategory" = "Ajouter une catégorie";
+
+"search" = "Recherche";
+"trackers.emptyState" = "Que souhaitez-vous suivre ?";
+"categories.emptyState" = "Les habitudes et événements peuvent être regroupés par thème";
+"nothingFound" = "Aucun résultat trouvé";
+"characterLimit" = "Limite de 38 caractères";
+
+"done" = "Terminé";
+"create" = "Créer";
+"cancel" = "Annuler";
+"edit" = "Modifier";
+"delete" = "Supprimer";
+"delete.confirmation" = "Êtes-vous sûr de vouloir supprimer ce suivi ?";

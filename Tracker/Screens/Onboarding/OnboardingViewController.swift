@@ -35,8 +35,8 @@ final class OnboardingViewController: UIPageViewController {
     // MARK: - Private Properties
     
     private let pagesData: [OnboardingPageData] = [
-        OnboardingPageData(title: "Отслеживайте только то, что хотите", imageResource: .blueOnboarding),
-        OnboardingPageData(title: "Даже если это не литры воды и йога", imageResource: .redOnboarding)
+        OnboardingPageData(title: .onboardingBlue, imageResource: .blueOnboarding),
+        OnboardingPageData(title: .onboardingRed, imageResource: .redOnboarding)
     ]
     
     private lazy var pages: [UIViewController] = {

@@ -26,7 +26,7 @@ final class TrackerTypeSelectionViewController: UIViewController {
     // MARK: - Subviews
     
     private lazy var habitButton: UIButton = {
-        $0.setTitle("Привычка", for: .normal)
+        $0.setTitle(.habit, for: .normal)
         $0.backgroundColor = .ypBlack
         $0.tintColor = .ypWhite
         $0.layer.cornerRadius = Constants.cornerRadius
@@ -37,7 +37,7 @@ final class TrackerTypeSelectionViewController: UIViewController {
     }(UIButton())
     
     private lazy var eventButton: UIButton = {
-        $0.setTitle("Нерегулярное событие", for: .normal)
+        $0.setTitle(.irregularEvent, for: .normal)
         $0.backgroundColor = .ypBlack
         $0.tintColor = .ypWhite
         $0.layer.cornerRadius = Constants.cornerRadius
@@ -76,7 +76,7 @@ private extension TrackerTypeSelectionViewController {
     func setupViewController() {
         view.backgroundColor = .ypWhite
         
-        title = "Создание трекера" // TODO: цвет заголовков
+        title = .trackerCreation
         
         view.addSubview(vStack)
         

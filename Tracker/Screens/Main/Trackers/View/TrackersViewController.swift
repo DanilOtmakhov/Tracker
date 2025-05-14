@@ -31,6 +31,7 @@ final class TrackersViewController: UIViewController {
         $0.datePickerMode = .date
         $0.preferredDatePickerStyle = .compact
         $0.maximumDate = Date()
+        $0.locale = Locale.current
         $0.addTarget(self, action: #selector(datePickerValueChanged(_:)), for: .valueChanged)
         return $0
     }(UIDatePicker())
@@ -51,10 +52,10 @@ final class TrackersViewController: UIViewController {
     
     private lazy var searchController: UISearchController = {
         $0.searchResultsUpdater = self
-        $0.searchBar.placeholder = "Поиск"
+        $0.searchBar.placeholder = .search
         $0.searchBar.searchBarStyle = .minimal
         $0.searchBar.tintColor = .ypGray
-        $0.searchBar.setValue("Отменить", forKey: "cancelButtonText")
+        $0.searchBar.setValue(String.cancel, forKey: "cancelButtonText")
         return $0
     }(UISearchController())
     
@@ -109,7 +110,7 @@ private extension TrackersViewController {
         
         navigationController?.hidesBarsOnSwipe = false
         navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.title = "Трекеры"
+        navigationItem.title = .trackers
         navigationItem.searchController = searchController
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(
@@ -205,10 +206,10 @@ private extension TrackersViewController {
             
         case .empty:
             self.updateStubView(image: UIImage(resource: .stub),
-                              labelText: "Что будем отслеживать?")
+                                labelText: .trackersEmptyState)
         case .searchNotFound:
             self.updateStubView(image: UIImage(resource: .nothingFound),
-                              labelText: "Ничего не найдено")
+                                labelText: .nothingFound)
         }
     }
     

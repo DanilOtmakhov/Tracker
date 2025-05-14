@@ -31,7 +31,7 @@ final class CategoryFormViewController: UIViewController {
     private lazy var titleTextField: UITextField = {
         $0.delegate = self
         $0.attributedPlaceholder = NSAttributedString(
-            string: "Введите название категории",
+            string: .enteringCategoryName,
             attributes: [
                 .foregroundColor: UIColor.ypGray
             ]
@@ -49,7 +49,7 @@ final class CategoryFormViewController: UIViewController {
     }(UITextField())
     
     private lazy var warningLabel: UILabel = {
-        $0.text = "Ограничение 38 символов"
+        $0.text = .characterLimit
         $0.font = .systemFont(ofSize: 17)
         $0.textColor = .ypRed
         $0.textAlignment = .center
@@ -58,7 +58,7 @@ final class CategoryFormViewController: UIViewController {
     }(UILabel())
     
     private lazy var readyButton: UIButton = {
-        $0.setTitle("Готово", for: .normal)
+        $0.setTitle(.done, for: .normal)
         $0.setTitleColor(.ypWhite, for: .normal)
         $0.backgroundColor = .ypBlack
         $0.isEnabled = false
@@ -98,7 +98,7 @@ final class CategoryFormViewController: UIViewController {
 private extension CategoryFormViewController {
     
     func setupViewController() {
-        title = viewModel.isEditMode ? "Редактирование категории" : "Новая категория"
+        title = viewModel.isEditMode ? .categoryEdit : .categoryNew
         view.backgroundColor = .ypWhite
         
         if viewModel.isEditMode {

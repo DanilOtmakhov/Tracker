@@ -9,7 +9,7 @@ import UIKit
 
 final class HabitFormViewController: TrackerFormViewController {
     
-    override var formTitle: String { "Новая привычка" }
+    override var formTitle: String { .habitNew }
     override var showsSchedule: Bool { true }
     
     init(viewModel: HabitFormViewModelProtocol) {

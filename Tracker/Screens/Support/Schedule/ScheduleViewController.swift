@@ -65,7 +65,7 @@ final class ScheduleViewController: UIViewController {
 private extension ScheduleViewController {
     
     func setupViewController() {
-        title = "Расписание"
+        title = .schedule
         view.backgroundColor = .ypWhite
         
         [tableView, readyButton].forEach {
