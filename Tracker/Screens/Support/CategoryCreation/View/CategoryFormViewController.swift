@@ -159,11 +159,11 @@ private extension CategoryFormViewController {
     
     func didTapReadyButton() {
         guard let title = titleTextField.text else { return }
-        viewModel.didCompleteForm(withTitle: title)
+        viewModel.completeForm(withTitle: title)
     }
     
     func textFieldDidChange() {
-        viewModel.didChangeTitle(titleTextField.text)
+        viewModel.updateTitle(titleTextField.text)
     }
     
 }

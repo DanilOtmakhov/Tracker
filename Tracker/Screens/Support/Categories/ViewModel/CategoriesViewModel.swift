@@ -27,7 +27,7 @@ protocol CategoriesViewModelProtocol {
     func categoryTitle(at indexPath: IndexPath) -> String?
     func didSelectCategory(at indexPath: IndexPath)
     func isCategorySelected(at indexPath: IndexPath) -> Bool
-    func reloadState()
+    func refresh()
     func editCategory(at indexPath: IndexPath)
     func deleteCategory(at indexPath: IndexPath)
 }
@@ -84,7 +84,7 @@ extension CategoriesViewModel {
         return selectedCategory == category
     }
     
-    func reloadState() {
+    func refresh() {
         determineState(TrackerCategoryStoreUpdate())
     }
     

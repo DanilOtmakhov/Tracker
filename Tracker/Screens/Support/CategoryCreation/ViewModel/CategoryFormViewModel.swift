@@ -17,14 +17,14 @@ protocol CategoryFormViewModelProtocol {
     var isEditMode: Bool { get }
     var initialTitle: String? { get }
     var onStateChange: ((CategoryFormViewModelState) -> Void)? { get set }
-    var onFormCompleted: (() -> Void)? { get set }
-    func didCompleteForm(withTitle title: String)
-    func didChangeTitle(_ title: String?)
+    var onCategoryAdded: (() -> Void)? { get set }
+    func completeForm(withTitle title: String)
+    func updateTitle(_ title: String?)
 }
 
 final class CategoryFormViewModel: CategoryFormViewModelProtocol {
     
-    var onFormCompleted: (() -> Void)?
+    var onCategoryAdded: (() -> Void)?
     var onStateChange: ((CategoryFormViewModelState) -> Void)?
     
     private(set) var isEditMode: Bool
@@ -52,7 +52,7 @@ final class CategoryFormViewModel: CategoryFormViewModelProtocol {
 
 extension CategoryFormViewModel {
     
-    func didCompleteForm(withTitle title: String) {
+    func completeForm(withTitle title: String) {
         do {
             if isEditMode {
                 guard let categoryToEdit else { return }
@@ -61,13 +61,13 @@ extension CategoryFormViewModel {
             } else {
                 try categoryProvider.addCategory(withTitle: title)
             }
-            onFormCompleted?()
+            onCategoryAdded?()
         } catch {
             print("Failed to add category: \(error)")
         }
     }
     
-    func didChangeTitle(_ title: String?) {
+    func updateTitle(_ title: String?) {
         let text = title ?? ""
         if text.count >= maxTitleLength {
             state = .atCharacterLimit(text: text)

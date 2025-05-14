@@ -91,7 +91,7 @@ final class CategoriesViewController: UIViewController {
         super.viewDidLoad()
         setupViewController()
         setupViewModel()
-        viewModel.reloadState()
+        viewModel.refresh()
     }
     
 }

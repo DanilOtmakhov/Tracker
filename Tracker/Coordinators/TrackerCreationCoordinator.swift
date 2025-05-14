@@ -107,7 +107,7 @@ final class TrackerCreationCoordinator: Coordinator {
         let viewModel = CategoryFormViewModel(categoryProvider: dataManager.categoryProvider, categoryToEdit: categoryToEdit)
         let viewController = CategoryFormViewController(viewModel: viewModel)
         
-        viewModel.onFormCompleted = { [weak viewController] in
+        viewModel.onCategoryAdded = { [weak viewController] in
             viewController?.dismiss(animated: true)
         }
         
