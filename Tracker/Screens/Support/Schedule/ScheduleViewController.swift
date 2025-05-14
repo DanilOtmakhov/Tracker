@@ -13,6 +13,7 @@ final class ScheduleViewController: UIViewController {
     
     private enum Constants {
         static let rowHeight: CGFloat = 75
+        static let tableViewToButtonSpacing: CGFloat = 16
         
         static let buttonHorizontalInset: CGFloat = 20
         static let buttonBottomInset: CGFloat = -16
@@ -76,7 +77,7 @@ private extension ScheduleViewController {
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            tableView.bottomAnchor.constraint(equalTo: readyButton.topAnchor, constant: -Constants.tableViewToButtonSpacing),
             
             readyButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.buttonHorizontalInset),
             readyButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.buttonHorizontalInset),
@@ -94,7 +95,6 @@ private extension ScheduleViewController {
     
     func didTapReadyButton() {
         onDaysSelected?(Array(selectedDays.sorted()))
-        dismiss(animated: true)
     }
     
 }

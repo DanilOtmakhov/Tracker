@@ -7,7 +7,7 @@
 
 import CoreData
 
-struct TrackersStoreUpdate {
+struct TrackerStoreUpdate {
     
     var insertedSections: IndexSet
     var deletedSections: IndexSet
@@ -15,6 +15,15 @@ struct TrackersStoreUpdate {
     var deletedIndexPaths: [IndexPath]
     var updatedIndexPaths: [IndexPath]
     var movedIndexPaths: [(from: IndexPath, to: IndexPath)]
+    
+    var isEmpty: Bool {
+        insertedSections.isEmpty &&
+        deletedSections.isEmpty &&
+        insertedIndexPaths.isEmpty &&
+        deletedIndexPaths.isEmpty &&
+        updatedIndexPaths.isEmpty &&
+        movedIndexPaths.isEmpty
+    }
     
     init(insertedSections: IndexSet = IndexSet(),
          deletedSections: IndexSet = IndexSet(),
@@ -29,20 +38,11 @@ struct TrackersStoreUpdate {
         self.updatedIndexPaths = updatedIndexPaths
         self.movedIndexPaths = movedIndexPaths
     }
-    
-    var isEmpty: Bool {
-        insertedSections.isEmpty &&
-        deletedSections.isEmpty &&
-        insertedIndexPaths.isEmpty &&
-        deletedIndexPaths.isEmpty &&
-        updatedIndexPaths.isEmpty &&
-        movedIndexPaths.isEmpty
-    }
-    
+
 }
 
 protocol TrackerProviderDelegate: AnyObject {
-    func didUpdate(_ update: TrackersStoreUpdate)
+    func didUpdate(_ update: TrackerStoreUpdate)
 }
 
 protocol TrackerProviderProtocol {
@@ -61,7 +61,7 @@ final class TrackerProvider: NSObject {
 
     private let context: NSManagedObjectContext
     private let store: TrackerStoreProtocol
-    private var pendingUpdate = TrackersStoreUpdate()
+    private var pendingUpdate = TrackerStoreUpdate()
 
     private lazy var fetchedResultsController: NSFetchedResultsController<TrackerEntity> = {
 
@@ -90,7 +90,7 @@ final class TrackerProvider: NSObject {
     
 }
 
-// MARK: - TrackerDataProviderProtocol
+// MARK: - TrackerProviderProtocol
 
 extension TrackerProvider: TrackerProviderProtocol {
     
@@ -158,7 +158,7 @@ extension TrackerProvider: TrackerProviderProtocol {
         
         do {
             try fetchedResultsController.performFetch()
-            delegate?.didUpdate(TrackersStoreUpdate())
+            delegate?.didUpdate(TrackerStoreUpdate())
         } catch {
             print("Failed to fetch data after filtering: \(error)")
         }
@@ -172,12 +172,12 @@ extension TrackerProvider: TrackerProviderProtocol {
 extension TrackerProvider: NSFetchedResultsControllerDelegate {
     
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        pendingUpdate = TrackersStoreUpdate()
+        pendingUpdate = TrackerStoreUpdate()
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         delegate?.didUpdate(pendingUpdate)
-        pendingUpdate = TrackersStoreUpdate()
+        pendingUpdate = TrackerStoreUpdate()
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,

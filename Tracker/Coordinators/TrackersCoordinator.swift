@@ -7,13 +7,6 @@
 
 import UIKit
 
-protocol Coordinator {
-    
-//    var navigationController: UINavigationController { get }
-    func start()
-    
-}
-
 protocol NavigationCoordinator: Coordinator {
     var navigationController: UINavigationController { get }
 }

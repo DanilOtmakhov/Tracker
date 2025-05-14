@@ -7,10 +7,10 @@
 
 import UIKit
 
-protocol TrackerFormViewModelProtocol {
+protocol TrackerFormViewModelProtocol: AnyObject {
     
     var title: String? { get set }
-    var selectedCategory: String? { get set }
+    var selectedCategory: TrackerCategory? { get set }
     var selectedEmoji: String? { get set }
     var selectedColor: UIColor? { get set }
     
@@ -19,7 +19,7 @@ protocol TrackerFormViewModelProtocol {
     var onFormUpdated: (() -> Void)? { get set }
     
     func didEnterTitle(_ title: String?)
-    func didSelectCategory(_ category: String)
+    func didSelectCategory(_ category: TrackerCategory)
     func didSelectEmoji(_ emoji: String)
     func didSelectColor(_ color: UIColor)
     
@@ -37,7 +37,7 @@ class TrackerFormViewModel: TrackerFormViewModelProtocol {
         }
     }
     
-    var selectedCategory: String? = "Важное" {
+    var selectedCategory: TrackerCategory? {
         didSet {
             onFormUpdated?()
         }
@@ -69,9 +69,6 @@ class TrackerFormViewModel: TrackerFormViewModelProtocol {
     }
     
     var onFormUpdated: (() -> Void)?
-    
-    // MARK: - Private Properties
-    
     let dataManager: DataManagerProtocol
     
     // MARK: - Initialization
@@ -86,7 +83,7 @@ class TrackerFormViewModel: TrackerFormViewModelProtocol {
         self.title = title
     }
     
-    func didSelectCategory(_ category: String) {
+    func didSelectCategory(_ category: TrackerCategory) {
         selectedCategory = category
     }
     
@@ -113,9 +110,7 @@ class TrackerFormViewModel: TrackerFormViewModelProtocol {
             schedule: nil
         )
         
-        let category = TrackerCategory(title: selectedCategory, trackers: [tracker])
-        
-        try? dataManager.trackerProvider.addTracker(tracker, to: category)
+        try? dataManager.trackerProvider.addTracker(tracker, to: selectedCategory)
     }
     
 }

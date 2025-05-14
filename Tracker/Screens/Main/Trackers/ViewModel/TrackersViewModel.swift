@@ -8,11 +8,11 @@
 import Foundation
 
 enum TrackersViewModelState {
-    case content(update: TrackersStoreUpdate)
-    case empty(update: TrackersStoreUpdate)
-    case searchNotFound(update: TrackersStoreUpdate)
+    case content(update: TrackerStoreUpdate)
+    case empty(update: TrackerStoreUpdate)
+    case searchNotFound(update: TrackerStoreUpdate)
     
-    var update: TrackersStoreUpdate {
+    var update: TrackerStoreUpdate {
         switch self {
         case .content(let update), .empty(let update), .searchNotFound(let update):
             return update
@@ -62,6 +62,13 @@ final class TrackersViewModel: TrackersViewModelProtocol {
         
         self.dataManager.trackerProvider.delegate = self
         dataManager.trackerProvider.applyFilter(currentDate: currentDate, searchQuery: searchQuery)
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleRefreshNotification),
+            name: .trackersShouldRefresh,
+            object: nil
+        )
     }
     
 }
@@ -130,7 +137,7 @@ extension TrackersViewModel {
 
 private extension TrackersViewModel {
     
-    func determineState(_ update: TrackersStoreUpdate) -> TrackersViewModelState {
+    func determineState(_ update: TrackerStoreUpdate) -> TrackersViewModelState {
         let hasData = dataManager.trackerProvider.numberOfSections > 0
         
         if hasData {
@@ -142,13 +149,17 @@ private extension TrackersViewModel {
         }
     }
     
+    @objc func handleRefreshNotification() {
+        dataManager.trackerProvider.applyFilter(currentDate: currentDate, searchQuery: searchQuery)
+    }
+    
 }
 
 // MARK: - TrackerDataProviderDelegate
 
 extension TrackersViewModel: TrackerProviderDelegate {
     
-    func didUpdate(_ update: TrackersStoreUpdate) {
+    func didUpdate(_ update: TrackerStoreUpdate) {
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
             self.state = self.determineState(update)
