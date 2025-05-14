@@ -22,11 +22,13 @@ enum CategoriesViewModelState {
 protocol CategoriesViewModelProtocol {
     var onStateChange: ((CategoriesViewModelState) -> Void)? { get set }
     var onCategorySelected: ((TrackerCategory) -> Void)? { get set }
+    var onCategorySelectedForEditing: ((TrackerCategory) -> Void)? { get set }
     func numberOfRows(in section: Int) -> Int
     func categoryTitle(at indexPath: IndexPath) -> String?
     func didSelectCategory(at indexPath: IndexPath)
     func isCategorySelected(at indexPath: IndexPath) -> Bool
     func reloadState()
+    func editCategory(at indexPath: IndexPath)
     func deleteCategory(at indexPath: IndexPath)
 }
 
@@ -36,6 +38,7 @@ final class CategoriesViewModel: CategoriesViewModelProtocol {
     
     var onStateChange: ((CategoriesViewModelState) -> Void)?
     var onCategorySelected: ((TrackerCategory) -> Void)?
+    var onCategorySelectedForEditing: ((TrackerCategory) -> Void)?
     
     var selectedCategory: TrackerCategory? {
         didSet {
@@ -83,6 +86,11 @@ extension CategoriesViewModel {
     
     func reloadState() {
         determineState(TrackerCategoryStoreUpdate())
+    }
+    
+    func editCategory(at indexPath: IndexPath) {
+        guard let category = categoryProvider.category(at: indexPath) else { return }
+        onCategorySelectedForEditing?(category)
     }
     
     func deleteCategory(at indexPath: IndexPath) {

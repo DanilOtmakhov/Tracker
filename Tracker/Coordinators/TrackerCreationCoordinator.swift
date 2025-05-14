@@ -27,16 +27,16 @@ final class TrackerCreationCoordinator: Coordinator {
         viewController.onTrackerTypeSelected = { [weak self, weak viewController] type in
             switch type {
             case .habit:
-                self?.showNewHabitViewController(from: viewController)
+                self?.showHabitFormViewController(from: viewController)
             case .event:
-                self?.showNewEventViewController(from: viewController)
+                self?.showEventFormViewController(from: viewController)
             }
         }
         
         presentInPageSheet(viewController)
     }
     
-    private func showNewHabitViewController(from presentingViewController: UIViewController?) {
+    private func showHabitFormViewController(from presentingViewController: UIViewController?) {
         let viewModel = HabitFormViewModel(dataManager: dataManager)
         let viewController = HabitFormViewController(viewModel: viewModel)
         
@@ -55,7 +55,7 @@ final class TrackerCreationCoordinator: Coordinator {
         presentInPageSheet(viewController, from: presentingViewController)
     }
     
-    private func showNewEventViewController(from presentingViewController: UIViewController?) {
+    private func showEventFormViewController(from presentingViewController: UIViewController?) {
         let viewModel = EventFormViewModel(dataManager: dataManager)
         let viewController = EventFormViewController(viewModel: viewModel)
         
@@ -80,8 +80,12 @@ final class TrackerCreationCoordinator: Coordinator {
             viewController?.dismiss(animated: true, completion: nil)
         }
         
-        viewController.onAddButtonTapped = { [weak self] in
-            self?.showNewCategoryViewController(from: viewController, with: viewModel)
+        viewModel.onCategorySelectedForEditing = { [weak self, weak viewController] category in
+            self?.showCategoryFormViewController(from: viewController, categoryToEdit: category)
+        }
+        
+        viewController.onAddButtonTapped = { [weak self, weak viewController] in
+            self?.showCategoryFormViewController(from: viewController)
         }
         
         presentInPageSheet(viewController, from: presentingViewController)
@@ -99,8 +103,8 @@ final class TrackerCreationCoordinator: Coordinator {
         presentInPageSheet(viewController, from: presentingViewController)
     }
     
-    private func showNewCategoryViewController(from presentingViewController: UIViewController?, with presentingViewModel: CategoriesViewModel) {
-        let viewModel = CategoryFormViewModel(categoryProvider: dataManager.categoryProvider)
+    private func showCategoryFormViewController(from presentingViewController: UIViewController?, categoryToEdit: TrackerCategory? = nil) {
+        let viewModel = CategoryFormViewModel(categoryProvider: dataManager.categoryProvider, categoryToEdit: categoryToEdit)
         let viewController = CategoryFormViewController(viewModel: viewModel)
         
         viewModel.onFormCompleted = { [weak viewController] in

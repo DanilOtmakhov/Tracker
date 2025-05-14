@@ -252,8 +252,8 @@ extension CategoriesViewController: UITableViewDelegate {
             actionProvider:  { _ in
                 let editAction = UIAction(
                     title: "Редактировать"
-                ) { action in
-                
+                ) { [weak self] action in
+                    self?.viewModel.editCategory(at: indexPath)
             }
             
                 let deleteAction = UIAction(

@@ -62,6 +62,13 @@ final class TrackersViewModel: TrackersViewModelProtocol {
         
         self.dataManager.trackerProvider.delegate = self
         dataManager.trackerProvider.applyFilter(currentDate: currentDate, searchQuery: searchQuery)
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleRefreshNotification),
+            name: .trackersShouldRefresh,
+            object: nil
+        )
     }
     
 }
@@ -140,6 +147,10 @@ private extension TrackersViewModel {
                 .empty(update: update) :
                 .searchNotFound(update: update)
         }
+    }
+    
+    @objc func handleRefreshNotification() {
+        dataManager.trackerProvider.applyFilter(currentDate: currentDate, searchQuery: searchQuery)
     }
     
 }

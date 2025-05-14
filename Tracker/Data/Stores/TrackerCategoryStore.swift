@@ -6,7 +6,6 @@
 //
 
 import CoreData
-import UIKit
 
 enum TrackerCategoryStoreError: Error {
     case categoryAlreadyExists(String)
@@ -18,6 +17,7 @@ protocol TrackerCategoryStoreProtocol {
     func fetchOrCreateCategory(withTitle title: String) throws -> TrackerCategoryEntity
     func addCategory(withTitle title: String) throws
     func delete(_ category: TrackerCategory) throws
+    func edit(_ category: TrackerCategory, withTitle title: String) throws
 }
 
 final class TrackerCategoryStore: TrackerCategoryStoreProtocol {
@@ -94,6 +94,22 @@ final class TrackerCategoryStore: TrackerCategoryStoreProtocol {
         }
         
         context.delete(categoryToDelete)
+        
+        try context.save()
+    }
+    
+    func edit(_ category: TrackerCategory, withTitle title: String) throws {
+        let request = TrackerCategoryEntity.fetchRequest()
+        request.predicate = NSPredicate(format: "title == %@", category.title)
+        request.fetchLimit = 1
+        
+        let results = try context.fetch(request)
+        
+        guard let categoryToEdit = results.first else {
+            throw TrackerCategoryStoreError.categoryNotFound("Category '\(category.title)' not found")
+        }
+        
+        categoryToEdit.title = title
         
         try context.save()
     }

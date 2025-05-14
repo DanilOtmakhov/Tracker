@@ -14,6 +14,8 @@ enum CategoryFormViewModelState {
 }
 
 protocol CategoryFormViewModelProtocol {
+    var isEditMode: Bool { get }
+    var initialTitle: String? { get }
     var onStateChange: ((CategoryFormViewModelState) -> Void)? { get set }
     var onFormCompleted: (() -> Void)? { get set }
     func didCompleteForm(withTitle title: String)
@@ -25,6 +27,10 @@ final class CategoryFormViewModel: CategoryFormViewModelProtocol {
     var onFormCompleted: (() -> Void)?
     var onStateChange: ((CategoryFormViewModelState) -> Void)?
     
+    private(set) var isEditMode: Bool
+    private(set) var initialTitle: String?
+    
+    private let categoryToEdit: TrackerCategory?
     private let categoryProvider: TrackerCategoryProviderProtocol
     private let maxTitleLength: Int = 38
     private var state: CategoryFormViewModelState = .initial {
@@ -33,8 +39,11 @@ final class CategoryFormViewModel: CategoryFormViewModelProtocol {
         }
     }
     
-    init(categoryProvider: TrackerCategoryProviderProtocol) {
+    init(categoryProvider: TrackerCategoryProviderProtocol, categoryToEdit: TrackerCategory? = nil) {
         self.categoryProvider = categoryProvider
+        self.categoryToEdit = categoryToEdit
+        self.isEditMode = categoryToEdit != nil
+        self.initialTitle = categoryToEdit?.title
     }
     
 }
@@ -45,7 +54,13 @@ extension CategoryFormViewModel {
     
     func didCompleteForm(withTitle title: String) {
         do {
-            try categoryProvider.addCategory(withTitle: title)
+            if isEditMode {
+                guard let categoryToEdit else { return }
+                try categoryProvider.edit(categoryToEdit, withTitle: title)
+                NotificationCenter.default.post(name: .trackersShouldRefresh, object: nil)
+            } else {
+                try categoryProvider.addCategory(withTitle: title)
+            }
             onFormCompleted?()
         } catch {
             print("Failed to add category: \(error)")

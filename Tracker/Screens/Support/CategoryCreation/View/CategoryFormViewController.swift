@@ -98,8 +98,13 @@ final class CategoryFormViewController: UIViewController {
 private extension CategoryFormViewController {
     
     func setupViewController() {
-        title = "Новая категория"
+        title = viewModel.isEditMode ? "Редактирование категории" : "Новая категория"
         view.backgroundColor = .ypWhite
+        
+        if viewModel.isEditMode {
+            titleTextField.text = viewModel.initialTitle
+            readyButton.isEnabled = true
+        }
         
         [titleTextField, warningLabel, readyButton].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
