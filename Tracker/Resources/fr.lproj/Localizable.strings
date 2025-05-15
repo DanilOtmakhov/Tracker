@@ -10,10 +10,10 @@
 "onboarding.red" = "Même si ce n’est ni de l’eau ni du yoga";
 "onboarding.button" = "Quelle technologie !";
 
-"trackers" = "Suivi";
+"trackers" = "Traqueurs";
 "statistics" = "Statistiques";
 
-"trackerCreation" = "Création de suivi";
+"trackerCreation" = "Créer un tracker";
 
 "habit" = "Habitude";
 "irregularEvent" = "Événement irrégulier";
@@ -25,7 +25,7 @@
 
 "category.edit" = "Modification d'une catégorie";
 
-"enteringTrackerName" = "Entrez le nom du suivi";
+"enteringTrackerName" = "Entrez le nom du tracker";
 "schedule" = "Programme";
 "emoji" = "Emoji";
 "color" = "Couleur";
@@ -34,7 +34,7 @@
 "addCategory" = "Ajouter une catégorie";
 
 "search" = "Recherche";
-"trackers.emptyState" = "Que souhaitez-vous suivre ?";
+"trackers.emptyState" = "Que souhaitez-vous suivre?";
 "categories.emptyState" = "Les habitudes et événements peuvent être regroupés par thème";
 "nothingFound" = "Aucun résultat trouvé";
 "characterLimit" = "Limite de 38 caractères";
@@ -44,4 +44,4 @@
 "cancel" = "Annuler";
 "edit" = "Modifier";
 "delete" = "Supprimer";
-"delete.confirmation" = "Êtes-vous sûr de vouloir supprimer ce suivi ?";
+"delete.confirmation" = "Êtes-vous sûr de vouloir supprimer le tracker?";

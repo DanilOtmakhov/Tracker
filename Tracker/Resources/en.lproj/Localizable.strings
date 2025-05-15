@@ -1,4 +1,4 @@
-/* 
+/*
   Localizable.strings
   Tracker
 
@@ -13,7 +13,7 @@
 "trackers" = "Trackers";
 "statistics" = "Statistics";
 
-"trackerCreation" = "Create Tracker";
+"trackerCreation" = "Create tracker";
 
 "habit" = "Habit";
 "irregularEvent" = "Irregular event";
@@ -45,3 +45,4 @@
 "edit" = "Edit";
 "delete" = "Delete";
 "delete.confirmation" = "Are you sure you want to delete the tracker?";
+
