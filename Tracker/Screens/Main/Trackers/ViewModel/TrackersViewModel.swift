@@ -25,6 +25,7 @@ typealias State = TrackersViewModelState
 protocol TrackersViewModelProtocol: AnyObject {
     
     var onStateChange: ((State) -> Void)? { get set }
+    var onDateChange: ((Date) -> Void)? { get set }
     var currentFilter: Filter { get }
     var numberOfSections: Int { get }
     func numberOfItemsInSection(_ section: Int) -> Int
@@ -44,6 +45,7 @@ final class TrackersViewModel: TrackersViewModelProtocol {
     // MARK: - Internal Properties
     
     var onStateChange: ((State) -> Void)?
+    var onDateChange: ((Date) -> Void)?
     var currentFilter: Filter {
         filterOptions.filter
     }
@@ -105,6 +107,13 @@ extension TrackersViewModel {
     
     func updateFilter(to filter: Filter) {
         filterOptions.filter = filter
+        
+        if filter == .today {
+            let today = Date()
+            filterOptions.date = today
+            onDateChange?(today)
+        }
+        
         applyCurrentFilter()
     }
     

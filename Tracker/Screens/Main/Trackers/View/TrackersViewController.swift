@@ -192,6 +192,10 @@ private extension TrackersViewController {
                 self?.applyUpdate(state)
             }
         }
+        
+        viewModel.onDateChange = { [weak self] date in
+            self?.datePicker.setDate(date, animated: true)
+        }
     }
     
     func applyUpdate(_ state: TrackersViewModelState) {

@@ -161,13 +161,23 @@ extension TrackerProvider: TrackerProviderProtocol {
         }
         
         switch options.filter {
-        case .all:
-            break
-        case .today:
-            break
         case .completed:
-            break
+            let completedPredicate = NSPredicate(
+                format: "SUBQUERY(records, $r, $r.date >= %@ AND $r.date < %@).@count > 0",
+                startOfDay as NSDate,
+                startOfNextDay as NSDate
+            )
+            predicates.append(completedPredicate)
+            
         case .notCompleted:
+            let notCompletedPredicate = NSPredicate(
+                format: "SUBQUERY(records, $r, $r.date >= %@ AND $r.date < %@).@count == 0",
+                startOfDay as NSDate,
+                startOfNextDay as NSDate
+            )
+            predicates.append(notCompletedPredicate)
+            
+        case .all, .today:
             break
         }
 
