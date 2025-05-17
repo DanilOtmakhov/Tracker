@@ -240,7 +240,7 @@ private extension TrackersViewController {
             self.updateStubView(image: UIImage(resource: .stub),
                                 labelText: .trackersEmptyState)
         case .searchNotFound:
-            self.filtersButton.isHidden = true
+            self.filtersButton.isHidden = false
             self.updateStubView(image: UIImage(resource: .nothingFound),
                                 labelText: .nothingFound)
         }

@@ -159,7 +159,7 @@ private extension TrackersViewModel {
         if hasData {
             return .content(update: update)
         } else {
-            return filterOptions.searchQuery.isEmpty ?
+            return filterOptions.searchQuery.isEmpty && filterOptions.filter == .all ?
                 .empty(update: update) :
                 .searchNotFound(update: update)
         }
