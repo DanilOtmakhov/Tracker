@@ -68,6 +68,7 @@ extension String {
     static let categoriesEmptyState = "categories.emptyState".localized
     static let nothingFound = "nothingFound".localized
     static let characterLimit = "characterLimit".localized
+    static let filters = "filters".localized
 
     // MARK: - Actions
 

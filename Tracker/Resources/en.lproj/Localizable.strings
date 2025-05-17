@@ -38,6 +38,7 @@
 "categories.emptyState" = "Habits and events can be combined in meaning";
 "nothingFound" = "Nothing found";
 "characterLimit" = "Limit of 38 characters";
+"filters" = "Filters";
 
 "done" = "Done";
 "create" = "Create";

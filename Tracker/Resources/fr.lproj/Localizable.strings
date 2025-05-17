@@ -38,6 +38,7 @@
 "categories.emptyState" = "Les habitudes et événements peuvent être regroupés par thème";
 "nothingFound" = "Aucun résultat trouvé";
 "characterLimit" = "Limite de 38 caractères";
+"filters" = "Filtres";
 
 "done" = "Terminé";
 "create" = "Créer";

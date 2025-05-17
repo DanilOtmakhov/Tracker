@@ -19,10 +19,16 @@ final class TrackersViewController: UIViewController {
         static let headerHeight: CGFloat = 50
         
         static let stubImageSize: CGFloat = 80
-        static let stubTopOffset: CGFloat = -40
+        static let stubImageTopOffset: CGFloat = -40
+        
         static let stubLabelTopOffset: CGFloat = 8
         
         static let datePickerWidth: CGFloat = 110
+        
+        static let cornerRadius: CGFloat = 16
+        static let buttonWidth: CGFloat = 114
+        static let buttonHeight: CGFloat = 50
+        static let buttonBottomInset: CGFloat = -16
     }
     
     // MARK: - Subviews
@@ -69,6 +75,16 @@ final class TrackersViewController: UIViewController {
         $0.register(TrackersHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: TrackersHeaderView.reuseIdentifier)
         return $0
     }(UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout()))
+    
+    private lazy var filtersButton: UIButton = {
+        $0.setTitle(.filters, for: .normal)
+        $0.setTitleColor(.white, for: .normal)
+        $0.titleLabel?.font = .systemFont(ofSize: 17)
+        $0.backgroundColor = .ypBlue
+        $0.layer.cornerRadius = Constants.cornerRadius
+        $0.addTarget(self, action: #selector(didTapFiltersButton), for: .touchUpInside)
+        return $0
+    }(UIButton())
     
     // MARK: - Internal Properties
     
@@ -117,14 +133,14 @@ private extension TrackersViewController {
             image: UIImage(resource: .plus),
             style: .done,
             target: self,
-            action: #selector(addButtonTapped)
+            action: #selector(didTapAddButton)
         )
         
         navigationItem.leftBarButtonItem?.tintColor = .ypBlack
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
         
-        [collectionView, stubImageView, stubLabel].forEach {
+        [collectionView, stubImageView, stubLabel, filtersButton].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
         }
@@ -138,12 +154,17 @@ private extension TrackersViewController {
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             
             stubImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            stubImageView.topAnchor.constraint(equalTo: view.centerYAnchor, constant: Constants.stubTopOffset),
+            stubImageView.topAnchor.constraint(equalTo: view.centerYAnchor, constant: Constants.stubImageTopOffset),
             stubImageView.heightAnchor.constraint(equalToConstant: Constants.stubImageSize),
             stubImageView.widthAnchor.constraint(equalToConstant: Constants.stubImageSize),
             
             stubLabel.topAnchor.constraint(equalTo: stubImageView.bottomAnchor, constant: Constants.stubLabelTopOffset),
-            stubLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+            stubLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            
+            filtersButton.widthAnchor.constraint(equalToConstant: Constants.buttonWidth),
+            filtersButton.heightAnchor.constraint(equalToConstant: Constants.buttonHeight),
+            filtersButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            filtersButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: Constants.buttonBottomInset)
         ])
     }
     
@@ -179,6 +200,7 @@ private extension TrackersViewController {
             self.stubImageView.isHidden = true
             self.stubLabel.isHidden = true
             self.collectionView.isHidden = false
+            self.filtersButton.isHidden = false
             
             if update.isEmpty {
                 collectionView.reloadData()
@@ -209,9 +231,11 @@ private extension TrackersViewController {
             }
             
         case .empty:
+            self.filtersButton.isHidden = true
             self.updateStubView(image: UIImage(resource: .stub),
                                 labelText: .trackersEmptyState)
         case .searchNotFound:
+            self.filtersButton.isHidden = true
             self.updateStubView(image: UIImage(resource: .nothingFound),
                                 labelText: .nothingFound)
         }
@@ -232,8 +256,12 @@ private extension TrackersViewController {
 @objc
 private extension TrackersViewController {
     
-    func addButtonTapped() {
+    func didTapAddButton() {
         onAddTrackerTapped?()
+    }
+    
+    func didTapFiltersButton() {
+        
     }
     
     func datePickerValueChanged(_ sender: UIDatePicker) {
