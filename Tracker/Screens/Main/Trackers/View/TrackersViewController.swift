@@ -114,11 +114,13 @@ private extension TrackersViewController {
         navigationItem.searchController = searchController
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(
-            image: UIImage(resource: .plus).withRenderingMode(.alwaysOriginal),
+            image: UIImage(resource: .plus),
             style: .done,
             target: self,
             action: #selector(addButtonTapped)
         )
+        
+        navigationItem.leftBarButtonItem?.tintColor = .ypBlack
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
         
@@ -144,6 +146,8 @@ private extension TrackersViewController {
             stubLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }
+    
+    
     
     func setupAppearance() {
         let attributes: [NSAttributedString.Key: Any] = [

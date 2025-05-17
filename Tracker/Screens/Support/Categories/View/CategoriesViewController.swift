@@ -59,6 +59,7 @@ final class CategoriesViewController: UIViewController {
     
     private lazy var addButton: UIButton = {
         $0.setTitle(.addCategory, for: .normal)
+        $0.setTitleColor(.ypWhite, for: .normal)
         $0.backgroundColor = .ypBlack
         $0.layer.cornerRadius = Constants.cornerRadius
         $0.layer.masksToBounds = true

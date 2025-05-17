@@ -27,6 +27,7 @@ final class TrackerTypeSelectionViewController: UIViewController {
     
     private lazy var habitButton: UIButton = {
         $0.setTitle(.habit, for: .normal)
+        $0.setTitleColor(.ypWhite, for: .normal)
         $0.backgroundColor = .ypBlack
         $0.tintColor = .ypWhite
         $0.layer.cornerRadius = Constants.cornerRadius
@@ -38,6 +39,7 @@ final class TrackerTypeSelectionViewController: UIViewController {
     
     private lazy var eventButton: UIButton = {
         $0.setTitle(.irregularEvent, for: .normal)
+        $0.setTitleColor(.ypWhite, for: .normal)
         $0.backgroundColor = .ypBlack
         $0.tintColor = .ypWhite
         $0.layer.cornerRadius = Constants.cornerRadius
