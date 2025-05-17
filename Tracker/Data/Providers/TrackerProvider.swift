@@ -41,6 +41,12 @@ struct TrackerStoreUpdate {
 
 }
 
+struct TrackerFilterOptions {
+    var date: Date
+    var searchQuery: String
+    var filter: Filter
+}
+
 protocol TrackerProviderDelegate: AnyObject {
     func didUpdate(_ update: TrackerStoreUpdate)
 }
@@ -52,7 +58,7 @@ protocol TrackerProviderProtocol {
     func nameOfSection(at: IndexPath) -> String?
     func tracker(at: IndexPath) -> Tracker?
     func addTracker(_ tracker: Tracker, to: TrackerCategory) throws
-    func applyFilter(currentDate: Date, searchQuery: String)
+    func applyFilter(with options: TrackerFilterOptions)
 }
 
 final class TrackerProvider: NSObject {
@@ -115,14 +121,14 @@ extension TrackerProvider: TrackerProviderProtocol {
         try store.add(tracker, to: category)
     }
     
-    func applyFilter(currentDate: Date, searchQuery: String) {
+    func applyFilter(with options: TrackerFilterOptions) {
         var predicates: [NSPredicate] = []
         
         let calendar = Calendar.current
-        let weekday = calendar.component(.weekday, from: currentDate)
+        let weekday = calendar.component(.weekday, from: options.date)
         guard let currentDay = Day(rawValue: weekday) else { return }
         
-        let startOfDay = calendar.startOfDay(for: currentDate)
+        let startOfDay = calendar.startOfDay(for: options.date)
         let startOfNextDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
 
         let scheduledPredicate = NSPredicate(format: "schedule != nil AND schedule CONTAINS %@", "\(currentDay.rawValue)")
@@ -146,12 +152,23 @@ extension TrackerProvider: TrackerProviderProtocol {
         
         predicates.append(displayPredicate)
         
-        if !searchQuery.isEmpty {
+        if !options.searchQuery.isEmpty {
             let searchPredicate = NSPredicate(
                 format: "title CONTAINS[cd] %@ OR emoji CONTAINS[cd] %@",
-                searchQuery, searchQuery
+                options.searchQuery, options.searchQuery
             )
             predicates.append(searchPredicate)
+        }
+        
+        switch options.filter {
+        case .all:
+            break
+        case .today:
+            break
+        case .completed:
+            break
+        case .notCompleted:
+            break
         }
 
         fetchedResultsController.fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)

@@ -41,9 +41,10 @@ final class TrackersCoordinator: NavigationCoordinator {
     }
     
     private func showFiltersSelectionViewController(presenter: UIViewController, presentingViewModel: TrackersViewModelProtocol) {
-        let viewController = FilterSelectionViewController() // TODO: add selected
+        let viewController = FilterSelectionViewController(selectedFilter: presentingViewModel.currentFilter)
         
         viewController.onFilterSelected = { [weak viewController, weak presentingViewModel] filter in
+            presentingViewModel?.updateFilter(to: filter)
             viewController?.dismiss(animated: true)
         }
         
