@@ -40,6 +40,11 @@
 "characterLimit" = "Limit of 38 characters";
 "filters" = "Filters";
 
+"allTrackers" = "All trackers";
+"today Trackers" = "Trackers for today";
+"completed" = "Completed";
+"notCompleted" = "Uncompleted";
+
 "done" = "Done";
 "create" = "Create";
 "cancel" = "Cancel";

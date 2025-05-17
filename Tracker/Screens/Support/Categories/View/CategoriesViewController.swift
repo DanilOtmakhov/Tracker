@@ -14,6 +14,7 @@ final class CategoriesViewController: UIViewController {
     private enum Constants {
         static let rowHeight: CGFloat = 75
         static let tableViewToButtonSpacing: CGFloat = 16
+        static let separatorInset: CGFloat = 16
         
         static let buttonHorizontalInset: CGFloat = 20
         static let buttonBottomInset: CGFloat = -16
@@ -37,7 +38,7 @@ final class CategoriesViewController: UIViewController {
         $0.allowsSelection = true
         $0.register(CategoryCell.self,
                     forCellReuseIdentifier: CategoryCell.reuseIdentifier)
-        $0.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+        $0.separatorInset = UIEdgeInsets(top: 0, left: Constants.separatorInset, bottom: 0, right: Constants.separatorInset)
         return $0
     }(UITableView(frame: .zero, style: .insetGrouped))
     
@@ -233,7 +234,7 @@ extension CategoriesViewController: UITableViewDataSource {
 extension CategoriesViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        viewModel.didSelectCategory(at: indexPath)
+        viewModel.selectCategory(at: indexPath)
     
         if viewModel.isCategorySelected(at: indexPath) {
             tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)

@@ -25,6 +25,11 @@ final class TrackersCoordinator: NavigationCoordinator {
             self?.startTrackerCreation()
         }
         
+        viewController.onFiltersButtonTapped = { [weak self, weak viewController] in
+            guard let viewController else { return }
+            self?.showFiltersSelectionViewController(presenter: viewController, presentingViewModel: viewModel)
+        }
+        
         navigationController.setViewControllers([viewController], animated: false)
     }
     
@@ -34,6 +39,24 @@ final class TrackersCoordinator: NavigationCoordinator {
         
         creationCoordinator.start()
     }
+    
+    private func showFiltersSelectionViewController(presenter: UIViewController, presentingViewModel: TrackersViewModelProtocol) {
+        let viewController = FilterSelectionViewController() // TODO: add selected
+        
+        viewController.onFilterSelected = { [weak viewController, weak presentingViewModel] filter in
+            viewController?.dismiss(animated: true)
+        }
+        
+        self.presentInPageSheet(viewController, presenter: presenter)
+    }
+    
+    private func presentInPageSheet(_ viewController: UIViewController, presenter: UIViewController) {
+        let navController = UINavigationController(rootViewController: viewController)
+        navController.modalPresentationStyle = .pageSheet
+        
+        presenter.present(navController, animated: true)
+    }
+    
 }
 
 

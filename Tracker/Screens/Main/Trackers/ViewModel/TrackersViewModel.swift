@@ -22,7 +22,7 @@ enum TrackersViewModelState {
 
 typealias State = TrackersViewModelState
 
-protocol TrackersViewModelProtocol {
+protocol TrackersViewModelProtocol: AnyObject {
     
     var onStateChange: ((State) -> Void)? { get set }
     var numberOfSections: Int { get }

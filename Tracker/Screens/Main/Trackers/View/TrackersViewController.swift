@@ -89,6 +89,7 @@ final class TrackersViewController: UIViewController {
     // MARK: - Internal Properties
     
     var onAddTrackerTapped: (() -> Void)?
+    var onFiltersButtonTapped: (() -> Void)?
     
     // MARK: - Private Properties
     
@@ -261,7 +262,7 @@ private extension TrackersViewController {
     }
     
     func didTapFiltersButton() {
-        
+        onFiltersButtonTapped?()
     }
     
     func datePickerValueChanged(_ sender: UIDatePicker) {

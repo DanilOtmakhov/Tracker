@@ -25,7 +25,7 @@ protocol CategoriesViewModelProtocol {
     var onCategorySelectedForEditing: ((TrackerCategory) -> Void)? { get set }
     func numberOfRows(in section: Int) -> Int
     func categoryTitle(at indexPath: IndexPath) -> String?
-    func didSelectCategory(at indexPath: IndexPath)
+    func selectCategory(at indexPath: IndexPath)
     func isCategorySelected(at indexPath: IndexPath) -> Bool
     func refresh()
     func editCategory(at indexPath: IndexPath)
@@ -74,7 +74,7 @@ extension CategoriesViewModel {
         categoryProvider.category(at: indexPath)?.title
     }
     
-    func didSelectCategory(at indexPath: IndexPath) {
+    func selectCategory(at indexPath: IndexPath) {
         guard let category = categoryProvider.category(at: indexPath) else { return }
         selectedCategory = category
     }

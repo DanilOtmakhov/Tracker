@@ -69,6 +69,13 @@ extension String {
     static let nothingFound = "nothingFound".localized
     static let characterLimit = "characterLimit".localized
     static let filters = "filters".localized
+    
+    // MARK: - Filters
+    
+    static let allTrackers = "allTrackers".localized
+    static let todayTrackers = "todayTrackers".localized
+    static let completed = "completed".localized
+    static let notCompleted = "notCompleted".localized
 
     // MARK: - Actions
 
