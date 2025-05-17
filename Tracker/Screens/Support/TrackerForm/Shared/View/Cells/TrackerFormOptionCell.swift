@@ -36,7 +36,7 @@ final class TrackerFormOptionCell: UITableViewCell {
 extension TrackerFormOptionCell {
     
     func configure(isCategory: Bool, detailText: String?) {
-        textLabel?.text = isCategory ? "Категория" : "Расписание"
+        textLabel?.text = isCategory ? .category : .schedule
         detailTextLabel?.text = detailText
     }
     

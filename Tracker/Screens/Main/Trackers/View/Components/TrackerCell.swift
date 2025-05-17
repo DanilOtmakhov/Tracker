@@ -49,7 +49,6 @@ final class TrackerCell: UICollectionViewCell {
     }(UIView())
     
     private lazy var completedDaysCountLabel: UILabel = {
-        $0.text = "5 дней"
         $0.textColor = .ypBlack
         $0.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         $0.translatesAutoresizingMaskIntoConstraints = false
@@ -164,20 +163,8 @@ private extension TrackerCell {
         ])
     }
     
-    func correctForm(for days: Int) -> String {
-        switch days % 10 {
-        case 1 where days % 100 != 11:
-            return "день"
-        case 2...4 where !(days % 100 >= 12 && days % 100 <= 14):
-            return "дня"
-        default:
-            return "дней"
-        }
-    }
-    
     func updateCompletedDaysCountLabel(_ count: Int) {
-        let daysForm = correctForm(for: count)
-        completedDaysCountLabel.text = "\(count) \(daysForm)"
+        completedDaysCountLabel.text = .daysCount.localizedPluralized(count: count)
     }
     
     func updateCompletedDaysCount(_ isCompleted: Bool) {

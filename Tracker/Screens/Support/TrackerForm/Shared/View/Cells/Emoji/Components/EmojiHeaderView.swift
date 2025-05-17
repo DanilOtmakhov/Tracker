@@ -12,9 +12,9 @@ final class EmojiHeaderView: UICollectionReusableView {
     static let reuseIdentifier = "EmojiHeaderView"
     
     private lazy var titleLabel: UILabel = {
-        $0.text = "Emoji"
+        $0.text = .emoji
         $0.font = .systemFont(ofSize: 17, weight: .bold)
-        $0.textColor = .black
+        $0.textColor = .ypBlack
         $0.translatesAutoresizingMaskIntoConstraints = false
         return $0
     }(UILabel())

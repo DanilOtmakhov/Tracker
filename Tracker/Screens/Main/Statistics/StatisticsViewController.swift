@@ -24,7 +24,7 @@ private extension StatisticsViewController {
         view.backgroundColor = .ypWhite
         
         navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.title = "Статистика"
+        navigationItem.title = .statistics
     }
     
 }

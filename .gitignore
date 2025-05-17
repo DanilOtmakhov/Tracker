@@ -2,6 +2,7 @@ xcuserdata/
 
 *.xcscmblueprint
 *.xccheckout
+*.xcscheme
 
 build/
 DerivedData/

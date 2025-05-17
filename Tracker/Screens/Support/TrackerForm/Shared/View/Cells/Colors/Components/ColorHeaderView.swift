@@ -12,9 +12,9 @@ final class ColorHeaderView: UICollectionReusableView {
     static let reuseIdentifier = "ColorHeaderView"
     
     private lazy var titleLabel: UILabel = {
-        $0.text = "Цвет"
+        $0.text = .color
+        $0.textColor = .ypBlack
         $0.font = .systemFont(ofSize: 17, weight: .bold)
-        $0.textColor = .black
         $0.translatesAutoresizingMaskIntoConstraints = false
         return $0
     }(UILabel())

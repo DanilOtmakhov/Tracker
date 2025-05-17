@@ -24,7 +24,7 @@ final class TrackerFormActionsCell: UITableViewCell {
     // MARK: - Subviews
     
     private lazy var cancelButton: UIButton = {
-        $0.setTitle("Отменить", for: .normal)
+        $0.setTitle(.cancel, for: .normal)
         $0.setTitleColor(.ypRed, for: .normal)
         $0.backgroundColor = .ypWhite
         $0.addTarget(self, action: #selector(didTapCancelButton), for: .touchUpInside)
@@ -37,7 +37,7 @@ final class TrackerFormActionsCell: UITableViewCell {
     }(UIButton())
     
     private lazy var createButton: UIButton = {
-        $0.setTitle("Создать", for: .normal)
+        $0.setTitle(.create, for: .normal)
         $0.setTitleColor(.ypWhite, for: .normal)
         $0.backgroundColor = .ypGray
         $0.isEnabled = false

@@ -32,7 +32,7 @@ class TrackerFormViewController: UITableViewController {
     
     // MARK: - Internal Properties
     
-    var formTitle: String { "Новая привычка" }
+    var formTitle: String { .habitNew }
     var showsSchedule: Bool { true }
     
     var onCategoryCellTapped: (() -> Void)?

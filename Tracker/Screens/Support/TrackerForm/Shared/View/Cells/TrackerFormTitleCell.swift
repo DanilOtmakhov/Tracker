@@ -23,9 +23,8 @@ final class TrackerFormTitleCell: UITableViewCell {
     // MARK: - Subviews
     
     private lazy var titleTextField: UITextField = {
-        $0.placeholder = "Введите название трекера"
         $0.attributedPlaceholder = NSAttributedString(
-            string: "Введите название трекера",
+            string: .enteringTrackerName,
             attributes: [
                 .foregroundColor: UIColor.ypGray
             ]
