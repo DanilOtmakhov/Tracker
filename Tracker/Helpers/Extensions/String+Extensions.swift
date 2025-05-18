@@ -82,9 +82,11 @@ extension String {
     static let done = "done".localized
     static let create = "create".localized
     static let cancel = "cancel".localized
+    static let pin = "pin".localized
     static let edit = "edit".localized
     static let delete = "delete".localized
-    static let deleteConfirmation = "delete.confirmation".localized
+    static let deleteTrackerConfirmation = "delete.confirmation.tracker".localized
+    static let deleteCategoryConfirmation = "delete.confirmation.category".localized
 
     // MARK: - Pluralization
 

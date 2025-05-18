@@ -7,6 +7,12 @@
 
 import UIKit
 
+enum TrackerCellAction {
+    case pin
+    case edit
+    case delete
+}
+
 final class TrackerCell: UICollectionViewCell {
     
     // MARK: - Static Properties
@@ -68,6 +74,7 @@ final class TrackerCell: UICollectionViewCell {
     // MARK: - Internal Properties
     
     var onComplete: ((Bool) -> Void)?
+    var onActionSelected: ((TrackerCellAction) -> Void)?
     
     // MARK: - Private Methods
     
@@ -124,6 +131,9 @@ private extension TrackerCell {
     
     func setupCell() {
         contentView.backgroundColor = .ypWhite
+        
+        let interaction = UIContextMenuInteraction(delegate: self)
+        containerView.addInteraction(interaction)
         
         [containerView, completedDaysCountLabel, completeButton].forEach {
             contentView.addSubview($0)
@@ -198,6 +208,34 @@ private extension TrackerCell {
         isCompleted.toggle()
         updateCompletedDaysCount(isCompleted)
         onComplete?(isCompleted)
+    }
+    
+}
+
+// MARK: - UIContextMenuInteractionDelegate
+
+extension TrackerCell: UIContextMenuInteractionDelegate {
+    
+    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
+        return UIContextMenuConfiguration(
+            actionProvider:  { _ in
+                let pinAction = UIAction(title: .pin) { [weak self] _ in
+                    self?.onActionSelected?(.pin)
+                }
+                
+                let editAction = UIAction(title: .edit) { [weak self] _ in
+                    self?.onActionSelected?(.edit)
+                }
+            
+                let deleteAction = UIAction(
+                    title: .delete,
+                    attributes: .destructive
+                ) { [weak self] _ in
+                    self?.onActionSelected?(.delete)
+            }
+            
+            return UIMenu(title: "", children: [pinAction, editAction, deleteAction])
+        })
     }
     
 }

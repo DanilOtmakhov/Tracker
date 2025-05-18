@@ -167,7 +167,7 @@ private extension CategoriesViewController {
     func showDeleteConfirmationAlert(for indexPath: IndexPath) {
         let alert = UIAlertController(
             title: nil,
-            message: .deleteConfirmation,
+            message: .deleteCategoryConfirmation,
             preferredStyle: .actionSheet
         )
         
@@ -252,16 +252,14 @@ extension CategoriesViewController: UITableViewDelegate {
     ) -> UIContextMenuConfiguration? {
         return UIContextMenuConfiguration(
             actionProvider:  { _ in
-                let editAction = UIAction(
-                    title: .edit
-                ) { [weak self] action in
+                let editAction = UIAction(title: .edit) { [weak self] _ in
                     self?.viewModel.editCategory(at: indexPath)
-            }
+                }
             
                 let deleteAction = UIAction(
                     title: .delete,
                     attributes: .destructive
-                ) { [weak self] action in
+                ) { [weak self] _ in
                     self?.showDeleteConfirmationAlert(for: indexPath)
             }
             

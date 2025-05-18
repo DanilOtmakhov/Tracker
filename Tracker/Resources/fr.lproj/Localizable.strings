@@ -48,6 +48,8 @@
 "done" = "Terminé";
 "create" = "Créer";
 "cancel" = "Annuler";
+"pin" = "Épingler";
 "edit" = "Modifier";
 "delete" = "Supprimer";
-"delete.confirmation" = "Êtes-vous sûr de vouloir supprimer le tracker?";
+"delete.confirmation.tracker" = "Êtes-vous sûr de vouloir supprimer le tracker?";
+"delete.confirmation.category" = "Cette catégorie n'est-elle définitivement pas nécessaire?";

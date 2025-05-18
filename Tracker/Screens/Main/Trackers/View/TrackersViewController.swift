@@ -254,6 +254,28 @@ private extension TrackersViewController {
         collectionView.isHidden = true
     }
     
+    func showDeleteConfirmationAlert(for indexPath: IndexPath) {
+        let alert = UIAlertController(
+            title: nil,
+            message: .deleteTrackerConfirmation,
+            preferredStyle: .actionSheet
+        )
+        
+        let deleteAction = UIAlertAction(
+            title: .delete,
+            style: .destructive
+        ) { [weak self] _ in
+            
+        }
+        
+        let cancelAction = UIAlertAction(title: .cancel, style: .cancel)
+        
+        alert.addAction(deleteAction)
+        alert.addAction(cancelAction)
+        
+        present(alert, animated: true)
+    }
+    
 }
 
 // MARK: - Actions
@@ -320,6 +342,7 @@ extension TrackersViewController: UICollectionViewDataSource {
         let isCompleted = viewModel.isTrackerCompleted(tracker)
         
         cell.configure(with: tracker, completedDaysCount: completedDaysCount, isCompleted: isCompleted)
+        
         cell.onComplete = { [weak self] isCompleted in
             guard let self else { return }
             self.viewModel.handleCompleteButtonTap(tracker, isCompleted: isCompleted)
@@ -328,6 +351,17 @@ extension TrackersViewController: UICollectionViewDataSource {
             let newIsCompleted = self.viewModel.isTrackerCompleted(tracker)
             
             cell.updateState(completedDaysCount: newCompletedDaysCount, isCompleted: newIsCompleted)
+        }
+        
+        cell.onActionSelected = { [weak self] action in
+            switch action {
+            case .pin:
+                break
+            case .edit:
+                break
+            case .delete:
+                self?.showDeleteConfirmationAlert(for: indexPath)
+            }
         }
         
         return cell
@@ -353,14 +387,6 @@ extension TrackersViewController: UICollectionViewDataSource {
         header.configure(with: title)
         return header
     }
-    
-}
-
-// MARK: - UICollectionViewDelegate
-
-extension TrackersViewController: UICollectionViewDelegate {
-    
-    
     
 }
 

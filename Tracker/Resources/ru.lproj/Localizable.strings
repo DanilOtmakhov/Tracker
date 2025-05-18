@@ -48,7 +48,9 @@
 "done" = "Готово";
 "create" = "Создать";
 "cancel" = "Отменить";
+"pin" = "Закрепить";
 "edit" = "Редактировать";
 "delete" = "Удалить";
-"delete.confirmation" = "Уверены, что хотите удалить трекер?";
+"delete.confirmation.tracker" = "Уверены, что хотите удалить трекер?";
+"delete.confirmation.category" = "Эта категория точно не нужна?";
 
