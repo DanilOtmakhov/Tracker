@@ -31,6 +31,7 @@ final class TrackerStore: TrackerStoreProtocol {
         trackerEntity.title = tracker.title
         trackerEntity.emoji = tracker.emoji
         trackerEntity.color = tracker.color.hexString
+        trackerEntity.isPinned = tracker.isPinned
         trackerEntity.createdAt = Date()
         
         if let schedule = tracker.schedule {
@@ -54,7 +55,8 @@ final class TrackerStore: TrackerStoreProtocol {
     
     func togglePin(for tracker: Tracker) throws {
         guard let trackerEntity = try fetchTrackerEntity(by: tracker.id) else { return }
-        
+        trackerEntity.isPinned.toggle()
+        try context.save()
     }
     
     func fetchTrackerEntity(by id: UUID) throws -> TrackerEntity? {

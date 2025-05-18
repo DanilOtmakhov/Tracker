@@ -14,6 +14,7 @@ struct Tracker {
     let emoji: String
     let color: UIColor
     let schedule: [Day]?
+    let isPinned: Bool
     
     static func from(_ entity: TrackerEntity) -> Tracker? {
         guard
@@ -33,8 +34,25 @@ struct Tracker {
             title: title,
             emoji: emoji,
             color: color,
-            schedule: schedule
+            schedule: schedule,
+            isPinned: entity.isPinned
         )
+    }
+    
+    init(
+        id: UUID,
+        title: String,
+        emoji: String,
+        color: UIColor,
+        schedule: [Day]?,
+        isPinned: Bool = false
+    ) {
+        self.id = id
+        self.title = title
+        self.emoji = emoji
+        self.color = color
+        self.schedule = schedule
+        self.isPinned = isPinned
     }
     
 }

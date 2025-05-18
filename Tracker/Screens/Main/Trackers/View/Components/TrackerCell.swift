@@ -240,8 +240,10 @@ extension TrackerCell: UIContextMenuInteractionDelegate {
     
     func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
         return UIContextMenuConfiguration(
-            actionProvider:  { _ in
-                let pinAction = UIAction(title: .pin) { [weak self] _ in
+            actionProvider:  { [weak self] _ in
+                guard let self else { return nil }
+                
+                let pinAction = UIAction(title: self.isPinned ? .unpin : .pin) { [weak self] _ in
                     self?.onActionSelected?(.pin)
                 }
                 

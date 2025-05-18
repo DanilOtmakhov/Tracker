@@ -341,7 +341,7 @@ extension TrackersViewController: UICollectionViewDataSource {
         let completedDaysCount = viewModel.completedDaysCount(for: tracker)
         let isCompleted = viewModel.isTrackerCompleted(tracker)
         
-        cell.configure(with: tracker, isPinned: true, completedDaysCount: completedDaysCount, isCompleted: isCompleted)
+        cell.configure(with: tracker, isPinned: tracker.isPinned, completedDaysCount: completedDaysCount, isCompleted: isCompleted)
         
         cell.onComplete = { [weak self] isCompleted in
             guard let self else { return }
