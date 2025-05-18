@@ -33,6 +33,7 @@ final class TrackerStore: TrackerStoreProtocol {
         trackerEntity.color = tracker.color.hexString
         trackerEntity.isPinned = tracker.isPinned
         trackerEntity.createdAt = Date()
+        trackerEntity.sectionName = tracker.isPinned ? "0" + .pinned : category.title
         
         if let schedule = tracker.schedule {
             trackerEntity.schedule = schedule.map { String($0.rawValue) }.joined(separator: ",")
@@ -56,6 +57,7 @@ final class TrackerStore: TrackerStoreProtocol {
     func togglePin(for tracker: Tracker) throws {
         guard let trackerEntity = try fetchTrackerEntity(by: tracker.id) else { return }
         trackerEntity.isPinned.toggle()
+        trackerEntity.sectionName = trackerEntity.isPinned ? "0" + .pinned : trackerEntity.category?.title
         try context.save()
     }
     

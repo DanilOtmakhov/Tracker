@@ -75,13 +75,13 @@ final class TrackerProvider: NSObject {
 
         let fetchRequest: NSFetchRequest<TrackerEntity> = TrackerEntity.fetchRequest()
         fetchRequest.sortDescriptors = [
-            NSSortDescriptor(key: "category.title", ascending: true),
+            NSSortDescriptor(key: "sectionName", ascending: true),
             NSSortDescriptor(key: "createdAt", ascending: false)
         ]
         
         let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
                                                                   managedObjectContext: context,
-                                                                  sectionNameKeyPath: "category.title",
+                                                                  sectionNameKeyPath: "sectionName",
                                                                   cacheName: nil)
         fetchedResultsController.delegate = self
         try? fetchedResultsController.performFetch()
@@ -111,7 +111,8 @@ extension TrackerProvider: TrackerProviderProtocol {
     }
     
     func nameOfSection(at indexPath: IndexPath) -> String? {
-        fetchedResultsController.sections?[indexPath.section].name
+        guard let sectionName = fetchedResultsController.sections?[indexPath.section].name else { return nil }
+        return sectionName == "0" + .pinned ? .pinned : sectionName
     }
     
     func tracker(at indexPath: IndexPath) -> Tracker? {
