@@ -55,9 +55,10 @@ protocol TrackerProviderProtocol {
     var delegate: TrackerProviderDelegate? { get set }
     var numberOfSections: Int { get }
     func numberOfItemsInSection(_ section: Int) -> Int
-    func nameOfSection(at: IndexPath) -> String?
-    func tracker(at: IndexPath) -> Tracker?
+    func nameOfSection(at indexPath: IndexPath) -> String?
+    func tracker(at indexPath: IndexPath) -> Tracker?
     func addTracker(_ tracker: Tracker, to: TrackerCategory) throws
+    func deleteTracker(at indexPath: IndexPath) throws
     func applyFilter(with options: TrackerFilterOptions)
 }
 
@@ -119,6 +120,11 @@ extension TrackerProvider: TrackerProviderProtocol {
     
     func addTracker(_ tracker: Tracker, to category: TrackerCategory) throws {
         try store.add(tracker, to: category)
+    }
+    
+    func deleteTracker(at indexPath: IndexPath) throws {
+        guard let tracker = tracker(at: indexPath) else { return }
+        try store.delete(tracker)
     }
     
     func applyFilter(with options: TrackerFilterOptions) {

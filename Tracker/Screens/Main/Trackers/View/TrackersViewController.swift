@@ -265,7 +265,7 @@ private extension TrackersViewController {
             title: .delete,
             style: .destructive
         ) { [weak self] _ in
-            
+            self?.viewModel.deleteTracker(at: indexPath)
         }
         
         let cancelAction = UIAlertAction(title: .cancel, style: .cancel)

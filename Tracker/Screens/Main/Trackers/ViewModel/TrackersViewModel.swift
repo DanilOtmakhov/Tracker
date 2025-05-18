@@ -99,7 +99,7 @@ extension TrackersViewModel {
     }
     
     func deleteTracker(at indexPath: IndexPath) {
-        
+        try? dataManager.trackerProvider.deleteTracker(at: indexPath)
     }
     
     func isTrackerCompleted(_ tracker: Tracker) -> Bool {

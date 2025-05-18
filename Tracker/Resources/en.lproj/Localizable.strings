@@ -49,6 +49,7 @@
 "create" = "Create";
 "cancel" = "Cancel";
 "pin" = "Pin";
+"unpin" = "Unpin";
 "edit" = "Edit";
 "delete" = "Delete";
 "delete.confirmation.tracker" = "Are you sure you want to delete the tracker?";

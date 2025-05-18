@@ -49,6 +49,7 @@
 "create" = "Créer";
 "cancel" = "Annuler";
 "pin" = "Épingler";
+"unpin" = "Détacher";
 "edit" = "Modifier";
 "delete" = "Supprimer";
 "delete.confirmation.tracker" = "Êtes-vous sûr de vouloir supprimer le tracker?";
