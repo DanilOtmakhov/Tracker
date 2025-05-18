@@ -44,6 +44,7 @@
 "today Trackers" = "Trackers for today";
 "completed" = "Completed";
 "notCompleted" = "Uncompleted";
+"pinned" = "Pinned";
 
 "done" = "Done";
 "create" = "Create";

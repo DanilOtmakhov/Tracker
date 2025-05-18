@@ -59,6 +59,7 @@ protocol TrackerProviderProtocol {
     func tracker(at indexPath: IndexPath) -> Tracker?
     func addTracker(_ tracker: Tracker, to: TrackerCategory) throws
     func deleteTracker(at indexPath: IndexPath) throws
+    func togglePin(at indexPath: IndexPath) throws
     func applyFilter(with options: TrackerFilterOptions)
 }
 
@@ -125,6 +126,11 @@ extension TrackerProvider: TrackerProviderProtocol {
     func deleteTracker(at indexPath: IndexPath) throws {
         guard let tracker = tracker(at: indexPath) else { return }
         try store.delete(tracker)
+    }
+    
+    func togglePin(at indexPath: IndexPath) throws {
+        guard let tracker = tracker(at: indexPath) else { return }
+        try store.togglePin(for: tracker)
     }
     
     func applyFilter(with options: TrackerFilterOptions) {

@@ -38,12 +38,13 @@
 "categories.emptyState" = "Привычки и события можно объединить по смыслу";
 "nothingFound" = "Ничего не найдено";
 "characterLimit" = "Ограничение 38 символов";
-
 "filters" = "Фильтры";
+
 "allTrackers" = "Все трекеры";
 "todayTrackers" = "Трекеры на сегодня";
 "completed" = "Завершенные";
 "notCompleted" = "Незавершенные";
+"pinned" = "Закрепленные";
 
 "done" = "Готово";
 "create" = "Создать";

@@ -31,6 +31,7 @@ protocol TrackersViewModelProtocol: AnyObject {
     func numberOfItemsInSection(_ section: Int) -> Int
     func nameOfSection(at: IndexPath) -> String?
     func tracker(at indexPath: IndexPath) -> Tracker?
+    func togglePin(at indexPath: IndexPath)
     func deleteTracker(at indexPath: IndexPath)
     func isTrackerCompleted(_ tracker: Tracker) -> Bool
     func completedDaysCount(for tracker: Tracker) -> Int
@@ -96,6 +97,10 @@ extension TrackersViewModel {
     
     func tracker(at indexPath: IndexPath) -> Tracker? {
         dataManager.trackerProvider.tracker(at: indexPath)
+    }
+    
+    func togglePin(at indexPath: IndexPath) {
+        try? dataManager.trackerProvider.togglePin(at: indexPath)
     }
     
     func deleteTracker(at indexPath: IndexPath) {

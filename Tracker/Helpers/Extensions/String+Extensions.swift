@@ -76,6 +76,7 @@ extension String {
     static let todayTrackers = "todayTrackers".localized
     static let completed = "completed".localized
     static let notCompleted = "notCompleted".localized
+    static let pinned = "pinned".localized
 
     // MARK: - Actions
 
@@ -83,6 +84,7 @@ extension String {
     static let create = "create".localized
     static let cancel = "cancel".localized
     static let pin = "pin".localized
+    static let unpin = "unpin".localized
     static let edit = "edit".localized
     static let delete = "delete".localized
     static let deleteTrackerConfirmation = "delete.confirmation.tracker".localized

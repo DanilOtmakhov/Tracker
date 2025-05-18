@@ -11,6 +11,7 @@ import UIKit
 protocol TrackerStoreProtocol {
     func add(_ tracker: Tracker, to category: TrackerCategory) throws
     func delete(_ tracker: Tracker) throws
+    func togglePin(for tracker: Tracker) throws
     func fetchTrackerEntity(by id: UUID) throws -> TrackerEntity?
 }
 
@@ -49,6 +50,11 @@ final class TrackerStore: TrackerStoreProtocol {
         guard let trackerEntity = try fetchTrackerEntity(by: tracker.id) else { return }
         context.delete(trackerEntity)
         try context.save()
+    }
+    
+    func togglePin(for tracker: Tracker) throws {
+        guard let trackerEntity = try fetchTrackerEntity(by: tracker.id) else { return }
+        
     }
     
     func fetchTrackerEntity(by id: UUID) throws -> TrackerEntity? {
