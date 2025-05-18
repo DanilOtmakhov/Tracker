@@ -85,6 +85,8 @@ final class OnboardingStepViewController: UIViewController {
 private extension OnboardingStepViewController {
     
     func setupViewController() {
+        overrideUserInterfaceStyle = .light
+        
         label.text = pageData.title
         backgroundImageView.image = UIImage(resource: pageData.imageResource)
         

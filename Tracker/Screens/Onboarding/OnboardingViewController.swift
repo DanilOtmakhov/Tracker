@@ -73,6 +73,8 @@ final class OnboardingViewController: UIPageViewController {
 private extension OnboardingViewController {
     
     func setupViewController() {
+        overrideUserInterfaceStyle = .light
+        
         dataSource = self
         delegate = self
         
