@@ -48,3 +48,5 @@ iOSInjectionProject/
 **/xcshareddata/WorkspaceSettings.xcsettings
 
 **/__Snapshots__/
+Pods/
+Tracker.xcworkspace
