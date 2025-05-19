@@ -10,6 +10,7 @@
 		3040BB342DD95A44004FA68C /* InlineSnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 3040BB332DD95A44004FA68C /* InlineSnapshotTesting */; };
 		3040BB362DD95A44004FA68C /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 3040BB352DD95A44004FA68C /* SnapshotTesting */; };
 		3040BB382DD95A44004FA68C /* SnapshotTestingCustomDump in Frameworks */ = {isa = PBXBuildFile; productRef = 3040BB372DD95A44004FA68C /* SnapshotTestingCustomDump */; };
+		541FEF87D2B20EA3761E8833 /* Pods_Tracker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8B333C7BB24A6A953BB0C2B /* Pods_Tracker.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -25,6 +26,9 @@
 /* Begin PBXFileReference section */
 		3040BB232DD959EA004FA68C /* TrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		30A8DB782D973AC900B314EF /* Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		56D48CDEB8F1A3623E6A43A6 /* Pods-Tracker.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tracker.debug.xcconfig"; path = "Target Support Files/Pods-Tracker/Pods-Tracker.debug.xcconfig"; sourceTree = "<group>"; };
+		83D1C323EA9816EEB907CD09 /* Pods-Tracker.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tracker.release.xcconfig"; path = "Target Support Files/Pods-Tracker/Pods-Tracker.release.xcconfig"; sourceTree = "<group>"; };
+		F8B333C7BB24A6A953BB0C2B /* Pods_Tracker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Tracker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -40,6 +44,8 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		3040BB242DD959EA004FA68C /* TrackerTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = TrackerTests;
 			sourceTree = "<group>";
 		};
@@ -68,6 +74,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				541FEF87D2B20EA3761E8833 /* Pods_Tracker.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -80,6 +87,8 @@
 				30A8DB7A2D973AC900B314EF /* Tracker */,
 				3040BB242DD959EA004FA68C /* TrackerTests */,
 				30A8DB792D973AC900B314EF /* Products */,
+				432EF7F306765728404D628E /* Pods */,
+				CE4940A00B9D612E502A7FF0 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -90,6 +99,24 @@
 				3040BB232DD959EA004FA68C /* TrackerTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		432EF7F306765728404D628E /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				56D48CDEB8F1A3623E6A43A6 /* Pods-Tracker.debug.xcconfig */,
+				83D1C323EA9816EEB907CD09 /* Pods-Tracker.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		CE4940A00B9D612E502A7FF0 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F8B333C7BB24A6A953BB0C2B /* Pods_Tracker.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -125,6 +152,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 30A8DB8B2D973ACB00B314EF /* Build configuration list for PBXNativeTarget "Tracker" */;
 			buildPhases = (
+				8CBBE959CF8A8771940B74FE /* [CP] Check Pods Manifest.lock */,
 				30A8DB742D973AC900B314EF /* Sources */,
 				30A8DB752D973AC900B314EF /* Frameworks */,
 				30A8DB762D973AC900B314EF /* Resources */,
@@ -137,8 +165,6 @@
 				30A8DB7A2D973AC900B314EF /* Tracker */,
 			);
 			name = Tracker;
-			packageProductDependencies = (
-			);
 			productName = Tracker;
 			productReference = 30A8DB782D973AC900B314EF /* Tracker.app */;
 			productType = "com.apple.product-type.application";
@@ -204,6 +230,31 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		8CBBE959CF8A8771940B74FE /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Tracker-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		3040BB1F2DD959EA004FA68C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -268,6 +319,7 @@
 		};
 		30A8DB8C2D973ACB00B314EF /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 56D48CDEB8F1A3623E6A43A6 /* Pods-Tracker.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -296,6 +348,7 @@
 		};
 		30A8DB8D2D973ACB00B314EF /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 83D1C323EA9816EEB907CD09 /* Pods-Tracker.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
