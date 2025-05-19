@@ -28,21 +28,6 @@ final class HabitFormViewModel: TrackerFormViewModel, HabitFormViewModelProtocol
         if Set(selectedDays) == Set(Day.allCases) { return "Каждый день" }
         return selectedDays.map { $0.shortString }.joined(separator: ", ")
     }
-
-//    override var trackerToEdit: Tracker?
-//    {
-//        didSet {
-//            guard
-//                let trackerToEdit,
-//                let schedule = trackerToEdit.schedule
-//            else { return }
-//            title = trackerToEdit.title
-//            selectedCategory = try? dataManager.categoryProvider.category(of: trackerToEdit)
-//            selectedColor = trackerToEdit.color
-//            selectedEmoji = trackerToEdit.emoji
-//            selectedDays = schedule
-//        }
-//    }
     
     override var isFormValid: Bool {
         guard

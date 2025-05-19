@@ -16,6 +16,9 @@ final class DummyTrackerProvider: TrackerProviderProtocol {
     func nameOfSection(at indexPath: IndexPath) -> String? { nil }
     func tracker(at indexPath: IndexPath) -> Tracker? { nil }
     func addTracker(_ tracker: Tracker, to: TrackerCategory) throws {}
+    func editTracker(_ tracker: Tracker, to newTracker: Tracker, newCategory: TrackerCategory) throws {}
+    func deleteTracker(at indexPath: IndexPath) throws {}
+    func togglePin(at indexPath: IndexPath) throws {}
     func applyFilter(with options: TrackerFilterOptions) {}
 }
 
@@ -27,6 +30,7 @@ final class DummyTrackerCategoryProvider: TrackerCategoryProviderProtocol {
     func addCategory(withTitle title: String) throws {}
     func deleteCategory(at indexPath: IndexPath) throws {}
     func edit(_ category: TrackerCategory, withTitle title: String) throws {}
+    func category(of tracker: Tracker) throws -> TrackerCategory? { nil }
 }
 
 final class DummyTrackerRecordProvider: TrackerRecordProviderProtocol {
