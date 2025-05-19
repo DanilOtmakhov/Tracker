@@ -30,6 +30,17 @@ final class TrackerFormColorsCell: TrackerFormCollectionCell<UIColor> {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func configure(with color: UIColor?) {
+        guard let color else { return }
+        if let index = items.firstIndex(where: { $0.isEqual(to: color) }) {
+            selectedIndexPath = IndexPath(item: index, section: 0)
+        } else {
+            selectedIndexPath = nil
+        }
+        
+        collectionView.reloadData()
+    }
+    
     override func collectionView(
         _ collectionView: UICollectionView,
         cellForItemAt indexPath: IndexPath

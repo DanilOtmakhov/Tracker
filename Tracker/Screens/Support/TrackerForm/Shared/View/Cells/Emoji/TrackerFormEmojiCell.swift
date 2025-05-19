@@ -33,6 +33,17 @@ final class TrackerFormEmojiCell: TrackerFormCollectionCell<String> {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func configure(with emoji: String?) {
+        guard let emoji else { return }
+        if let index = items.firstIndex(of: emoji) {
+            selectedIndexPath = IndexPath(item: index, section: 0)
+        } else {
+            selectedIndexPath = nil
+        }
+        
+        collectionView.reloadData()
+    }
+    
     override func collectionView(
         _ collectionView: UICollectionView,
         cellForItemAt indexPath: IndexPath

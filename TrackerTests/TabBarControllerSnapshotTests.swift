@@ -31,7 +31,7 @@ final class DummyTrackerCategoryProvider: TrackerCategoryProviderProtocol {
 
 final class DummyTrackerRecordProvider: TrackerRecordProviderProtocol {
     func isTrackerCompleted(_ trackerID: UUID, on date: Date) -> Bool { false }
-    func completedTrackersCount(for trackerID: UUID) -> Int { 0 }
+    func completedDaysCount(for trackerID: UUID) -> Int { 0 }
     func addRecord(_ record: TrackerRecord) throws {}
     func deleteRecord(_ record: TrackerRecord) throws {}
 }

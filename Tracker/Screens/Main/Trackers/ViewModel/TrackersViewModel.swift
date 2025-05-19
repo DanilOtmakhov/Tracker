@@ -26,12 +26,14 @@ protocol TrackersViewModelProtocol: AnyObject {
     
     var onStateChange: ((State) -> Void)? { get set }
     var onDateChange: ((Date) -> Void)? { get set }
+    var onTrackerSelectedForEditing: ((Tracker) -> Void)? { get set }
     var currentFilter: Filter { get }
     var numberOfSections: Int { get }
     func numberOfItemsInSection(_ section: Int) -> Int
     func nameOfSection(at: IndexPath) -> String?
     func tracker(at indexPath: IndexPath) -> Tracker?
     func togglePin(at indexPath: IndexPath)
+    func editTracker(at indexPath: IndexPath)
     func deleteTracker(at indexPath: IndexPath)
     func isTrackerCompleted(_ tracker: Tracker) -> Bool
     func completedDaysCount(for tracker: Tracker) -> Int
@@ -48,6 +50,8 @@ final class TrackersViewModel: TrackersViewModelProtocol {
     
     var onStateChange: ((State) -> Void)?
     var onDateChange: ((Date) -> Void)?
+    var onTrackerSelectedForEditing: ((Tracker) -> Void)?
+    
     var currentFilter: Filter {
         filterOptions.filter
     }
@@ -103,6 +107,11 @@ extension TrackersViewModel {
         try? dataManager.trackerProvider.togglePin(at: indexPath)
     }
     
+    func editTracker(at indexPath: IndexPath) {
+        guard let tracker = tracker(at: indexPath) else { return }
+        onTrackerSelectedForEditing?(tracker)
+    }
+    
     func deleteTracker(at indexPath: IndexPath) {
         try? dataManager.trackerProvider.deleteTracker(at: indexPath)
     }
@@ -112,7 +121,7 @@ extension TrackersViewModel {
     }
     
     func completedDaysCount(for tracker: Tracker) -> Int {
-        dataManager.recordProvider.completedTrackersCount(for: tracker.id)
+        dataManager.recordProvider.completedDaysCount(for: tracker.id)
     }
     
     func updateFilter(to filter: Filter) {

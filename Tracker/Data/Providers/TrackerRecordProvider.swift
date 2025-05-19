@@ -9,7 +9,7 @@ import CoreData
 
 protocol TrackerRecordProviderProtocol {
     func isTrackerCompleted(_ id: UUID, on: Date) -> Bool
-    func completedTrackersCount(for: UUID) -> Int
+    func completedDaysCount(for: UUID) -> Int
     func addRecord(_ record: TrackerRecord) throws
     func deleteRecord(_ record: TrackerRecord) throws
 }
@@ -39,7 +39,7 @@ extension TrackerRecordProvider: TrackerRecordProviderProtocol {
         }
     }
     
-    func completedTrackersCount(for id: UUID) -> Int {
+    func completedDaysCount(for id: UUID) -> Int {
         do {
             return try store.fetchCompletedRecords(for: id).count
         } catch {

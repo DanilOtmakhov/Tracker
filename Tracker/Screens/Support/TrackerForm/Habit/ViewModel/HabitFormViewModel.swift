@@ -11,7 +11,7 @@ protocol HabitFormViewModelProtocol: TrackerFormViewModelProtocol {
     
     var selectedDays: [Day] { get set }
     var selectedDaysString: String? { get }
-    func didSelectDays(_ days: [Day])
+    func selectDays(_ days: [Day])
     
 }
 
@@ -29,14 +29,29 @@ final class HabitFormViewModel: TrackerFormViewModel, HabitFormViewModelProtocol
         return selectedDays.map { $0.shortString }.joined(separator: ", ")
     }
 
+//    override var trackerToEdit: Tracker?
+//    {
+//        didSet {
+//            guard
+//                let trackerToEdit,
+//                let schedule = trackerToEdit.schedule
+//            else { return }
+//            title = trackerToEdit.title
+//            selectedCategory = try? dataManager.categoryProvider.category(of: trackerToEdit)
+//            selectedColor = trackerToEdit.color
+//            selectedEmoji = trackerToEdit.emoji
+//            selectedDays = schedule
+//        }
+//    }
     
     override var isFormValid: Bool {
-        guard let title,
-                !title.isEmpty,
-              selectedCategory != nil,
-              selectedEmoji != nil,
-              selectedColor != nil,
-              !selectedDays.isEmpty
+        guard
+            let title,
+            !title.isEmpty,
+            selectedCategory != nil,
+            selectedEmoji != nil,
+            selectedColor != nil,
+            !selectedDays.isEmpty
         else {
             return false
         }
@@ -44,11 +59,20 @@ final class HabitFormViewModel: TrackerFormViewModel, HabitFormViewModelProtocol
         return true
     }
     
-    func didSelectDays(_ days: [Day]) {
+    override init(dataManager: DataManagerProtocol, trackerToEdit: Tracker? = nil) {
+        super.init(dataManager: dataManager, trackerToEdit: trackerToEdit)
+        
+        if let tracker = trackerToEdit {
+            guard let days = tracker.schedule else { return }
+            selectedDays = days
+        }
+    }
+    
+    func selectDays(_ days: [Day]) {
         selectedDays = days
     }
     
-    override func createTracker() {
+    override func completeForm() {
         guard let title,
               let selectedCategory,
               let selectedEmoji,

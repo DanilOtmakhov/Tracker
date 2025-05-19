@@ -9,7 +9,7 @@ import UIKit
 
 final class EventFormViewController: TrackerFormViewController {
     
-    override var formTitle: String { .irregularEventNew }
+    override var formTitle: String { viewModel.isEditMode ? .irregularEventEdit : .irregularEventNew }
     override var showsSchedule: Bool { false }
     
     init(viewModel: EventFormViewModelProtocol) {

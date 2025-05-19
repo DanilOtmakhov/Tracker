@@ -42,9 +42,12 @@ extension String {
     // MARK: - Tracker Types
 
     static let habit = "habit".localized
-    static let irregularEvent = "irregularEvent".localized
     static let habitNew = "habit.new".localized
+    static let habitEdit = "habit.edit".localized
+    
+    static let irregularEvent = "irregularEvent".localized
     static let irregularEventNew = "irregularEvent.new".localized
+    static let irregularEventEdit = "irregularEvent.edit".localized
 
     // MARK: - Category
 
@@ -82,6 +85,7 @@ extension String {
 
     static let done = "done".localized
     static let create = "create".localized
+    static let save = "save".localized
     static let cancel = "cancel".localized
     static let pin = "pin".localized
     static let unpin = "unpin".localized

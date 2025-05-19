@@ -36,8 +36,7 @@ final class TrackerFormActionsCell: UITableViewCell {
         return $0
     }(UIButton())
     
-    private lazy var createButton: UIButton = {
-        $0.setTitle(.create, for: .normal)
+    private lazy var completeButton: UIButton = {
         $0.setTitleColor(.ypWhite, for: .normal)
         $0.backgroundColor = .ypGray
         $0.isEnabled = false
@@ -54,12 +53,12 @@ final class TrackerFormActionsCell: UITableViewCell {
         $0.distribution = .fillEqually
         $0.translatesAutoresizingMaskIntoConstraints = false
         return $0
-    }(UIStackView(arrangedSubviews: [cancelButton, createButton]))
+    }(UIStackView(arrangedSubviews: [cancelButton, completeButton]))
     
     // MARK: - Internal Properties
     
     var onCancelButtonTapped: (() -> Void)?
-    var onCreateButtonTapped: (() -> Void)?
+    var onCompleteButtonTapped: (() -> Void)?
     
     // MARK: - Initialization
     
@@ -78,9 +77,10 @@ final class TrackerFormActionsCell: UITableViewCell {
 
 extension TrackerFormActionsCell {
     
-    func configure(isEnabled: Bool = false) {
-        createButton.isEnabled = isEnabled
-        createButton.backgroundColor = isEnabled ? .ypBlack : .ypGray
+    func configure(isEnabled: Bool = false, isEditMode: Bool) {
+        completeButton.isEnabled = isEnabled
+        completeButton.backgroundColor = isEnabled ? .ypBlack : .ypGray
+        completeButton.setTitle(isEditMode ? .save : .create, for: .normal)
     }
     
 }
@@ -113,7 +113,7 @@ private extension TrackerFormActionsCell {
     }
     
     func didTapCreateButton() {
-        onCreateButtonTapped?()
+        onCompleteButtonTapped?()
     }
     
 }

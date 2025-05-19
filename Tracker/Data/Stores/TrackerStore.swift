@@ -73,17 +73,21 @@ final class TrackerStore: TrackerStoreProtocol {
 
 extension TrackerEntity {
     
-    var scheduleDays: [Day] {
+    var scheduleDays: [Day]? {
         get {
-            guard let schedule = self.schedule else { return [] }
+            guard let schedule = self.schedule else { return nil }
             return schedule
                 .split(separator: ",")
                 .compactMap { Int($0) }
                 .compactMap { Day(rawValue: $0) }
         }
         set {
-            let string = newValue.map { String($0.rawValue) }.joined(separator: ",")
-            self.schedule = string
+            if let newValue = newValue {
+                let string = newValue.map { String($0.rawValue) }.joined(separator: ",")
+                self.schedule = string
+            } else {
+                self.schedule = nil
+            }
         }
     }
     

@@ -18,6 +18,7 @@ protocol TrackerCategoryStoreProtocol {
     func addCategory(withTitle title: String) throws
     func delete(_ category: TrackerCategory) throws
     func edit(_ category: TrackerCategory, withTitle title: String) throws
+    func category(of tracker: Tracker) throws -> TrackerCategoryEntity?
 }
 
 final class TrackerCategoryStore: TrackerCategoryStoreProtocol {
@@ -112,6 +113,18 @@ final class TrackerCategoryStore: TrackerCategoryStoreProtocol {
         categoryToEdit.title = title
         
         try context.save()
+    }
+    
+    func category(of tracker: Tracker) throws -> TrackerCategoryEntity? {
+        let request: NSFetchRequest<TrackerEntity> = TrackerEntity.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", tracker.id as CVarArg)
+        request.fetchLimit = 1
+
+        guard let trackerEntity = try context.fetch(request).first else {
+            return nil
+        }
+
+        return trackerEntity.category
     }
     
 }

@@ -358,7 +358,7 @@ extension TrackersViewController: UICollectionViewDataSource {
             case .pin:
                 self?.viewModel.togglePin(at: indexPath)
             case .edit:
-                break
+                self?.viewModel.editTracker(at: indexPath)
             case .delete:
                 self?.showDeleteConfirmationAlert(for: indexPath)
             }

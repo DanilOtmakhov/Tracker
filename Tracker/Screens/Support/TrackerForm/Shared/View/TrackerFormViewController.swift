@@ -12,6 +12,7 @@ class TrackerFormViewController: UITableViewController {
     // MARK: - Constants
     
     private enum Constants {
+        static let daysRowHeight: CGFloat = 38
         static let titleRowHeight: CGFloat = 75
         static let optionRowHeight: CGFloat = 75
         static let emojiRowHeight: CGFloat = 204
@@ -23,6 +24,7 @@ class TrackerFormViewController: UITableViewController {
     }
     
     private enum Section: Int, CaseIterable {
+        case days
         case title
         case options
         case emoji
@@ -32,16 +34,16 @@ class TrackerFormViewController: UITableViewController {
     
     // MARK: - Internal Properties
     
-    var formTitle: String { .habitNew }
+    var formTitle: String { viewModel.isEditMode ? .habitEdit : .habitNew }
     var showsSchedule: Bool { true }
     
     var onCategoryCellTapped: (() -> Void)?
     var onScheduleCellTapped: (() -> Void)?
-    var onCreatedButtonTapped: (() -> Void)?
+    var onCompleteButtonTapped: (() -> Void)?
     
     // MARK: - Private Properties
     
-    private var viewModel: TrackerFormViewModelProtocol
+    var viewModel: TrackerFormViewModelProtocol
     
     // MARK: - Lifecycle
     
@@ -82,7 +84,8 @@ private extension TrackerFormViewController {
         tableView.backgroundColor = .ypWhite
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         
-        
+        tableView.register(TrackerFormCompletedDaysCell.self,
+                           forCellReuseIdentifier: TrackerFormCompletedDaysCell.reuseIdentifier)
         tableView.register(TrackerFormTitleCell.self,
                            forCellReuseIdentifier: TrackerFormTitleCell.reuseIdentifier)
         tableView.register(TrackerFormOptionCell.self,
@@ -131,6 +134,8 @@ extension TrackerFormViewController {
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch Section(rawValue: section)! {
+        case .days:
+            return viewModel.isEditMode ? 1 : 0
         case .options:
             return showsSchedule ? 2 : 1
         case .title, .emoji, .color, .actions:
@@ -142,6 +147,21 @@ extension TrackerFormViewController {
         guard let section = Section(rawValue: indexPath.section) else { return UITableViewCell() }
         
         switch section {
+        case .days:
+            guard
+                let cell = tableView.dequeueReusableCell(
+                withIdentifier: TrackerFormCompletedDaysCell.reuseIdentifier,
+                for: indexPath
+            ) as? TrackerFormCompletedDaysCell,
+                let completedDaysCount = viewModel.completedDaysCount()
+            else {
+                return UITableViewCell()
+            }
+            
+            cell.configure(with: completedDaysCount)
+            
+            return cell
+            
         case .title:
             guard let cell = tableView.dequeueReusableCell(
                 withIdentifier: TrackerFormTitleCell.reuseIdentifier,
@@ -150,8 +170,10 @@ extension TrackerFormViewController {
                 return UITableViewCell()
             }
             
+            cell.configure(with: viewModel.title)
+            
             cell.onTextChanged = { [weak self] title in
-                self?.viewModel.didEnterTitle(title)
+                self?.viewModel.enterTitle(title)
             }
             
             return cell
@@ -182,8 +204,10 @@ extension TrackerFormViewController {
                 return UITableViewCell()
             }
             
+            cell.configure(with: viewModel.selectedEmoji)
+            
             cell.onItemSelected = { [weak self] emoji in
-                self?.viewModel.didSelectEmoji(emoji)
+                self?.viewModel.selectEmoji(emoji)
             }
             
             return cell
@@ -196,8 +220,10 @@ extension TrackerFormViewController {
                 return UITableViewCell()
             }
             
+            cell.configure(with: viewModel.selectedColor)
+            
             cell.onItemSelected = { [weak self] color in
-                self?.viewModel.didSelectColor(color)
+                self?.viewModel.selectColor(color)
             }
             
             return cell
@@ -210,15 +236,15 @@ extension TrackerFormViewController {
                 return UITableViewCell()
             }
             
-            cell.configure(isEnabled: viewModel.isFormValid)
+            cell.configure(isEnabled: viewModel.isFormValid, isEditMode: viewModel.isEditMode)
             
             cell.onCancelButtonTapped = { [weak self] in
                 self?.dismiss(animated: true)
             }
             
-            cell.onCreateButtonTapped = { [weak self] in
-                self?.viewModel.createTracker()
-                self?.onCreatedButtonTapped?()
+            cell.onCompleteButtonTapped = { [weak self] in
+                self?.viewModel.completeForm()
+                self?.onCompleteButtonTapped?()
             }
             
             return cell
@@ -233,6 +259,8 @@ extension TrackerFormViewController {
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch Section(rawValue: indexPath.section)! {
+        case .days:
+            return Constants.daysRowHeight
         case .title:
             return Constants.titleRowHeight
         case .options:

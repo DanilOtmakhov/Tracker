@@ -23,7 +23,9 @@
 "irregularEvent.new" = "New irregular event";
 "category.new" = "New category";
 
-"category.edit" = "Edit Category";
+"habit.edit" = "Edit habit";
+"irregularEvent.edit" = "Edit irregular event";
+"category.edit" = "Edit category";
 
 "enteringTrackerName" = "Enter the name of the tracker";
 "schedule" = "Schedule";
@@ -48,6 +50,7 @@
 
 "done" = "Done";
 "create" = "Create";
+"save" = "Save";
 "cancel" = "Cancel";
 "pin" = "Pin";
 "unpin" = "Unpin";

@@ -9,6 +9,8 @@ import UIKit
 
 protocol TrackerFormViewModelProtocol: AnyObject {
     
+    var isEditMode: Bool { get }
+    
     var title: String? { get set }
     var selectedCategory: TrackerCategory? { get set }
     var selectedEmoji: String? { get set }
@@ -18,13 +20,14 @@ protocol TrackerFormViewModelProtocol: AnyObject {
     
     var onFormUpdated: (() -> Void)? { get set }
     
-    func didEnterTitle(_ title: String?)
-    func didSelectCategory(_ category: TrackerCategory)
-    func didSelectEmoji(_ emoji: String)
-    func didSelectColor(_ color: UIColor)
+    func enterTitle(_ title: String?)
+    func selectCategory(_ category: TrackerCategory)
+    func selectEmoji(_ emoji: String)
+    func selectColor(_ color: UIColor)
     
-    func createTracker()
+    func completeForm()
     
+    func completedDaysCount() -> Int?
 }
 
 class TrackerFormViewModel: TrackerFormViewModelProtocol {
@@ -56,11 +59,12 @@ class TrackerFormViewModel: TrackerFormViewModelProtocol {
     }
     
     var isFormValid: Bool {
-        guard let title,
-                !title.isEmpty,
-              selectedCategory != nil,
-              selectedEmoji != nil,
-              selectedColor != nil
+        guard
+            let title,
+            !title.isEmpty,
+            selectedCategory != nil,
+            selectedEmoji != nil,
+            selectedColor != nil
         else {
             return false
         }
@@ -69,48 +73,73 @@ class TrackerFormViewModel: TrackerFormViewModelProtocol {
     }
     
     var onFormUpdated: (() -> Void)?
-    let dataManager: DataManagerProtocol
+    var dataManager: DataManagerProtocol
+    
+    // MARK: - Private Properties
+    
+    var isEditMode: Bool
+    var trackerToEdit: Tracker?
     
     // MARK: - Initialization
     
-    init(dataManager: DataManagerProtocol) {
+    init(dataManager: DataManagerProtocol, trackerToEdit: Tracker? = nil) {
         self.dataManager = dataManager
+        self.trackerToEdit = trackerToEdit
+        isEditMode = trackerToEdit != nil
+        
+        if let tracker = trackerToEdit {
+            title = tracker.title
+            selectedCategory = try? dataManager.categoryProvider.category(of: tracker)
+            selectedColor = tracker.color
+            selectedEmoji = tracker.emoji
+        }
+        
+        onFormUpdated?()
     }
     
     // MARK: - Internal Methods
     
-    func didEnterTitle(_ title: String?) {
+    func enterTitle(_ title: String?) {
         self.title = title
     }
     
-    func didSelectCategory(_ category: TrackerCategory) {
+    func selectCategory(_ category: TrackerCategory) {
         selectedCategory = category
     }
     
-    func didSelectEmoji(_ emoji: String) {
+    func selectEmoji(_ emoji: String) {
         selectedEmoji = emoji
     }
     
-    func didSelectColor(_ color: UIColor) {
+    func selectColor(_ color: UIColor) {
         selectedColor = color
     }
     
-    func createTracker() {
-        guard let title,
-              let selectedCategory,
-              let selectedEmoji,
-              let selectedColor
-        else { return }
-        
-        let tracker = Tracker(
-            id: UUID(),
-            title: title,
-            emoji: selectedEmoji,
-            color: selectedColor,
-            schedule: nil
-        )
-        
-        try? dataManager.trackerProvider.addTracker(tracker, to: selectedCategory)
+    func completeForm() {
+        if isEditMode {
+            // TODO: edit tracker call
+        } else {
+            guard let title,
+                  let selectedCategory,
+                  let selectedEmoji,
+                  let selectedColor
+            else { return }
+            
+            let tracker = Tracker(
+                id: UUID(),
+                title: title,
+                emoji: selectedEmoji,
+                color: selectedColor,
+                schedule: nil
+            )
+            
+            try? dataManager.trackerProvider.addTracker(tracker, to: selectedCategory)
+        }
+    }
+    
+    func completedDaysCount() -> Int? {
+        guard let trackerToEdit else { return nil}
+        return dataManager.recordProvider.completedDaysCount(for: trackerToEdit.id)
     }
     
 }

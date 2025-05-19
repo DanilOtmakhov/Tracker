@@ -23,7 +23,9 @@
 "irregularEvent.new" = "Nouvel événement irrégulier";
 "category.new" = "Nouvelle catégorie";
 
-"category.edit" = "Modification d'une catégorie";
+"habit.edit" = "Modifier l'habitude";
+"irregularEvent.edit" = "Modifier un événement irrégulier";
+"category.edit" = "Modifier la catégorie";
 
 "enteringTrackerName" = "Entrez le nom du tracker";
 "schedule" = "Programme";
@@ -48,6 +50,7 @@
 
 "done" = "Terminé";
 "create" = "Créer";
+"save" = "Enregistrer";
 "cancel" = "Annuler";
 "pin" = "Épingler";
 "unpin" = "Détacher";
