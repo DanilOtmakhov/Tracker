@@ -10,6 +10,7 @@ import UIKit
 
 protocol TrackerStoreProtocol {
     func add(_ tracker: Tracker, to category: TrackerCategory) throws
+    func edit(_ tracker: Tracker, to newTracker: Tracker, newCategory: TrackerCategory) throws
     func delete(_ tracker: Tracker) throws
     func togglePin(for tracker: Tracker) throws
     func fetchTrackerEntity(by id: UUID) throws -> TrackerEntity?
@@ -35,16 +36,37 @@ final class TrackerStore: TrackerStoreProtocol {
         trackerEntity.createdAt = Date()
         trackerEntity.sectionName = tracker.isPinned ? "0" + .pinned : category.title
         
-        if let schedule = tracker.schedule {
-            trackerEntity.schedule = schedule.map { String($0.rawValue) }.joined(separator: ",")
-        } else {
-            trackerEntity.schedule = nil
-        }
+        trackerEntity.schedule = tracker.schedule?
+            .map { String($0.rawValue) }
+            .joined(separator: ",")
         
         let categoryEntity = try categoryStore.fetchOrCreateCategory(withTitle: category.title)
         categoryEntity.addToTrackers(trackerEntity)
         trackerEntity.category = categoryEntity
     
+        try context.save()
+    }
+    
+    func edit(_ tracker: Tracker, to newTracker: Tracker, newCategory: TrackerCategory) throws {
+        guard let trackerEntity = try fetchTrackerEntity(by: tracker.id) else { return }
+
+        trackerEntity.title = newTracker.title
+        trackerEntity.emoji = newTracker.emoji
+        trackerEntity.color = newTracker.color.hexString
+        trackerEntity.isPinned = newTracker.isPinned
+        trackerEntity.schedule = newTracker.schedule?
+            .map { String($0.rawValue) }
+            .joined(separator: ",")
+        
+        trackerEntity.sectionName = newTracker.isPinned ? "0" + .pinned : newCategory.title
+        
+        if trackerEntity.category?.title != newCategory.title {
+            let newCategoryEntity = try categoryStore.fetchOrCreateCategory(withTitle: newCategory.title)
+            trackerEntity.category?.removeFromTrackers(trackerEntity)
+            trackerEntity.category = newCategoryEntity
+            newCategoryEntity.addToTrackers(trackerEntity)
+        }
+
         try context.save()
     }
     

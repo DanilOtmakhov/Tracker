@@ -116,25 +116,29 @@ class TrackerFormViewModel: TrackerFormViewModelProtocol {
     }
     
     func completeForm() {
+        guard
+            let title,
+            let selectedCategory,
+            let selectedEmoji,
+            let selectedColor
+        else { return }
+        
+        let tracker = Tracker(
+            id: UUID(),
+            title: title,
+            emoji: selectedEmoji,
+            color: selectedColor,
+            schedule: nil,
+            isPinned: trackerToEdit?.isPinned ?? false
+        )
+        
         if isEditMode {
-            // TODO: edit tracker call
-        } else {
-            guard let title,
-                  let selectedCategory,
-                  let selectedEmoji,
-                  let selectedColor
-            else { return }
-            
-            let tracker = Tracker(
-                id: UUID(),
-                title: title,
-                emoji: selectedEmoji,
-                color: selectedColor,
-                schedule: nil
-            )
-            
-            try? dataManager.trackerProvider.addTracker(tracker, to: selectedCategory)
+            guard let trackerToEdit else { return }
+            try? dataManager.trackerProvider.editTracker(trackerToEdit, to: tracker, newCategory: selectedCategory)
+            return
         }
+        
+        try? dataManager.trackerProvider.addTracker(tracker, to: selectedCategory)
     }
     
     func completedDaysCount() -> Int? {

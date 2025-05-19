@@ -73,10 +73,11 @@ final class HabitFormViewModel: TrackerFormViewModel, HabitFormViewModelProtocol
     }
     
     override func completeForm() {
-        guard let title,
-              let selectedCategory,
-              let selectedEmoji,
-              let selectedColor
+        guard
+            let title,
+            let selectedCategory,
+            let selectedEmoji,
+            let selectedColor
         else { return }
         
         let tracker = Tracker(
@@ -84,9 +85,15 @@ final class HabitFormViewModel: TrackerFormViewModel, HabitFormViewModelProtocol
             title: title,
             emoji: selectedEmoji,
             color: selectedColor,
-            schedule: selectedDays
+            schedule: selectedDays,
+            isPinned: trackerToEdit?.isPinned ?? false
         )
         
+        if isEditMode {
+            guard let trackerToEdit else { return }
+            try? dataManager.trackerProvider.editTracker(trackerToEdit, to: tracker, newCategory: selectedCategory)
+            return
+        }
         
         try? dataManager.trackerProvider.addTracker(tracker, to: selectedCategory)
     }
