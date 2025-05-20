@@ -49,4 +49,5 @@ iOSInjectionProject/
 
 **/__Snapshots__/
 Pods/
+Podfile.lock
 Tracker.xcworkspace
