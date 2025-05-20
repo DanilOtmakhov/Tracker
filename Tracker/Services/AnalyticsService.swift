@@ -25,20 +25,19 @@ enum AnalyticsItem: String {
 
 final class AnalyticsService {
 
-    static func logEvent(event: AnalyticsEvent, screen: AnalyticsScreen, item: AnalyticsItem? = nil) {
+    static func log(event: AnalyticsEvent, screen: AnalyticsScreen, item: AnalyticsItem? = nil) {
         var parameters: [AnyHashable: Any] = [
             "event": event.rawValue,
             "screen": screen.rawValue
         ]
-        if let item = item {
+        
+        if let item {
             parameters["item"] = item.rawValue
         }
 
         YMMYandexMetrica.reportEvent("user_action", parameters: parameters, onFailure: { error in
             print("AppMetrica error: \(error.localizedDescription)")
         })
-
-        print("Analytics Event: \(parameters)")
     }
     
 }

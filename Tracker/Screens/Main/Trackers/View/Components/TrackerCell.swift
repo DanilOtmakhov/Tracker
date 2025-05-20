@@ -227,6 +227,8 @@ private extension TrackerCell {
 private extension TrackerCell {
     
     func didTapCompleteButton() {
+        AnalyticsService.log(event: .click, screen: .main, item: .track)
+        
         isCompleted.toggle()
         updateCompletedDaysCount(isCompleted)
         onComplete?(isCompleted)
@@ -248,6 +250,7 @@ extension TrackerCell: UIContextMenuInteractionDelegate {
                 }
                 
                 let editAction = UIAction(title: .edit) { [weak self] _ in
+                    AnalyticsService.log(event: .click, screen: .main, item: .edit)
                     self?.onActionSelected?(.edit)
                 }
             
@@ -255,6 +258,7 @@ extension TrackerCell: UIContextMenuInteractionDelegate {
                     title: .delete,
                     attributes: .destructive
                 ) { [weak self] _ in
+                    AnalyticsService.log(event: .click, screen: .main, item: .delete)
                     self?.onActionSelected?(.delete)
             }
             

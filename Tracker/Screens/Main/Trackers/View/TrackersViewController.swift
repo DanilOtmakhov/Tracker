@@ -116,6 +116,15 @@ final class TrackersViewController: UIViewController {
         setupViewModel()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        AnalyticsService.log(event: .open, screen: .main)
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        AnalyticsService.log(event: .close, screen: .main)
+    }
 }
 
 // MARK: - Private Methods
@@ -284,10 +293,12 @@ private extension TrackersViewController {
 private extension TrackersViewController {
     
     func didTapAddButton() {
+        AnalyticsService.log(event: .click, screen: .main, item: .addTrack)
         onAddTrackerTapped?()
     }
     
     func didTapFiltersButton() {
+        AnalyticsService.log(event: .click, screen: .main, item: .filter)
         onFiltersButtonTapped?()
     }
     
