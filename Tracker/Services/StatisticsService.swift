@@ -114,7 +114,19 @@ private extension StatisticsService {
     }
 
     private func calculateAverageValue() -> Int {
-        return 0
+        do {
+            let completionMap = try dataManager.recordProvider.fetchCompletionsGroupedByDate()
+            let totalDays = completionMap.keys.count
+            let totalCompletions = completionMap.values.reduce(0) { $0 + $1.count }
+
+            guard totalDays > 0 else { return 0 }
+            
+            return Int(round(Double(totalCompletions) / Double(totalDays)))
+        } catch {
+            print("Failed to calculate average value: \(error)")
+            return 0
+        }
     }
+
     
 }
