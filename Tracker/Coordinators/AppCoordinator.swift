@@ -62,7 +62,8 @@ final class AppCoordinator: Coordinator {
     
     private func showMainScreen() {
         trackersCoordinator = TrackersCoordinator()
-        statisticsViewController = StatisticsViewController()
+        let statisticsViewModel = StatisticsViewModel()
+        statisticsViewController = StatisticsViewController(viewModel: statisticsViewModel)
 
         let tabBarController = createTabBarController()
 

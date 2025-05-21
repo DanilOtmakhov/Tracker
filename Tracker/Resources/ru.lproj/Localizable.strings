@@ -39,6 +39,7 @@
 "trackers.emptyState" = "Что будем отслеживать?";
 "categories.emptyState" = "Привычки и события можно объединить по смыслу";
 "nothingFound" = "Ничего не найдено";
+"nothingToAnalyze" = "Анализировать пока нечего";
 "characterLimit" = "Ограничение 38 символов";
 "filters" = "Фильтры";
 
@@ -47,6 +48,11 @@
 "completed" = "Завершенные";
 "notCompleted" = "Незавершенные";
 "pinned" = "Закрепленные";
+
+"bestPeriod" = "Лучший период";
+"perfectDays" = "Идеальные дни";
+"trackersCompleted" = "Трекеров завершено";
+"averageValue" = "Среднее значение";
 
 "done" = "Готово";
 "create" = "Создать";

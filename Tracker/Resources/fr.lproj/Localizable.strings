@@ -39,6 +39,7 @@
 "trackers.emptyState" = "Que souhaitez-vous suivre?";
 "categories.emptyState" = "Les habitudes et événements peuvent être regroupés par thème";
 "nothingFound" = "Aucun résultat trouvé";
+"nothingToAnalyze" = "Rien à analyser pour l’instant";
 "characterLimit" = "Limite de 38 caractères";
 "filters" = "Filtres";
 
@@ -47,6 +48,11 @@
 "completed" = "Terminé";
 "notCompleted" = "Inachevé";
 "pinned" = "Épinglé";
+
+"bestPeriod" = "Meilleure période";
+"perfectDays" = "Jours parfaits";
+"trackersCompleted" = "Suivis terminés";
+"averageValue" = "Valeur moyenne";
 
 "done" = "Terminé";
 "create" = "Créer";

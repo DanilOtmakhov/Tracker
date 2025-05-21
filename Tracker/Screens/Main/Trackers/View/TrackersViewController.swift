@@ -19,7 +19,7 @@ final class TrackersViewController: UIViewController {
         static let headerHeight: CGFloat = 50
         
         static let stubImageSize: CGFloat = 80
-        static let stubImageTopOffset: CGFloat = -40
+        static let stubImageTopOffset: CGFloat = -31
         
         static let stubLabelTopOffset: CGFloat = 8
         

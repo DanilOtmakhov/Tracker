@@ -70,6 +70,7 @@ extension String {
     static let trackersEmptyState = "trackers.emptyState".localized
     static let categoriesEmptyState = "categories.emptyState".localized
     static let nothingFound = "nothingFound".localized
+    static let nothingToAnalyze = "nothingToAnalyze".localized
     static let characterLimit = "characterLimit".localized
     static let filters = "filters".localized
     
@@ -80,6 +81,13 @@ extension String {
     static let completed = "completed".localized
     static let notCompleted = "notCompleted".localized
     static let pinned = "pinned".localized
+    
+    // MARK: - Statistics
+    
+    static let bestPeriod = "bestPeriod".localized
+    static let perfectDays = "perfectDays".localized
+    static let trackersCompleted = "trackersCompleted".localized
+    static let averageValue = "averageValue".localized
 
     // MARK: - Actions
 

@@ -39,6 +39,7 @@
 "trackers.emptyState" = "What are we going to track?";
 "categories.emptyState" = "Habits and events can be combined in meaning";
 "nothingFound" = "Nothing found";
+"nothingToAnalyze" = "Nothing to analyze yet";
 "characterLimit" = "Limit of 38 characters";
 "filters" = "Filters";
 
@@ -47,6 +48,11 @@
 "completed" = "Completed";
 "notCompleted" = "Uncompleted";
 "pinned" = "Pinned";
+
+"bestPeriod" = "Best period";
+"perfectDays" = "Perfect days";
+"trackersCompleted" = "Trackers completed";
+"averageValue" = "Average value";
 
 "done" = "Done";
 "create" = "Create";
