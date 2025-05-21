@@ -46,6 +46,8 @@ final class TrackerStore: TrackerStoreProtocol {
         trackerEntity.category = categoryEntity
     
         try context.save()
+        
+        NotificationCenter.default.post(name: .statisticsShouldRefresh, object: nil)
     }
     
     func edit(_ tracker: Tracker, to newTracker: Tracker, newCategory: TrackerCategory) throws {
@@ -69,12 +71,17 @@ final class TrackerStore: TrackerStoreProtocol {
         }
 
         try context.save()
+        
+        NotificationCenter.default.post(name: .statisticsShouldRefresh, object: nil)
     }
     
     func delete(_ tracker: Tracker) throws {
         guard let trackerEntity = try fetchTrackerEntity(by: tracker.id) else { return }
         context.delete(trackerEntity)
+        
         try context.save()
+        
+        NotificationCenter.default.post(name: .statisticsShouldRefresh, object: nil)
     }
     
     func togglePin(for tracker: Tracker) throws {

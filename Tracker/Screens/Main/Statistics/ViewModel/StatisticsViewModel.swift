@@ -23,6 +23,7 @@ protocol StatisticsViewModelProtocol {
     var onStateChanged: ((StatisticsState) -> Void)? { get set }
     var numberOfItems: Int { get }
     func item(at indexPath: IndexPath) -> StatisticItem
+    func loadStatistics()
 }
 
 final class StatisticsViewModel: StatisticsViewModelProtocol {
@@ -70,17 +71,12 @@ extension StatisticsViewModel {
         items[indexPath.row]
     }
     
-}
-
-// MARK: - Private Methods
-
-private extension StatisticsViewModel {
-    
     func loadStatistics() {
         statisticsService.recalculateStatistics()
         items = statisticsService.fetchStatistics()
         
-        onStateChanged?(items.isEmpty ? .empty : .content)
+        let allValuesAreZero = items.allSatisfy { $0.value == 0 }
+        state = allValuesAreZero ? .empty : .content
     }
     
 }

@@ -70,6 +70,8 @@ final class StatisticsViewController: UIViewController {
         super.viewDidLoad()
         setupViewController()
         setupViewModel()
+        
+        viewModel.loadStatistics()
     }
     
 }
