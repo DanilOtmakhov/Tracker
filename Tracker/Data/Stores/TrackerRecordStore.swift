@@ -37,6 +37,8 @@ final class TrackerRecordStore: TrackerRecordStoreProtocol {
         }
         
         try context.save()
+        
+        NotificationCenter.default.post(name: .statisticsShouldRefresh, object: nil)
     }
     
     func delete(_ record: TrackerRecord) throws {
@@ -45,6 +47,8 @@ final class TrackerRecordStore: TrackerRecordStoreProtocol {
         context.delete(entity)
         
         try context.save()
+        
+        NotificationCenter.default.post(name: .statisticsShouldRefresh, object: nil)
     }
     
     func fetchRecord(for id: UUID, on date: Date) throws -> TrackerRecordEntity? {

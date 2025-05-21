@@ -21,7 +21,6 @@ typealias StatisticsState = StatisticsViewModelState
 
 protocol StatisticsViewModelProtocol {
     var onStateChanged: ((StatisticsState) -> Void)? { get set }
-    func loadStatistics()
     var numberOfItems: Int { get }
     func item(at indexPath: IndexPath) -> StatisticItem
 }
@@ -48,6 +47,13 @@ final class StatisticsViewModel: StatisticsViewModelProtocol {
     init(statisticsService: StatisticsService) {
         self.statisticsService = statisticsService
         loadStatistics()
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleCompleteNotification),
+            name: .statisticsShouldRefresh,
+            object: nil
+        )
     }
     
 }
@@ -56,6 +62,20 @@ final class StatisticsViewModel: StatisticsViewModelProtocol {
 
 extension StatisticsViewModel {
     
+    var numberOfItems: Int {
+        items.count
+    }
+    
+    func item(at indexPath: IndexPath) -> StatisticItem {
+        items[indexPath.row]
+    }
+    
+}
+
+// MARK: - Private Methods
+
+private extension StatisticsViewModel {
+    
     func loadStatistics() {
         statisticsService.recalculateStatistics()
         items = statisticsService.fetchStatistics()
@@ -63,12 +83,15 @@ extension StatisticsViewModel {
         onStateChanged?(items.isEmpty ? .empty : .content)
     }
     
-    var numberOfItems: Int {
-        items.count
-    }
+}
+
+// MARK: - Actions
+
+@objc
+private extension StatisticsViewModel {
     
-    func item(at indexPath: IndexPath) -> StatisticItem {
-        items[indexPath.row]
+    func handleCompleteNotification() {
+        loadStatistics()
     }
     
 }

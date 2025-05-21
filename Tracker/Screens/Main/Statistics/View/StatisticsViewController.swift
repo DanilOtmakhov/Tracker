@@ -72,11 +72,6 @@ final class StatisticsViewController: UIViewController {
         setupViewModel()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        viewModel.loadStatistics()
-    }
-    
 }
 
 // MARK: - Private Methods
