@@ -14,6 +14,7 @@ protocol TrackerRecordStoreProtocol {
     func fetchCompletedRecords(for: UUID) throws -> [TrackerRecordEntity]
     func completedTrackersCount() throws -> Int
     func fetchAllCompletionDates() throws -> [Date]
+    func fetchCompletionsGroupedByDate() throws -> [Date: Set<UUID>]
 }
 
 final class TrackerRecordStore: TrackerRecordStoreProtocol {
@@ -94,6 +95,21 @@ final class TrackerRecordStore: TrackerRecordStoreProtocol {
         let dates = result.compactMap { $0["date"] as? Date }
         
         return dates.sorted()
+    }
+    
+    func fetchCompletionsGroupedByDate() throws -> [Date: Set<UUID>] {
+        let request: NSFetchRequest<TrackerRecordEntity> = TrackerRecordEntity.fetchRequest()
+        let records = try context.fetch(request)
+        
+        var result: [Date: Set<UUID>] = [:]
+        
+        for record in records {
+            guard let id = record.id, let date = record.date else { continue }
+            let day = Calendar.current.startOfDay(for: date)
+            result[day, default: []].insert(id)
+        }
+        
+        return result
     }
     
 }

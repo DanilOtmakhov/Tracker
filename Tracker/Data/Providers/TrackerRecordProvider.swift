@@ -14,6 +14,7 @@ protocol TrackerRecordProviderProtocol {
     func deleteRecord(_ record: TrackerRecord) throws
     func completedTrackersCount() throws -> Int
     func fetchAllCompletionDates() throws -> [Date]
+    func fetchCompletionsGroupedByDate() throws -> [Date: Set<UUID>]
 }
 
 final class TrackerRecordProvider: NSObject {
@@ -64,6 +65,10 @@ extension TrackerRecordProvider: TrackerRecordProviderProtocol {
     
     func fetchAllCompletionDates() throws -> [Date] {
         try store.fetchAllCompletionDates()
+    }
+    
+    func fetchCompletionsGroupedByDate() throws -> [Date: Set<UUID>] {
+        try store.fetchCompletionsGroupedByDate()
     }
     
 }

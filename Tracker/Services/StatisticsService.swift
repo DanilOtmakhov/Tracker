@@ -10,11 +10,11 @@ import Foundation
 final class StatisticsService {
     
     private var store: StatisticStoreProtocol
-    private let recordProvider: TrackerRecordProviderProtocol
+    private let dataManager: DataManagerProtocol
     
-    init(store: StatisticStoreProtocol, recordStore: TrackerRecordProviderProtocol) {
+    init(store: StatisticStoreProtocol, dataManager: DataManagerProtocol) {
         self.store = store
-        self.recordProvider = recordStore
+        self.dataManager = dataManager
     }
     
 }
@@ -54,7 +54,7 @@ private extension StatisticsService {
     
     private func calculateBestPeriod() -> Int {
         do {
-            let dates = try recordProvider.fetchAllCompletionDates()
+            let dates = try dataManager.recordProvider.fetchAllCompletionDates()
             let sortedDates = dates.map { Calendar.current.startOfDay(for: $0) }
                                    .sorted()
             
@@ -84,12 +84,29 @@ private extension StatisticsService {
 
 
     private func calculatePerfectDays() -> Int {
-        return 0
+        do {
+            let completionMap = try dataManager.recordProvider.fetchCompletionsGroupedByDate()
+            var perfectDayCount = 0
+
+            for (date, completedTrackers) in completionMap {
+                let trackers = try dataManager.trackerProvider.fetchTrackerIDs(for: date)
+
+                if !trackers.isEmpty && trackers == completedTrackers {
+                    perfectDayCount += 1
+                }
+            }
+            
+            return perfectDayCount
+        } catch {
+            print("Failed to calculate perfect days: \(error)")
+            return 0
+        }
     }
+
     
     func calculateCompletedTrackersCount() -> Int {
         do {
-            return try recordProvider.completedTrackersCount()
+            return try dataManager.recordProvider.completedTrackersCount()
         } catch {
             print("Failed to count completed trackers: \(error)")
             return 0

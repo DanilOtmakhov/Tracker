@@ -14,6 +14,7 @@ protocol TrackerStoreProtocol {
     func delete(_ tracker: Tracker) throws
     func togglePin(for tracker: Tracker) throws
     func fetchTrackerEntity(by id: UUID) throws -> TrackerEntity?
+    func fetchTrackerIDs(for date: Date) throws -> Set<UUID>
 }
 
 final class TrackerStore: TrackerStoreProtocol {
@@ -88,6 +89,35 @@ final class TrackerStore: TrackerStoreProtocol {
         request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
         request.fetchLimit = 1
         return try context.fetch(request).first
+    }
+    
+    func fetchTrackerIDs(for date: Date) throws -> Set<UUID> {
+        let request: NSFetchRequest<TrackerEntity> = TrackerEntity.fetchRequest()
+
+        let calendar = Calendar.current
+        let weekday = calendar.component(.weekday, from: date)
+        guard let currentDay = Day(rawValue: weekday) else { return Set() }
+        
+        let startOfDay = calendar.startOfDay(for: date)
+        let startOfNextDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
+
+        let scheduledPredicate = NSPredicate(format: "schedule != nil AND schedule CONTAINS %@", "\(currentDay.rawValue)")
+
+        let oneTimePredicate = NSPredicate(
+            format: "schedule == nil AND SUBQUERY(records, $r, $r.date >= %@ AND $r.date < %@).@count > 0",
+            startOfDay as NSDate,
+            startOfNextDay as NSDate
+        )
+        
+        let predicate = NSCompoundPredicate(orPredicateWithSubpredicates: [
+            scheduledPredicate,
+            oneTimePredicate
+        ])
+        
+        request.predicate = predicate
+        
+        let trackers = try context.fetch(request)
+        return Set(trackers.compactMap { $0.id })
     }
     
 }

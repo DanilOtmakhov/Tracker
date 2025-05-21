@@ -13,7 +13,7 @@ final class StatisticsCoordinator: NavigationCoordinator {
     private let dataManager = DataManager(CoreDataStack.shared.context)
     
     func start() {
-        let statisticsService = StatisticsService(store: StatisticStore(), recordStore: dataManager.recordProvider)
+        let statisticsService = StatisticsService(store: StatisticStore(), dataManager: dataManager)
         let viewModel = StatisticsViewModel(statisticsService: statisticsService)
         let viewController = StatisticsViewController(viewModel: viewModel)
         

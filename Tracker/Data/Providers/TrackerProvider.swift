@@ -62,6 +62,7 @@ protocol TrackerProviderProtocol {
     func deleteTracker(at indexPath: IndexPath) throws
     func togglePin(at indexPath: IndexPath) throws
     func applyFilter(with options: TrackerFilterOptions)
+    func fetchTrackerIDs(for date: Date) throws -> Set<UUID>
 }
 
 final class TrackerProvider: NSObject {
@@ -207,6 +208,10 @@ extension TrackerProvider: TrackerProviderProtocol {
         } catch {
             print("Failed to fetch data after filtering: \(error)")
         }
+    }
+    
+    func fetchTrackerIDs(for date: Date) throws -> Set<UUID> {
+        try store.fetchTrackerIDs(for: date)
     }
     
 }
