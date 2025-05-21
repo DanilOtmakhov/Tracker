@@ -13,6 +13,7 @@ protocol TrackerRecordProviderProtocol {
     func addRecord(_ record: TrackerRecord) throws
     func deleteRecord(_ record: TrackerRecord) throws
     func completedTrackersCount() throws -> Int
+    func fetchAllCompletionDates() throws -> [Date]
 }
 
 final class TrackerRecordProvider: NSObject {
@@ -59,6 +60,10 @@ extension TrackerRecordProvider: TrackerRecordProviderProtocol {
     
     func completedTrackersCount() throws -> Int {
         try store.completedTrackersCount()
+    }
+    
+    func fetchAllCompletionDates() throws -> [Date] {
+        try store.fetchAllCompletionDates()
     }
     
 }

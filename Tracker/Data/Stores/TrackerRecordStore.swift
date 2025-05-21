@@ -13,6 +13,7 @@ protocol TrackerRecordStoreProtocol {
     func fetchRecord(for: UUID, on: Date) throws -> TrackerRecordEntity?
     func fetchCompletedRecords(for: UUID) throws -> [TrackerRecordEntity]
     func completedTrackersCount() throws -> Int
+    func fetchAllCompletionDates() throws -> [Date]
 }
 
 final class TrackerRecordStore: TrackerRecordStoreProtocol {
@@ -76,12 +77,23 @@ final class TrackerRecordStore: TrackerRecordStoreProtocol {
     }
     
     func completedTrackersCount() throws -> Int {
-        let fetchRequest: NSFetchRequest<NSNumber> = NSFetchRequest(entityName: "TrackerRecordEntity")
-        fetchRequest.resultType = .countResultType
+        let request: NSFetchRequest<NSNumber> = NSFetchRequest(entityName: "TrackerRecordEntity")
+        request.resultType = .countResultType
 
-        let count = try context.count(for: fetchRequest)
+        let count = try context.count(for: request)
         return count
     }
 
+    func fetchAllCompletionDates() throws -> [Date] {
+        let request: NSFetchRequest<NSDictionary> = NSFetchRequest(entityName: "TrackerRecordEntity")
+        request.resultType = .dictionaryResultType
+        request.returnsDistinctResults = true
+        request.propertiesToFetch = ["date"]
+        
+        let result = try context.fetch(request)
+        let dates = result.compactMap { $0["date"] as? Date }
+        
+        return dates.sorted()
+    }
     
 }

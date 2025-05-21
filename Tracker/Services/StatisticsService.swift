@@ -53,8 +53,35 @@ extension StatisticsService {
 private extension StatisticsService {
     
     private func calculateBestPeriod() -> Int {
-        return 0
+        do {
+            let dates = try recordProvider.fetchAllCompletionDates()
+            let sortedDates = dates.map { Calendar.current.startOfDay(for: $0) }
+                                   .sorted()
+            
+            guard !sortedDates.isEmpty else { return 0 }
+            
+            var maxStreak = 1
+            var currentStreak = 1
+            
+            for i in 1..<sortedDates.count {
+                let prev = sortedDates[i - 1]
+                let current = sortedDates[i]
+                
+                if Calendar.current.date(byAdding: .day, value: 1, to: prev) == current {
+                    currentStreak += 1
+                    maxStreak = max(maxStreak, currentStreak)
+                } else if prev != current {
+                    currentStreak = 1
+                }
+            }
+            
+            return maxStreak
+        } catch {
+            print("Failed to calculate best period: \(error)")
+            return 0
+        }
     }
+
 
     private func calculatePerfectDays() -> Int {
         return 0
