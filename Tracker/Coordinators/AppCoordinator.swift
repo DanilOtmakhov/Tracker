@@ -23,7 +23,7 @@ final class AppCoordinator: Coordinator {
 
     private let window: UIWindow
     private var trackersCoordinator: TrackersCoordinator?
-    private var statisticsViewController: StatisticsViewController?
+    private var statisticsCoordinator: StatisticsCoordinator?
     
     // MARK: - Initialization
     
@@ -62,8 +62,7 @@ final class AppCoordinator: Coordinator {
     
     private func showMainScreen() {
         trackersCoordinator = TrackersCoordinator()
-        let statisticsViewModel = StatisticsViewModel()
-        statisticsViewController = StatisticsViewController(viewModel: statisticsViewModel)
+        statisticsCoordinator = StatisticsCoordinator()
 
         let tabBarController = createTabBarController()
 
@@ -71,23 +70,20 @@ final class AppCoordinator: Coordinator {
         window.makeKeyAndVisible()
 
         trackersCoordinator?.start()
+        statisticsCoordinator?.start()
     }
 
     private func createTabBarController() -> UITabBarController {
         guard let trackersNavigationController = trackersCoordinator?.navigationController,
-              let statisticsVC = statisticsViewController else {
+              let statisticsNavigationController = statisticsCoordinator?.navigationController else {
             fatalError("Dependencies not initialized")
         }
-
-        let statisticsNavigationController = UINavigationController(rootViewController: statisticsVC)
 
         return TabBarController(
             trackersViewController: trackersNavigationController,
             statisticsViewController: statisticsNavigationController
         )
     }
-    
-
     
 }
 
