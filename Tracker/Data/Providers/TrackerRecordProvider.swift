@@ -12,6 +12,7 @@ protocol TrackerRecordProviderProtocol {
     func completedDaysCount(for: UUID) -> Int
     func addRecord(_ record: TrackerRecord) throws
     func deleteRecord(_ record: TrackerRecord) throws
+    func completedTrackersCount() throws -> Int
 }
 
 final class TrackerRecordProvider: NSObject {
@@ -54,6 +55,10 @@ extension TrackerRecordProvider: TrackerRecordProviderProtocol {
     
     func deleteRecord(_ record: TrackerRecord) throws {
         try store.delete(record)
+    }
+    
+    func completedTrackersCount() throws -> Int {
+        try store.completedTrackersCount()
     }
     
 }

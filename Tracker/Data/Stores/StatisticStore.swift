@@ -14,7 +14,14 @@ enum StatisticKey: String {
     case averageValue
 }
 
-final class StatisticStore {
+protocol StatisticStoreProtocol {
+    var bestPeriod: Int { get set }
+    var perfectDays: Int { get set }
+    var completedTrackers: Int { get set }
+    var averageValue: Int { get set }
+}
+
+final class StatisticStore: StatisticStoreProtocol {
     
     private let defaults = UserDefaults.standard
 

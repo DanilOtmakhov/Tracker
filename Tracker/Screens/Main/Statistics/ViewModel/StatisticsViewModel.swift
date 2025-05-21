@@ -21,6 +21,7 @@ typealias StatisticsState = StatisticsViewModelState
 
 protocol StatisticsViewModelProtocol {
     var onStateChanged: ((StatisticsState) -> Void)? { get set }
+    func loadStatistics()
     var numberOfItems: Int { get }
     func item(at indexPath: IndexPath) -> StatisticItem
 }
@@ -33,12 +34,8 @@ final class StatisticsViewModel: StatisticsViewModelProtocol {
     
     // MARK: - Private Properties
     
-    private let statistics: [StatisticItem] = [
-        StatisticItem(value: 6, title: .bestPeriod),
-        StatisticItem(value: 2, title: .perfectDays),
-        StatisticItem(value: 5, title: .trackersCompleted),
-        StatisticItem(value: 4, title: .averageValue)
-    ]
+    private let statisticsService: StatisticsService
+    private var items: [StatisticItem] = []
     
     private var state: StatisticsState = .empty {
         didSet {
@@ -46,12 +43,32 @@ final class StatisticsViewModel: StatisticsViewModelProtocol {
         }
     }
     
+    // MARK: - Initialization
+    
+    init(statisticsService: StatisticsService) {
+        self.statisticsService = statisticsService
+        loadStatistics()
+    }
+    
+}
+
+// MARK: - Internal Methods
+
+extension StatisticsViewModel {
+    
+    func loadStatistics() {
+        statisticsService.recalculateStatistics()
+        items = statisticsService.fetchStatistics()
+        
+        onStateChanged?(items.isEmpty ? .empty : .content)
+    }
+    
     var numberOfItems: Int {
-        statistics.count
+        items.count
     }
     
     func item(at indexPath: IndexPath) -> StatisticItem {
-        statistics[indexPath.row]
+        items[indexPath.row]
     }
     
 }

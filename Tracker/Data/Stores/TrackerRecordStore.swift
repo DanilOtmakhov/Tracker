@@ -12,6 +12,7 @@ protocol TrackerRecordStoreProtocol {
     func delete(_ record: TrackerRecord) throws
     func fetchRecord(for: UUID, on: Date) throws -> TrackerRecordEntity?
     func fetchCompletedRecords(for: UUID) throws -> [TrackerRecordEntity]
+    func completedTrackersCount() throws -> Int
 }
 
 final class TrackerRecordStore: TrackerRecordStoreProtocol {
@@ -69,5 +70,14 @@ final class TrackerRecordStore: TrackerRecordStoreProtocol {
         
         return try context.fetch(request)
     }
+    
+    func completedTrackersCount() throws -> Int {
+        let fetchRequest: NSFetchRequest<NSNumber> = NSFetchRequest(entityName: "TrackerRecordEntity")
+        fetchRequest.resultType = .countResultType
+
+        let count = try context.count(for: fetchRequest)
+        return count
+    }
+
     
 }
