@@ -12,10 +12,12 @@ struct StatisticItem {
     let title: String
 }
 
-enum StatisticsState {
+enum StatisticsViewModelState {
     case empty
     case content
 }
+
+typealias StatisticsState = StatisticsViewModelState
 
 protocol StatisticsViewModelProtocol {
     var onStateChanged: ((StatisticsState) -> Void)? { get set }
