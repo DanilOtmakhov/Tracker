@@ -43,6 +43,24 @@
 "characterLimit" = "Ограничение 38 символов";
 "filters" = "Фильтры";
 
+"monday" = "Понедельник";
+"tuesday" = "Вторник";
+"wednesday" = "Среда";
+"thursday" = "Четверг";
+"friday" = "Пятница";
+"saturday" = "Суббота";
+"sunday" = "Воскресенье";
+
+"monday.short" = "Пн";
+"tuesday.short" = "Вт";
+"wednesday.short" = "Ср";
+"thursday.short" = "Чт";
+"friday.short" = "Пт";
+"saturday.short" = "Сб";
+"sunday.short" = "Вс";
+
+"everyDay" = "Каждый день";
+
 "allTrackers" = "Все трекеры";
 "todayTrackers" = "Трекеры на сегодня";
 "completed" = "Завершенные";

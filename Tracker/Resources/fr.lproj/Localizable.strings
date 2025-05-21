@@ -43,6 +43,24 @@
 "characterLimit" = "Limite de 38 caractères";
 "filters" = "Filtres";
 
+"monday" = "Lundi";
+"tuesday" = "Mardi";
+"wednesday" = "Mercredi";
+"thursday" = "Jeudi";
+"friday" = "Vendredi";
+"saturday" = "Samedi";
+"sunday" = "Dimanche";
+
+"monday.short" = "Lun";
+"tuesday.short" = "Mar";
+"wednesday.short" = "Mer";
+"thursday.short" = "Jeu";
+"friday.short" = "Ven";
+"saturday.short" = "Sam";
+"sunday.short" = "Dim";
+
+"everyDay" = "Tous les jours";
+
 "allTrackers" = "Tous les traqueurs";
 "today Trackers" = "Trackers pour aujourd'hui";
 "completed" = "Terminé";

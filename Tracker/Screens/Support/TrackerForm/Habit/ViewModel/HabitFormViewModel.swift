@@ -25,7 +25,7 @@ final class HabitFormViewModel: TrackerFormViewModel, HabitFormViewModelProtocol
     
     var selectedDaysString: String? {
         guard !selectedDays.isEmpty else { return nil }
-        if Set(selectedDays) == Set(Day.allCases) { return "Каждый день" }
+        if Set(selectedDays) == Set(Day.allCases) { return .everyDay }
         return selectedDays.map { $0.shortString }.joined(separator: ", ")
     }
     

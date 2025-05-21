@@ -74,6 +74,26 @@ extension String {
     static let characterLimit = "characterLimit".localized
     static let filters = "filters".localized
     
+    // MARK: - Days
+    
+    static let monday = "monday".localized
+    static let tuesday = "tuesday".localized
+    static let wednesday = "wednesday".localized
+    static let thursday = "monday".localized
+    static let friday = "monday".localized
+    static let saturday = "monday".localized
+    static let sunday = "monday".localized
+    
+    static let mondayShort = "monday.short".localized
+    static let tuesdayShort = "tuesday.short".localized
+    static let wednesdayShort = "wednesday.short".localized
+    static let thursdayShort = "thursday.short".localized
+    static let fridayShort = "friday.short".localized
+    static let saturdayShort = "saturday.short".localized
+    static let sundayShort = "sunday.short".localized
+    
+    static let everyDay = "everyDay".localized
+    
     // MARK: - Filters
     
     static let allTrackers = "allTrackers".localized
