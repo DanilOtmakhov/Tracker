@@ -34,7 +34,7 @@ final class StatisticsViewModel: StatisticsViewModelProtocol {
     
     // MARK: - Private Properties
     
-    private let statisticsService: StatisticsService
+    private let statisticsService: StatisticsServiceProtocol
     private var items: [StatisticItem] = []
     
     private var state: StatisticsState = .empty {
@@ -45,7 +45,7 @@ final class StatisticsViewModel: StatisticsViewModelProtocol {
     
     // MARK: - Initialization
     
-    init(statisticsService: StatisticsService) {
+    init(statisticsService: StatisticsServiceProtocol) {
         self.statisticsService = statisticsService
         loadStatistics()
         

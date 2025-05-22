@@ -7,7 +7,12 @@
 
 import Foundation
 
-final class StatisticsService {
+protocol StatisticsServiceProtocol {
+    func recalculateStatistics()
+    func fetchStatistics() -> [StatisticItem]
+}
+
+final class StatisticsService: StatisticsServiceProtocol {
     
     private var store: StatisticStoreProtocol
     private let dataManager: DataManagerProtocol
