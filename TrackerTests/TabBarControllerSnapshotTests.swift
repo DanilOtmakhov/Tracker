@@ -20,6 +20,7 @@ final class DummyTrackerProvider: TrackerProviderProtocol {
     func deleteTracker(at indexPath: IndexPath) throws {}
     func togglePin(at indexPath: IndexPath) throws {}
     func applyFilter(with options: TrackerFilterOptions) {}
+    func fetchTrackerIDs(for date: Date) throws -> Set<UUID> { Set() }
 }
 
 final class DummyTrackerCategoryProvider: TrackerCategoryProviderProtocol {
@@ -38,6 +39,9 @@ final class DummyTrackerRecordProvider: TrackerRecordProviderProtocol {
     func completedDaysCount(for trackerID: UUID) -> Int { 0 }
     func addRecord(_ record: TrackerRecord) throws {}
     func deleteRecord(_ record: TrackerRecord) throws {}
+    func completedTrackersCount() throws -> Int { 0 }
+    func fetchAllCompletionDates() throws -> [Date] { [] }
+    func fetchCompletionsGroupedByDate() throws -> [Date : Set<UUID>] { [:] }
 }
 
 final class DummyDataManager: DataManagerProtocol {
@@ -46,16 +50,25 @@ final class DummyDataManager: DataManagerProtocol {
     var recordProvider: TrackerRecordProviderProtocol = DummyTrackerRecordProvider()
 }
 
+final class DummyStatisticsService: StatisticsServiceProtocol {
+    func recalculateStatistics() {}
+    func fetchStatistics() -> [StatisticItem] { [] }
+}
+
 final class TabBarControllerSnapshotTests: XCTestCase {
 
-    func testTabBarController_lightMode() {
+    func testTabBarControllerLightMode() {
         let dummyDataManager = DummyDataManager()
-        let dummyTrackersViewModel = TrackersViewModel(dataManager: dummyDataManager)
-        let trackersViewController = TrackersViewController(viewModel: dummyTrackersViewModel)
+        let trackersViewModel = TrackersViewModel(dataManager: dummyDataManager)
+        let trackersViewController = TrackersViewController(viewModel: trackersViewModel)
         
-        dummyTrackersViewModel.onStateChange?(.empty(update: TrackerStoreUpdate()))
+        trackersViewModel.onStateChange?(.empty(update: TrackerStoreUpdate()))
         
-        let statisticsViewController = StatisticsViewController()
+        let dummyStatisticService = DummyStatisticsService()
+        let statisticsViewModel = StatisticsViewModel(statisticsService: dummyStatisticService)
+        let statisticsViewController = StatisticsViewController(viewModel: statisticsViewModel)
+        
+        statisticsViewModel.onStateChanged?(.empty)
         
         let tabBarController = TabBarController(
             trackersViewController: UINavigationController(rootViewController: trackersViewController),
@@ -69,14 +82,18 @@ final class TabBarControllerSnapshotTests: XCTestCase {
         assertSnapshot(matching: tabBarController, as: .image(traits: .init(userInterfaceStyle: .light)), named: "TabBar_LightMode")
     }
     
-    func testTabBarController_darkMode() {
+    func testTabBarControllerDarkMode() {
         let dummyDataManager = DummyDataManager()
-        let dummyTrackersViewModel = TrackersViewModel(dataManager: dummyDataManager)
-        let trackersViewController = TrackersViewController(viewModel: dummyTrackersViewModel)
+        let trackersViewModel = TrackersViewModel(dataManager: dummyDataManager)
+        let trackersViewController = TrackersViewController(viewModel: trackersViewModel)
         
-        dummyTrackersViewModel.onStateChange?(.empty(update: TrackerStoreUpdate()))
-
-        let statisticsViewController = StatisticsViewController()
+        trackersViewModel.onStateChange?(.empty(update: TrackerStoreUpdate()))
+        
+        let dummyStatisticService = DummyStatisticsService()
+        let statisticsViewModel = StatisticsViewModel(statisticsService: dummyStatisticService)
+        let statisticsViewController = StatisticsViewController(viewModel: statisticsViewModel)
+        
+        statisticsViewModel.onStateChanged?(.empty)
 
         let tabBarController = TabBarController(
             trackersViewController: UINavigationController(rootViewController: trackersViewController),
