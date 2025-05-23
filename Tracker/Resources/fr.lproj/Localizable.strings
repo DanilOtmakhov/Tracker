@@ -1,0 +1,84 @@
+/* 
+  Localizable.strings
+  Tracker
+
+  Created by Danil Otmakhov on 15.05.2025.
+  
+*/
+
+"onboarding.blue" = "Suivez uniquement ce que vous voulez";
+"onboarding.red" = "Même si ce n’est ni de l’eau ni du yoga";
+"onboarding.button" = "Quelle technologie !";
+
+"trackers" = "Traqueurs";
+"statistics" = "Statistiques";
+
+"trackerCreation" = "Créer un tracker";
+
+"habit" = "Habitude";
+"irregularEvent" = "Événement irrégulier";
+"category" = "Catégorie";
+
+"habit.new" = "Nouvelle habitude";
+"irregularEvent.new" = "Nouvel événement irrégulier";
+"category.new" = "Nouvelle catégorie";
+
+"habit.edit" = "Modifier l'habitude";
+"irregularEvent.edit" = "Modifier un événement irrégulier";
+"category.edit" = "Modifier la catégorie";
+
+"enteringTrackerName" = "Entrez le nom du tracker";
+"schedule" = "Programme";
+"emoji" = "Emoji";
+"color" = "Couleur";
+
+"enteringCategoryName" = "Entrez le nom de la catégorie";
+"addCategory" = "Ajouter une catégorie";
+
+"search" = "Recherche";
+"trackers.emptyState" = "Que souhaitez-vous suivre?";
+"categories.emptyState" = "Les habitudes et événements peuvent être regroupés par thème";
+"nothingFound" = "Aucun résultat trouvé";
+"nothingToAnalyze" = "Rien à analyser pour l’instant";
+"characterLimit" = "Limite de 38 caractères";
+"filters" = "Filtres";
+
+"monday" = "Lundi";
+"tuesday" = "Mardi";
+"wednesday" = "Mercredi";
+"thursday" = "Jeudi";
+"friday" = "Vendredi";
+"saturday" = "Samedi";
+"sunday" = "Dimanche";
+
+"monday.short" = "Lun";
+"tuesday.short" = "Mar";
+"wednesday.short" = "Mer";
+"thursday.short" = "Jeu";
+"friday.short" = "Ven";
+"saturday.short" = "Sam";
+"sunday.short" = "Dim";
+
+"everyDay" = "Tous les jours";
+
+"allTrackers" = "Tous les traqueurs";
+"today Trackers" = "Trackers pour aujourd'hui";
+"completed" = "Terminé";
+"notCompleted" = "Inachevé";
+"pinned" = "Épinglé";
+
+"bestPeriod" = "Meilleure période";
+"perfectDays" = "Jours parfaits";
+"trackersCompleted" = "Suivis terminés";
+"averageValue" = "Valeur moyenne";
+
+"done" = "Terminé";
+"create" = "Créer";
+"save" = "Enregistrer";
+"cancel" = "Annuler";
+"pin" = "Épingler";
+"unpin" = "Détacher";
+"edit" = "Modifier";
+"delete" = "Supprimer";
+"delete.confirmation.tracker" = "Êtes-vous sûr de vouloir supprimer le tracker?";
+"delete.confirmation.category" = "Cette catégorie n'est-elle définitivement pas nécessaire?";

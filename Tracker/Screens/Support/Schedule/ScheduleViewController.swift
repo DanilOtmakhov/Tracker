@@ -37,7 +37,7 @@ final class ScheduleViewController: UIViewController {
     }(UITableView(frame: .zero, style: .insetGrouped))
     
     private lazy var readyButton: UIButton = {
-        $0.setTitle("Готово", for: .normal)
+        $0.setTitle(.done, for: .normal)
         $0.setTitleColor(.ypWhite, for: .normal)
         $0.backgroundColor = .ypBlack
         $0.layer.cornerRadius = Constants.cornerRadius
@@ -65,7 +65,7 @@ final class ScheduleViewController: UIViewController {
 private extension ScheduleViewController {
     
     func setupViewController() {
-        title = "Расписание"
+        title = .schedule
         view.backgroundColor = .ypWhite
         
         [tableView, readyButton].forEach {

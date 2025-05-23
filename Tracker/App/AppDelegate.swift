@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import YandexMobileMetrica
 
 @main
 final class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -13,7 +14,12 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     private var appCoordinator: Coordinator?
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+    func application(
+        _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
+    ) -> Bool {
+        guard let configuration = YMMYandexMetricaConfiguration(apiKey: "0a10a2a8-b7c1-4271-aba7-e790d7018910") else { return true }
+        YMMYandexMetrica.activate(with: configuration)
         
         configureNavigationBarAppearance()
         

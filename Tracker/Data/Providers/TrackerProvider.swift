@@ -41,6 +41,12 @@ struct TrackerStoreUpdate {
 
 }
 
+struct TrackerFilterOptions {
+    var date: Date
+    var searchQuery: String
+    var filter: Filter
+}
+
 protocol TrackerProviderDelegate: AnyObject {
     func didUpdate(_ update: TrackerStoreUpdate)
 }
@@ -49,10 +55,14 @@ protocol TrackerProviderProtocol {
     var delegate: TrackerProviderDelegate? { get set }
     var numberOfSections: Int { get }
     func numberOfItemsInSection(_ section: Int) -> Int
-    func nameOfSection(at: IndexPath) -> String?
-    func tracker(at: IndexPath) -> Tracker?
-    func addTracker(_ tracker: Tracker, to: TrackerCategory) throws
-    func applyFilter(currentDate: Date, searchQuery: String)
+    func nameOfSection(at indexPath: IndexPath) -> String?
+    func tracker(at indexPath: IndexPath) -> Tracker?
+    func addTracker(_ tracker: Tracker, to category: TrackerCategory) throws
+    func editTracker(_ tracker: Tracker, to newTracker: Tracker, newCategory: TrackerCategory) throws
+    func deleteTracker(at indexPath: IndexPath) throws
+    func togglePin(at indexPath: IndexPath) throws
+    func applyFilter(with options: TrackerFilterOptions)
+    func fetchTrackerIDs(for date: Date) throws -> Set<UUID>
 }
 
 final class TrackerProvider: NSObject {
@@ -67,13 +77,13 @@ final class TrackerProvider: NSObject {
 
         let fetchRequest: NSFetchRequest<TrackerEntity> = TrackerEntity.fetchRequest()
         fetchRequest.sortDescriptors = [
-            NSSortDescriptor(key: "category.title", ascending: true),
+            NSSortDescriptor(key: "sectionName", ascending: true),
             NSSortDescriptor(key: "createdAt", ascending: false)
         ]
         
         let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
                                                                   managedObjectContext: context,
-                                                                  sectionNameKeyPath: "category.title",
+                                                                  sectionNameKeyPath: "sectionName",
                                                                   cacheName: nil)
         fetchedResultsController.delegate = self
         try? fetchedResultsController.performFetch()
@@ -103,7 +113,8 @@ extension TrackerProvider: TrackerProviderProtocol {
     }
     
     func nameOfSection(at indexPath: IndexPath) -> String? {
-        fetchedResultsController.sections?[indexPath.section].name
+        guard let sectionName = fetchedResultsController.sections?[indexPath.section].name else { return nil }
+        return sectionName == "0" + .pinned ? .pinned : sectionName
     }
     
     func tracker(at indexPath: IndexPath) -> Tracker? {
@@ -115,14 +126,28 @@ extension TrackerProvider: TrackerProviderProtocol {
         try store.add(tracker, to: category)
     }
     
-    func applyFilter(currentDate: Date, searchQuery: String) {
+    func editTracker(_ tracker: Tracker, to newTracker: Tracker, newCategory: TrackerCategory) throws {
+        try store.edit(tracker, to: newTracker, newCategory: newCategory)
+    }
+    
+    func deleteTracker(at indexPath: IndexPath) throws {
+        guard let tracker = tracker(at: indexPath) else { return }
+        try store.delete(tracker)
+    }
+    
+    func togglePin(at indexPath: IndexPath) throws {
+        guard let tracker = tracker(at: indexPath) else { return }
+        try store.togglePin(for: tracker)
+    }
+    
+    func applyFilter(with options: TrackerFilterOptions) {
         var predicates: [NSPredicate] = []
         
         let calendar = Calendar.current
-        let weekday = calendar.component(.weekday, from: currentDate)
+        let weekday = calendar.component(.weekday, from: options.date)
         guard let currentDay = Day(rawValue: weekday) else { return }
         
-        let startOfDay = calendar.startOfDay(for: currentDate)
+        let startOfDay = calendar.startOfDay(for: options.date)
         let startOfNextDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
 
         let scheduledPredicate = NSPredicate(format: "schedule != nil AND schedule CONTAINS %@", "\(currentDay.rawValue)")
@@ -146,12 +171,33 @@ extension TrackerProvider: TrackerProviderProtocol {
         
         predicates.append(displayPredicate)
         
-        if !searchQuery.isEmpty {
+        if !options.searchQuery.isEmpty {
             let searchPredicate = NSPredicate(
                 format: "title CONTAINS[cd] %@ OR emoji CONTAINS[cd] %@",
-                searchQuery, searchQuery
+                options.searchQuery, options.searchQuery
             )
             predicates.append(searchPredicate)
+        }
+        
+        switch options.filter {
+        case .completed:
+            let completedPredicate = NSPredicate(
+                format: "SUBQUERY(records, $r, $r.date >= %@ AND $r.date < %@).@count > 0",
+                startOfDay as NSDate,
+                startOfNextDay as NSDate
+            )
+            predicates.append(completedPredicate)
+            
+        case .notCompleted:
+            let notCompletedPredicate = NSPredicate(
+                format: "SUBQUERY(records, $r, $r.date >= %@ AND $r.date < %@).@count == 0",
+                startOfDay as NSDate,
+                startOfNextDay as NSDate
+            )
+            predicates.append(notCompletedPredicate)
+            
+        case .all, .today:
+            break
         }
 
         fetchedResultsController.fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
@@ -162,6 +208,10 @@ extension TrackerProvider: TrackerProviderProtocol {
         } catch {
             print("Failed to fetch data after filtering: \(error)")
         }
+    }
+    
+    func fetchTrackerIDs(for date: Date) throws -> Set<UUID> {
+        try store.fetchTrackerIDs(for: date)
     }
     
 }

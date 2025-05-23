@@ -32,13 +32,13 @@ final class TabBarController: UITabBarController {
         view.backgroundColor = .ypWhite
 
         trackersViewController.tabBarItem = UITabBarItem(
-            title: "Трекеры",
+            title: .trackers,
             image: UIImage(resource: .trackers),
             selectedImage: nil
         )
         
         statisticsViewController.tabBarItem = UITabBarItem(
-            title: "Статистика",
+            title: .statistics,
             image: UIImage(resource: .stats),
             selectedImage: nil
         )

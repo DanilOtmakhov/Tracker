@@ -14,6 +14,7 @@ final class CategoriesViewController: UIViewController {
     private enum Constants {
         static let rowHeight: CGFloat = 75
         static let tableViewToButtonSpacing: CGFloat = 16
+        static let separatorInset: CGFloat = 16
         
         static let buttonHorizontalInset: CGFloat = 20
         static let buttonBottomInset: CGFloat = -16
@@ -37,7 +38,7 @@ final class CategoriesViewController: UIViewController {
         $0.allowsSelection = true
         $0.register(CategoryCell.self,
                     forCellReuseIdentifier: CategoryCell.reuseIdentifier)
-        $0.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+        $0.separatorInset = UIEdgeInsets(top: 0, left: Constants.separatorInset, bottom: 0, right: Constants.separatorInset)
         return $0
     }(UITableView(frame: .zero, style: .insetGrouped))
     
@@ -48,7 +49,7 @@ final class CategoriesViewController: UIViewController {
     }(UIImageView())
     
     private lazy var stubLabel: UILabel = {
-        $0.text = "Привычки и события можно объединить по смыслу"
+        $0.text = .categoriesEmptyState
         $0.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         $0.textColor = .ypBlack
         $0.textAlignment = .center
@@ -58,7 +59,8 @@ final class CategoriesViewController: UIViewController {
     }(UILabel())
     
     private lazy var addButton: UIButton = {
-        $0.setTitle("Добавить категорию", for: .normal)
+        $0.setTitle(.addCategory, for: .normal)
+        $0.setTitleColor(.ypWhite, for: .normal)
         $0.backgroundColor = .ypBlack
         $0.layer.cornerRadius = Constants.cornerRadius
         $0.layer.masksToBounds = true
@@ -101,7 +103,7 @@ final class CategoriesViewController: UIViewController {
 private extension CategoriesViewController {
     
     func setupViewController() {
-        title = "Категория"
+        title = .category
         view.backgroundColor = .ypWhite
 
         [tableView, addButton, stubImageView, stubLabel].forEach {
@@ -165,18 +167,18 @@ private extension CategoriesViewController {
     func showDeleteConfirmationAlert(for indexPath: IndexPath) {
         let alert = UIAlertController(
             title: nil,
-            message: "Эта категория точно не нужна?",
+            message: .deleteCategoryConfirmation,
             preferredStyle: .actionSheet
         )
         
         let deleteAction = UIAlertAction(
-            title: "Удалить",
+            title: .delete,
             style: .destructive
         ) { [weak self] _ in
             self?.viewModel.deleteCategory(at: indexPath)
         }
         
-        let cancelAction = UIAlertAction(title: "Отмена", style: .cancel)
+        let cancelAction = UIAlertAction(title: .cancel, style: .cancel)
         
         alert.addAction(deleteAction)
         alert.addAction(cancelAction)
@@ -232,7 +234,7 @@ extension CategoriesViewController: UITableViewDataSource {
 extension CategoriesViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        viewModel.didSelectCategory(at: indexPath)
+        viewModel.selectCategory(at: indexPath)
     
         if viewModel.isCategorySelected(at: indexPath) {
             tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
@@ -250,16 +252,14 @@ extension CategoriesViewController: UITableViewDelegate {
     ) -> UIContextMenuConfiguration? {
         return UIContextMenuConfiguration(
             actionProvider:  { _ in
-                let editAction = UIAction(
-                    title: "Редактировать"
-                ) { [weak self] action in
+                let editAction = UIAction(title: .edit) { [weak self] _ in
                     self?.viewModel.editCategory(at: indexPath)
-            }
+                }
             
                 let deleteAction = UIAction(
-                    title: "Удалить",
+                    title: .delete,
                     attributes: .destructive
-                ) { [weak self] action in
+                ) { [weak self] _ in
                     self?.showDeleteConfirmationAlert(for: indexPath)
             }
             

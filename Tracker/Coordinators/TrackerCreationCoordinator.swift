@@ -36,8 +36,8 @@ final class TrackerCreationCoordinator: Coordinator {
         presentInPageSheet(viewController)
     }
     
-    private func showHabitFormViewController(presenter: UIViewController?) {
-        let viewModel = HabitFormViewModel(dataManager: dataManager)
+    func showHabitFormViewController(presenter: UIViewController?, trackerToEdit: Tracker? = nil) {
+        let viewModel = HabitFormViewModel(dataManager: dataManager, trackerToEdit: trackerToEdit)
         let viewController = HabitFormViewController(viewModel: viewModel)
         
         viewController.onCategoryCellTapped = { [weak self] in
@@ -48,22 +48,22 @@ final class TrackerCreationCoordinator: Coordinator {
             self?.showScheduleViewController(presenter: viewController, with: viewModel)
         }
         
-        viewController.onCreatedButtonTapped = { [weak self] in
+        viewController.onCompleteButtonTapped = { [weak self] in
             self?.finishCreationFlow()
         }
         
         presentInPageSheet(viewController, presenter: presenter)
     }
     
-    private func showEventFormViewController(presenter: UIViewController?) {
-        let viewModel = EventFormViewModel(dataManager: dataManager)
+    func showEventFormViewController(presenter: UIViewController?, trackerToEdit: Tracker? = nil) {
+        let viewModel = EventFormViewModel(dataManager: dataManager, trackerToEdit: trackerToEdit)
         let viewController = EventFormViewController(viewModel: viewModel)
         
         viewController.onCategoryCellTapped = { [weak self] in
             self?.showCategoriesViewController(presenter: viewController, with: viewModel)
         }
         
-        viewController.onCreatedButtonTapped = { [weak self] in
+        viewController.onCompleteButtonTapped = { [weak self] in
             self?.finishCreationFlow()
         }
         
@@ -76,7 +76,7 @@ final class TrackerCreationCoordinator: Coordinator {
         let viewController = CategoriesViewController(viewModel: viewModel)
         
         viewModel.onCategorySelected = { [weak viewController, weak presentingViewModel] category in
-            presentingViewModel?.didSelectCategory(category)
+            presentingViewModel?.selectCategory(category)
             viewController?.dismiss(animated: true, completion: nil)
         }
         
@@ -96,7 +96,7 @@ final class TrackerCreationCoordinator: Coordinator {
         viewController.selectedDays = Set(presentingViewModel.selectedDays)
         
         viewController.onDaysSelected = { [weak viewController, weak presentingViewModel] days in
-            presentingViewModel?.didSelectDays(days)
+            presentingViewModel?.selectDays(days)
             viewController?.dismiss(animated: true)
         }
         
@@ -125,4 +125,5 @@ final class TrackerCreationCoordinator: Coordinator {
         let presenter = presenter ?? presentingViewController
         presenter.present(navController, animated: true)
     }
+    
 }

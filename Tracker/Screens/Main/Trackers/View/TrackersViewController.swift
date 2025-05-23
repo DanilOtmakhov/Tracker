@@ -19,10 +19,16 @@ final class TrackersViewController: UIViewController {
         static let headerHeight: CGFloat = 50
         
         static let stubImageSize: CGFloat = 80
-        static let stubTopOffset: CGFloat = -40
+        static let stubImageTopOffset: CGFloat = -31
+        
         static let stubLabelTopOffset: CGFloat = 8
         
         static let datePickerWidth: CGFloat = 110
+        
+        static let cornerRadius: CGFloat = 16
+        static let buttonWidth: CGFloat = 114
+        static let buttonHeight: CGFloat = 50
+        static let buttonBottomInset: CGFloat = -16
     }
     
     // MARK: - Subviews
@@ -31,6 +37,7 @@ final class TrackersViewController: UIViewController {
         $0.datePickerMode = .date
         $0.preferredDatePickerStyle = .compact
         $0.maximumDate = Date()
+        $0.locale = Locale.current
         $0.addTarget(self, action: #selector(datePickerValueChanged(_:)), for: .valueChanged)
         return $0
     }(UIDatePicker())
@@ -51,10 +58,10 @@ final class TrackersViewController: UIViewController {
     
     private lazy var searchController: UISearchController = {
         $0.searchResultsUpdater = self
-        $0.searchBar.placeholder = "Поиск"
+        $0.searchBar.placeholder = .search
         $0.searchBar.searchBarStyle = .minimal
         $0.searchBar.tintColor = .ypGray
-        $0.searchBar.setValue("Отменить", forKey: "cancelButtonText")
+        $0.searchBar.setValue(String.cancel, forKey: "cancelButtonText")
         return $0
     }(UISearchController())
     
@@ -69,9 +76,20 @@ final class TrackersViewController: UIViewController {
         return $0
     }(UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout()))
     
+    private lazy var filtersButton: UIButton = {
+        $0.setTitle(.filters, for: .normal)
+        $0.setTitleColor(.white, for: .normal)
+        $0.titleLabel?.font = .systemFont(ofSize: 17)
+        $0.backgroundColor = .ypBlue
+        $0.layer.cornerRadius = Constants.cornerRadius
+        $0.addTarget(self, action: #selector(didTapFiltersButton), for: .touchUpInside)
+        return $0
+    }(UIButton())
+    
     // MARK: - Internal Properties
     
     var onAddTrackerTapped: (() -> Void)?
+    var onFiltersButtonTapped: (() -> Void)?
     
     // MARK: - Private Properties
     
@@ -98,6 +116,15 @@ final class TrackersViewController: UIViewController {
         setupViewModel()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        AnalyticsService.log(event: .open, screen: .main)
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        AnalyticsService.log(event: .close, screen: .main)
+    }
 }
 
 // MARK: - Private Methods
@@ -109,19 +136,21 @@ private extension TrackersViewController {
         
         navigationController?.hidesBarsOnSwipe = false
         navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.title = "Трекеры"
+        navigationItem.title = .trackers
         navigationItem.searchController = searchController
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(
-            image: UIImage(resource: .plus).withRenderingMode(.alwaysOriginal),
+            image: UIImage(resource: .plus),
             style: .done,
             target: self,
-            action: #selector(addButtonTapped)
+            action: #selector(didTapAddButton)
         )
+        
+        navigationItem.leftBarButtonItem?.tintColor = .ypBlack
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
         
-        [collectionView, stubImageView, stubLabel].forEach {
+        [collectionView, stubImageView, stubLabel, filtersButton].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
         }
@@ -135,14 +164,21 @@ private extension TrackersViewController {
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             
             stubImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            stubImageView.topAnchor.constraint(equalTo: view.centerYAnchor, constant: Constants.stubTopOffset),
+            stubImageView.topAnchor.constraint(equalTo: view.centerYAnchor, constant: Constants.stubImageTopOffset),
             stubImageView.heightAnchor.constraint(equalToConstant: Constants.stubImageSize),
             stubImageView.widthAnchor.constraint(equalToConstant: Constants.stubImageSize),
             
             stubLabel.topAnchor.constraint(equalTo: stubImageView.bottomAnchor, constant: Constants.stubLabelTopOffset),
-            stubLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+            stubLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            
+            filtersButton.widthAnchor.constraint(equalToConstant: Constants.buttonWidth),
+            filtersButton.heightAnchor.constraint(equalToConstant: Constants.buttonHeight),
+            filtersButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            filtersButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: Constants.buttonBottomInset)
         ])
     }
+    
+    
     
     func setupAppearance() {
         let attributes: [NSAttributedString.Key: Any] = [
@@ -165,6 +201,10 @@ private extension TrackersViewController {
                 self?.applyUpdate(state)
             }
         }
+        
+        viewModel.onDateChange = { [weak self] date in
+            self?.datePicker.setDate(date, animated: true)
+        }
     }
     
     func applyUpdate(_ state: TrackersViewModelState) {
@@ -174,6 +214,7 @@ private extension TrackersViewController {
             self.stubImageView.isHidden = true
             self.stubLabel.isHidden = true
             self.collectionView.isHidden = false
+            self.filtersButton.isHidden = false
             
             if update.isEmpty {
                 collectionView.reloadData()
@@ -204,11 +245,13 @@ private extension TrackersViewController {
             }
             
         case .empty:
+            self.filtersButton.isHidden = true
             self.updateStubView(image: UIImage(resource: .stub),
-                              labelText: "Что будем отслеживать?")
+                                labelText: .trackersEmptyState)
         case .searchNotFound:
+            self.filtersButton.isHidden = false
             self.updateStubView(image: UIImage(resource: .nothingFound),
-                              labelText: "Ничего не найдено")
+                                labelText: .nothingFound)
         }
     }
     
@@ -220,6 +263,28 @@ private extension TrackersViewController {
         collectionView.isHidden = true
     }
     
+    func showDeleteConfirmationAlert(for indexPath: IndexPath) {
+        let alert = UIAlertController(
+            title: nil,
+            message: .deleteTrackerConfirmation,
+            preferredStyle: .actionSheet
+        )
+        
+        let deleteAction = UIAlertAction(
+            title: .delete,
+            style: .destructive
+        ) { [weak self] _ in
+            self?.viewModel.deleteTracker(at: indexPath)
+        }
+        
+        let cancelAction = UIAlertAction(title: .cancel, style: .cancel)
+        
+        alert.addAction(deleteAction)
+        alert.addAction(cancelAction)
+        
+        present(alert, animated: true)
+    }
+    
 }
 
 // MARK: - Actions
@@ -227,8 +292,14 @@ private extension TrackersViewController {
 @objc
 private extension TrackersViewController {
     
-    func addButtonTapped() {
+    func didTapAddButton() {
+        AnalyticsService.log(event: .click, screen: .main, item: .addTrack)
         onAddTrackerTapped?()
+    }
+    
+    func didTapFiltersButton() {
+        AnalyticsService.log(event: .click, screen: .main, item: .filter)
+        onFiltersButtonTapped?()
     }
     
     func datePickerValueChanged(_ sender: UIDatePicker) {
@@ -281,7 +352,8 @@ extension TrackersViewController: UICollectionViewDataSource {
         let completedDaysCount = viewModel.completedDaysCount(for: tracker)
         let isCompleted = viewModel.isTrackerCompleted(tracker)
         
-        cell.configure(with: tracker, completedDaysCount: completedDaysCount, isCompleted: isCompleted)
+        cell.configure(with: tracker, isPinned: tracker.isPinned, completedDaysCount: completedDaysCount, isCompleted: isCompleted)
+        
         cell.onComplete = { [weak self] isCompleted in
             guard let self else { return }
             self.viewModel.handleCompleteButtonTap(tracker, isCompleted: isCompleted)
@@ -290,6 +362,17 @@ extension TrackersViewController: UICollectionViewDataSource {
             let newIsCompleted = self.viewModel.isTrackerCompleted(tracker)
             
             cell.updateState(completedDaysCount: newCompletedDaysCount, isCompleted: newIsCompleted)
+        }
+        
+        cell.onActionSelected = { [weak self] action in
+            switch action {
+            case .pin:
+                self?.viewModel.togglePin(at: indexPath)
+            case .edit:
+                self?.viewModel.editTracker(at: indexPath)
+            case .delete:
+                self?.showDeleteConfirmationAlert(for: indexPath)
+            }
         }
         
         return cell
@@ -315,14 +398,6 @@ extension TrackersViewController: UICollectionViewDataSource {
         header.configure(with: title)
         return header
     }
-    
-}
-
-// MARK: - UICollectionViewDelegate
-
-extension TrackersViewController: UICollectionViewDelegate {
-    
-    
     
 }
 

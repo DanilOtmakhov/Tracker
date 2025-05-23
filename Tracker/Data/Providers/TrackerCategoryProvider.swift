@@ -47,6 +47,7 @@ protocol TrackerCategoryProviderProtocol {
     func addCategory(withTitle title: String) throws
     func deleteCategory(at indexPath: IndexPath) throws
     func edit(_ category: TrackerCategory, withTitle title: String) throws
+    func category(of tracker: Tracker) throws -> TrackerCategory?
 }
 
 final class TrackerCategoryProvider: NSObject {
@@ -111,6 +112,11 @@ extension TrackerCategoryProvider: TrackerCategoryProviderProtocol {
     
     func edit(_ category: TrackerCategory, withTitle title: String) throws {
         try store.edit(category, withTitle: title)
+    }
+    
+    func category(of tracker: Tracker) throws -> TrackerCategory? {
+        guard let categoryEntity = try store.category(of: tracker) else { return nil }
+        return TrackerCategory.from(categoryEntity)
     }
     
 }

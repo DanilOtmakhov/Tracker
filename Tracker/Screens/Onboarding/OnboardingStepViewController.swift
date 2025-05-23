@@ -42,7 +42,7 @@ final class OnboardingStepViewController: UIViewController {
     }(UIImageView())
     
     private lazy var button: UIButton = {
-        $0.setTitle("Вот это технологии!", for: .normal)
+        $0.setTitle(.onboardingButton, for: .normal)
         $0.setTitleColor(.ypWhite, for: .normal)
         $0.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         $0.backgroundColor = .ypBlack
@@ -85,6 +85,8 @@ final class OnboardingStepViewController: UIViewController {
 private extension OnboardingStepViewController {
     
     func setupViewController() {
+        overrideUserInterfaceStyle = .light
+        
         label.text = pageData.title
         backgroundImageView.image = UIImage(resource: pageData.imageResource)
         

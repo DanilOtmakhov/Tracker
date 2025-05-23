@@ -7,6 +7,12 @@
 
 import UIKit
 
+enum TrackerCellAction {
+    case pin
+    case edit
+    case delete
+}
+
 final class TrackerCell: UICollectionViewCell {
     
     // MARK: - Static Properties
@@ -41,6 +47,14 @@ final class TrackerCell: UICollectionViewCell {
         return $0
     }(UILabel())
     
+    private lazy var pinImageView: UIImageView = {
+        $0.image = UIImage(resource: .pin)
+        $0.contentMode = .scaleAspectFit
+        $0.isHidden = true
+        $0.translatesAutoresizingMaskIntoConstraints = false
+        return $0
+    }(UIImageView())
+    
     private lazy var containerView: UIView = {
         $0.layer.cornerRadius = 16
         $0.layer.masksToBounds = true
@@ -49,7 +63,6 @@ final class TrackerCell: UICollectionViewCell {
     }(UIView())
     
     private lazy var completedDaysCountLabel: UILabel = {
-        $0.text = "5 дней"
         $0.textColor = .ypBlack
         $0.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         $0.translatesAutoresizingMaskIntoConstraints = false
@@ -69,12 +82,19 @@ final class TrackerCell: UICollectionViewCell {
     // MARK: - Internal Properties
     
     var onComplete: ((Bool) -> Void)?
+    var onActionSelected: ((TrackerCellAction) -> Void)?
     
     // MARK: - Private Methods
     
     private var completedDaysCount: Int = 0 {
         didSet {
             updateCompletedDaysCountLabel(completedDaysCount)
+        }
+    }
+    
+    private var isPinned: Bool = false {
+        didSet {
+            pinImageView.isHidden = !isPinned
         }
     }
     
@@ -101,12 +121,14 @@ final class TrackerCell: UICollectionViewCell {
 
 extension TrackerCell {
     
-    func configure(with tracker: Tracker, completedDaysCount: Int, isCompleted: Bool) {
+    func configure(with tracker: Tracker, isPinned: Bool, completedDaysCount: Int, isCompleted: Bool) {
         emojiLabel.text = tracker.emoji
         titleLabel.text = tracker.title
         
         containerView.backgroundColor = tracker.color
         completeButton.backgroundColor = tracker.color
+        
+        self.isPinned = isPinned
         
         self.completedDaysCount = completedDaysCount
         self.isCompleted = isCompleted
@@ -126,6 +148,9 @@ private extension TrackerCell {
     func setupCell() {
         contentView.backgroundColor = .ypWhite
         
+        let interaction = UIContextMenuInteraction(delegate: self)
+        containerView.addInteraction(interaction)
+        
         [containerView, completedDaysCountLabel, completeButton].forEach {
             contentView.addSubview($0)
         }
@@ -133,6 +158,7 @@ private extension TrackerCell {
         containerView.addSubview(emojiContainer)
         emojiContainer.addSubview(emojiLabel)
         containerView.addSubview(titleLabel)
+        containerView.addSubview(pinImageView)
         
         
         NSLayoutConstraint.activate([
@@ -149,6 +175,11 @@ private extension TrackerCell {
             emojiLabel.centerXAnchor.constraint(equalTo: emojiContainer.centerXAnchor),
             emojiLabel.centerYAnchor.constraint(equalTo: emojiContainer.centerYAnchor),
             
+            pinImageView.widthAnchor.constraint(equalToConstant: 24),
+            pinImageView.heightAnchor.constraint(equalToConstant: 24),
+            pinImageView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -4),
+            pinImageView.centerYAnchor.constraint(equalTo: emojiContainer.centerYAnchor),
+            
             titleLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 12),
             titleLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -12),
             titleLabel.bottomAnchor.constraint(lessThanOrEqualTo: containerView.bottomAnchor, constant: -12),
@@ -164,20 +195,8 @@ private extension TrackerCell {
         ])
     }
     
-    func correctForm(for days: Int) -> String {
-        switch days % 10 {
-        case 1 where days % 100 != 11:
-            return "день"
-        case 2...4 where !(days % 100 >= 12 && days % 100 <= 14):
-            return "дня"
-        default:
-            return "дней"
-        }
-    }
-    
     func updateCompletedDaysCountLabel(_ count: Int) {
-        let daysForm = correctForm(for: count)
-        completedDaysCountLabel.text = "\(count) \(daysForm)"
+        completedDaysCountLabel.text = .daysCount.localizedPluralized(count: count)
     }
     
     func updateCompletedDaysCount(_ isCompleted: Bool) {
@@ -208,9 +227,43 @@ private extension TrackerCell {
 private extension TrackerCell {
     
     func didTapCompleteButton() {
+        AnalyticsService.log(event: .click, screen: .main, item: .track)
+        
         isCompleted.toggle()
         updateCompletedDaysCount(isCompleted)
         onComplete?(isCompleted)
+    }
+    
+}
+
+// MARK: - UIContextMenuInteractionDelegate
+
+extension TrackerCell: UIContextMenuInteractionDelegate {
+    
+    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
+        return UIContextMenuConfiguration(
+            actionProvider:  { [weak self] _ in
+                guard let self else { return nil }
+                
+                let pinAction = UIAction(title: self.isPinned ? .unpin : .pin) { [weak self] _ in
+                    self?.onActionSelected?(.pin)
+                }
+                
+                let editAction = UIAction(title: .edit) { [weak self] _ in
+                    AnalyticsService.log(event: .click, screen: .main, item: .edit)
+                    self?.onActionSelected?(.edit)
+                }
+            
+                let deleteAction = UIAction(
+                    title: .delete,
+                    attributes: .destructive
+                ) { [weak self] _ in
+                    AnalyticsService.log(event: .click, screen: .main, item: .delete)
+                    self?.onActionSelected?(.delete)
+            }
+            
+            return UIMenu(title: "", children: [pinAction, editAction, deleteAction])
+        })
     }
     
 }

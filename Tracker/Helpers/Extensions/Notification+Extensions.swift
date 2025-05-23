@@ -9,5 +9,6 @@ import Foundation
 
 extension Notification.Name {
     static let trackersShouldRefresh = Notification.Name("trackersShouldRefresh")
+    static let statisticsShouldRefresh = Notification.Name("statisticsShouldRefreshp")
 }
 

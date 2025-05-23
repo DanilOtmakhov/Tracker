@@ -19,25 +19,25 @@ enum Day: Int, CaseIterable {
     
     var string: String {
         switch self {
-        case .monday: return "Понедельник"
-        case .tuesday: return "Вторник"
-        case .wednesday: return "Среда"
-        case .thursday: return "Четверг"
-        case .friday: return "Пятница"
-        case .saturday: return "Суббота"
-        case .sunday: return "Воскресенье"
+        case .monday: return .monday
+        case .tuesday: return .tuesday
+        case .wednesday: return .wednesday
+        case .thursday: return .thursday
+        case .friday: return .friday
+        case .saturday: return .saturday
+        case .sunday: return .sunday
         }
     }
     
     var shortString: String {
         switch self {
-        case .monday: return "Пн"
-        case .tuesday: return "Вт"
-        case .wednesday: return "Ср"
-        case .thursday: return "Чт"
-        case .friday: return "Пт"
-        case .saturday: return "Сб"
-        case .sunday: return "Вс"
+        case .monday: return .mondayShort
+        case .tuesday: return .tuesdayShort
+        case .wednesday: return .wednesdayShort
+        case .thursday: return .thursdayShort
+        case .friday: return .fridayShort
+        case .saturday: return .saturdayShort
+        case .sunday: return .sundayShort
         }
     }
     

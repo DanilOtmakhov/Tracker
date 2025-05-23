@@ -1,0 +1,85 @@
+/* 
+  Localizable.strings
+  Tracker
+
+  Created by Danil Otmakhov on 15.05.2025.
+  
+*/
+
+"onboarding.blue" = "Отслеживайте только то, что хотите";
+"onboarding.red" = "Даже если это не литры воды и йога";
+"onboarding.button" = "Вот это технологии!";
+
+"trackers" = "Трекеры";
+"statistics" = "Статистика";
+
+"trackerCreation" = "Создание трекера";
+
+"habit" = "Привычка";
+"irregularEvent" = "Нерегулярное событие";
+"category" = "Категория";
+
+"habit.new" = "Новая привычка";
+"irregularEvent.new" = "Новое нерегулярное событие";
+"category.new" = "Новая категория";
+
+"habit.edit" = "Редактирование привычки";
+"irregularEvent.edit" = "Редактирование нерегулярного события";
+"category.edit" = "Редактирование категории";
+
+"enteringTrackerName" = "Введите название трекера";
+"schedule" = "Расписание";
+"emoji" = "Emoji";
+"color" = "Цвет";
+
+"enteringCategoryName" = "Введите название категории";
+"addCategory" = "Добавить категорию";
+
+"search" = "Поиск";
+"trackers.emptyState" = "Что будем отслеживать?";
+"categories.emptyState" = "Привычки и события можно объединить по смыслу";
+"nothingFound" = "Ничего не найдено";
+"nothingToAnalyze" = "Анализировать пока нечего";
+"characterLimit" = "Ограничение 38 символов";
+"filters" = "Фильтры";
+
+"monday" = "Понедельник";
+"tuesday" = "Вторник";
+"wednesday" = "Среда";
+"thursday" = "Четверг";
+"friday" = "Пятница";
+"saturday" = "Суббота";
+"sunday" = "Воскресенье";
+
+"monday.short" = "Пн";
+"tuesday.short" = "Вт";
+"wednesday.short" = "Ср";
+"thursday.short" = "Чт";
+"friday.short" = "Пт";
+"saturday.short" = "Сб";
+"sunday.short" = "Вс";
+
+"everyDay" = "Каждый день";
+
+"allTrackers" = "Все трекеры";
+"todayTrackers" = "Трекеры на сегодня";
+"completed" = "Завершенные";
+"notCompleted" = "Незавершенные";
+"pinned" = "Закрепленные";
+
+"bestPeriod" = "Лучший период";
+"perfectDays" = "Идеальные дни";
+"trackersCompleted" = "Трекеров завершено";
+"averageValue" = "Среднее значение";
+
+"done" = "Готово";
+"create" = "Создать";
+"save" = "Сохранить";
+"cancel" = "Отменить";
+"pin" = "Закрепить";
+"unpin" = "Открепить";
+"edit" = "Редактировать";
+"delete" = "Удалить";
+"delete.confirmation.tracker" = "Уверены, что хотите удалить трекер?";
+"delete.confirmation.category" = "Эта категория точно не нужна?";
+

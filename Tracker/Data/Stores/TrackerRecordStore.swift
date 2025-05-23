@@ -12,6 +12,9 @@ protocol TrackerRecordStoreProtocol {
     func delete(_ record: TrackerRecord) throws
     func fetchRecord(for: UUID, on: Date) throws -> TrackerRecordEntity?
     func fetchCompletedRecords(for: UUID) throws -> [TrackerRecordEntity]
+    func completedTrackersCount() throws -> Int
+    func fetchAllCompletionDates() throws -> [Date]
+    func fetchCompletionsGroupedByDate() throws -> [Date: Set<UUID>]
 }
 
 final class TrackerRecordStore: TrackerRecordStoreProtocol {
@@ -36,6 +39,8 @@ final class TrackerRecordStore: TrackerRecordStoreProtocol {
         }
         
         try context.save()
+        
+        NotificationCenter.default.post(name: .statisticsShouldRefresh, object: nil)
     }
     
     func delete(_ record: TrackerRecord) throws {
@@ -44,6 +49,8 @@ final class TrackerRecordStore: TrackerRecordStoreProtocol {
         context.delete(entity)
         
         try context.save()
+        
+        NotificationCenter.default.post(name: .statisticsShouldRefresh, object: nil)
     }
     
     func fetchRecord(for id: UUID, on date: Date) throws -> TrackerRecordEntity? {
@@ -68,6 +75,41 @@ final class TrackerRecordStore: TrackerRecordStoreProtocol {
         request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
         
         return try context.fetch(request)
+    }
+    
+    func completedTrackersCount() throws -> Int {
+        let request: NSFetchRequest<NSNumber> = NSFetchRequest(entityName: "TrackerRecordEntity")
+        request.resultType = .countResultType
+
+        let count = try context.count(for: request)
+        return count
+    }
+
+    func fetchAllCompletionDates() throws -> [Date] {
+        let request: NSFetchRequest<NSDictionary> = NSFetchRequest(entityName: "TrackerRecordEntity")
+        request.resultType = .dictionaryResultType
+        request.returnsDistinctResults = true
+        request.propertiesToFetch = ["date"]
+        
+        let result = try context.fetch(request)
+        let dates = result.compactMap { $0["date"] as? Date }
+        
+        return dates.sorted()
+    }
+    
+    func fetchCompletionsGroupedByDate() throws -> [Date: Set<UUID>] {
+        let request: NSFetchRequest<TrackerRecordEntity> = TrackerRecordEntity.fetchRequest()
+        let records = try context.fetch(request)
+        
+        var result: [Date: Set<UUID>] = [:]
+        
+        for record in records {
+            guard let id = record.id, let date = record.date else { continue }
+            let day = Calendar.current.startOfDay(for: date)
+            result[day, default: []].insert(id)
+        }
+        
+        return result
     }
     
 }
