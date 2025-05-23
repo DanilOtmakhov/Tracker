@@ -43,7 +43,7 @@ extension UIColor {
     }
     
     func isEqual(to otherColor: UIColor) -> Bool {
-        self.hexString == otherColor.hexString
+        hexString == otherColor.hexString
     }
     
 }

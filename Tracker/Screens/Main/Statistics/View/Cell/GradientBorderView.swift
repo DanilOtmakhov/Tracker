@@ -27,7 +27,7 @@ final class GradientBorderView: UIView {
         super.init(frame: frame)
         setupGradientBorder()
         layer.cornerRadius = Constants.cornerRadius
-//        layer.masksToBounds = true
+        layer.masksToBounds = true
     }
 
     required init?(coder: NSCoder) {

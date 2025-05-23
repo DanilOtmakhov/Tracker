@@ -79,10 +79,10 @@ extension String {
     static let monday = "monday".localized
     static let tuesday = "tuesday".localized
     static let wednesday = "wednesday".localized
-    static let thursday = "monday".localized
-    static let friday = "monday".localized
-    static let saturday = "monday".localized
-    static let sunday = "monday".localized
+    static let thursday = "thursday".localized
+    static let friday = "friday".localized
+    static let saturday = "saturday".localized
+    static let sunday = "sunday".localized
     
     static let mondayShort = "monday.short".localized
     static let tuesdayShort = "tuesday.short".localized

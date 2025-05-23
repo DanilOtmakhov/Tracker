@@ -17,10 +17,10 @@ enum AnalyticsScreen: String {
 
 enum AnalyticsItem: String {
     case addTrack = "add_track"
-    case track = "track"
-    case filter = "filter"
-    case edit = "edit"
-    case delete = "delete"
+    case track
+    case filter
+    case edit
+    case delete
 }
 
 final class AnalyticsService {
